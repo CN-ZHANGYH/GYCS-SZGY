@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.charity.mapper.CharityUserMapper">
+    
+    <resultMap type="CharityUser" id="CharityUserResult">
+        <result property="id"    column="id"    />
+        <result property="username"    column="username"    />
+        <result property="amount"    column="amount"    />
+        <result property="credit"    column="credit"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="designation"    column="designation"    />
+        <result property="donateList"    column="donate_list"    />
+        <result property="raiseList"    column="raise_list"    />
+        <result property="welfareList"    column="welfare_list"    />
+        <result property="voteCount"    column="vote_count"    />
+        <result property="withdrawCount"    column="withdraw_count"    />
+        <result property="userAddress"    column="user_address"    />
+        <result property="privateKey"    column="private_key"    />
+        <result property="publicKey"    column="public_key"    />
+    </resultMap>
+
+    <sql id="selectCharityUserVo">
+        select id, username, amount, credit, card_id, designation, donate_list, raise_list, welfare_list, vote_count, withdraw_count, user_address, private_key, public_key from charity_user
+    </sql>
+
+    <select id="selectCharityUserList" parameterType="CharityUser" resultMap="CharityUserResult">
+        <include refid="selectCharityUserVo"/>
+        <where>  
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="cardId != null  and cardId != ''"> and card_id = #{cardId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCharityUserById" parameterType="Long" resultMap="CharityUserResult">
+        <include refid="selectCharityUserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCharityUser" parameterType="CharityUser">
+        insert into charity_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+            <if test="amount != null">amount,</if>
+            <if test="credit != null">credit,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="designation != null">designation,</if>
+            <if test="donateList != null">donate_list,</if>
+            <if test="raiseList != null">raise_list,</if>
+            <if test="welfareList != null">welfare_list,</if>
+            <if test="voteCount != null">vote_count,</if>
+            <if test="withdrawCount != null">withdraw_count,</if>
+            <if test="userAddress != null">user_address,</if>
+            <if test="privateKey != null">private_key,</if>
+            <if test="publicKey != null">public_key,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="username != null">#{username},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="credit != null">#{credit},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="designation != null">#{designation},</if>
+            <if test="donateList != null">#{donateList},</if>
+            <if test="raiseList != null">#{raiseList},</if>
+            <if test="welfareList != null">#{welfareList},</if>
+            <if test="voteCount != null">#{voteCount},</if>
+            <if test="withdrawCount != null">#{withdrawCount},</if>
+            <if test="userAddress != null">#{userAddress},</if>
+            <if test="privateKey != null">#{privateKey},</if>
+            <if test="publicKey != null">#{publicKey},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCharityUser" parameterType="CharityUser">
+        update charity_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null">username = #{username},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="designation != null">designation = #{designation},</if>
+            <if test="donateList != null">donate_list = #{donateList},</if>
+            <if test="raiseList != null">raise_list = #{raiseList},</if>
+            <if test="welfareList != null">welfare_list = #{welfareList},</if>
+            <if test="voteCount != null">vote_count = #{voteCount},</if>
+            <if test="withdrawCount != null">withdraw_count = #{withdrawCount},</if>
+            <if test="userAddress != null">user_address = #{userAddress},</if>
+            <if test="privateKey != null">private_key = #{privateKey},</if>
+            <if test="publicKey != null">public_key = #{publicKey},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCharityUserById" parameterType="Long">
+        delete from charity_user where id = #{id}
+    </delete>
+
+    <delete id="deleteCharityUserByIds" parameterType="String">
+        delete from charity_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

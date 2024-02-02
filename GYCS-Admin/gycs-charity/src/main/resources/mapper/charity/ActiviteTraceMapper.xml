@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.charity.mapper.ActiviteTraceMapper">
+    
+    <resultMap type="ActiviteTrace" id="ActiviteTraceResult">
+        <result property="charityId"    column="charity_id"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialCount"    column="material_count"    />
+        <result property="sourceAddress"    column="source_address"    />
+        <result property="logisticAddress"    column="logistic_address"    />
+        <result property="destAddress"    column="dest_address"    />
+        <result property="transTime"    column="trans_time"    />
+        <result property="isSign"    column="is_sign"    />
+        <result property="activitId"    column="activit_id"    />
+        <result property="status"    column="status"    />
+        <result property="traceAddress"    column="trace_address"    />
+        <result property="traceTime"    column="trace_time"    />
+    </resultMap>
+
+    <sql id="selectActiviteTraceVo">
+        select charity_id, material_type, material_name, material_count, source_address, logistic_address, dest_address, trans_time, is_sign, activit_id, status, trace_address, trace_time from charity_activite
+    </sql>
+
+    <select id="selectActiviteTraceList" parameterType="ActiviteTrace" resultMap="ActiviteTraceResult">
+        <include refid="selectActiviteTraceVo"/>
+        <where>  
+            <if test="materialType != null "> and material_type = #{materialType}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectActiviteTraceByCharityId" parameterType="Long" resultMap="ActiviteTraceResult">
+        <include refid="selectActiviteTraceVo"/>
+        where charity_id = #{charityId}
+    </select>
+        
+    <insert id="insertActiviteTrace" parameterType="ActiviteTrace">
+        insert into charity_activite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="charityId != null">charity_id,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="materialName != null">material_name,</if>
+            <if test="materialCount != null">material_count,</if>
+            <if test="sourceAddress != null">source_address,</if>
+            <if test="logisticAddress != null">logistic_address,</if>
+            <if test="destAddress != null">dest_address,</if>
+            <if test="transTime != null">trans_time,</if>
+            <if test="isSign != null">is_sign,</if>
+            <if test="activitId != null">activit_id,</if>
+            <if test="status != null">status,</if>
+            <if test="traceAddress != null">trace_address,</if>
+            <if test="traceTime != null">trace_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="charityId != null">#{charityId},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="materialName != null">#{materialName},</if>
+            <if test="materialCount != null">#{materialCount},</if>
+            <if test="sourceAddress != null">#{sourceAddress},</if>
+            <if test="logisticAddress != null">#{logisticAddress},</if>
+            <if test="destAddress != null">#{destAddress},</if>
+            <if test="transTime != null">#{transTime},</if>
+            <if test="isSign != null">#{isSign},</if>
+            <if test="activitId != null">#{activitId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="traceAddress != null">#{traceAddress},</if>
+            <if test="traceTime != null">#{traceTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActiviteTrace" parameterType="ActiviteTrace">
+        update charity_activite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="materialName != null">material_name = #{materialName},</if>
+            <if test="materialCount != null">material_count = #{materialCount},</if>
+            <if test="sourceAddress != null">source_address = #{sourceAddress},</if>
+            <if test="logisticAddress != null">logistic_address = #{logisticAddress},</if>
+            <if test="destAddress != null">dest_address = #{destAddress},</if>
+            <if test="transTime != null">trans_time = #{transTime},</if>
+            <if test="isSign != null">is_sign = #{isSign},</if>
+            <if test="activitId != null">activit_id = #{activitId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="traceAddress != null">trace_address = #{traceAddress},</if>
+            <if test="traceTime != null">trace_time = #{traceTime},</if>
+        </trim>
+        where charity_id = #{charityId}
+    </update>
+
+    <delete id="deleteActiviteTraceByCharityId" parameterType="Long">
+        delete from charity_activite where charity_id = #{charityId}
+    </delete>
+
+    <delete id="deleteActiviteTraceByCharityIds" parameterType="String">
+        delete from charity_activite where charity_id in 
+        <foreach item="charityId" collection="array" open="(" separator="," close=")">
+            #{charityId}
+        </foreach>
+    </delete>
+</mapper>
