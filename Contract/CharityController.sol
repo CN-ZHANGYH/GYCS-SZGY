@@ -7,9 +7,6 @@ import "./CharityTrace.sol";
 import "./DonationTrace.sol";
 
 contract CharityController is CharityService {
-    
-    
-    
     constructor() public {
         init_user(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4,"zhangsan","441622200305132857","犯贱的AA");
         init_user(0xdD870fA1b7C4700F2BD7f44238821C26f7392148,"ls","12344556","sdsada");
