@@ -2,10 +2,16 @@ package com.ruoyi.charity.domain.dto;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 公益募资活动对象 charity_raise_fund
@@ -13,6 +19,11 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author zyh
  * @date 2024-02-01
  */
+
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CharityRaiseFund extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -22,14 +33,17 @@ public class CharityRaiseFund extends BaseEntity
 
     /** 活动名称 */
     @Excel(name = "活动名称")
+    @NotNull(message = "活动名称不能为空")
     private String title;
 
-    /** 活动描述 */
+   /** 活动描述 */
     @Excel(name = "活动描述")
+    @NotNull(message = "活动描述不能为空")
     private String desc;
 
     /** 活动组织者 */
     @Excel(name = "活动组织者")
+    @NotNull(message = "活动组织者不能为空")
     private String promoterAddress;
 
     /** 活动状态 */
@@ -38,13 +52,15 @@ public class CharityRaiseFund extends BaseEntity
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "开始时间不能为空")
     @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date startTime;
+    private String startTime;
 
     /** 结束时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "结束时间不能为空")
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date endTime;
+    private String endTime;
 
     /** 总参与人数 */
     @Excel(name = "总参与人数")
@@ -52,6 +68,7 @@ public class CharityRaiseFund extends BaseEntity
 
     /** 总需金额 */
     @Excel(name = "总需金额")
+    @NotNull(message = "总需金额不能为空")
     private Long totalAmount;
 
     /** 已完成金额 */
@@ -61,122 +78,4 @@ public class CharityRaiseFund extends BaseEntity
     /** 已取出金额 */
     @Excel(name = "已取出金额")
     private Long withdrawAmount;
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-    public void setDesc(String desc)
-    {
-        this.desc = desc;
-    }
-
-    public String getDesc()
-    {
-        return desc;
-    }
-    public void setPromoterAddress(String promoterAddress)
-    {
-        this.promoterAddress = promoterAddress;
-    }
-
-    public String getPromoterAddress()
-    {
-        return promoterAddress;
-    }
-    public void setStatus(Long status)
-    {
-        this.status = status;
-    }
-
-    public Long getStatus()
-    {
-        return status;
-    }
-    public void setStartTime(Date startTime)
-    {
-        this.startTime = startTime;
-    }
-
-    public Date getStartTime()
-    {
-        return startTime;
-    }
-    public void setEndTime(Date endTime)
-    {
-        this.endTime = endTime;
-    }
-
-    public Date getEndTime()
-    {
-        return endTime;
-    }
-    public void setTotalPeople(Long totalPeople)
-    {
-        this.totalPeople = totalPeople;
-    }
-
-    public Long getTotalPeople()
-    {
-        return totalPeople;
-    }
-    public void setTotalAmount(Long totalAmount)
-    {
-        this.totalAmount = totalAmount;
-    }
-
-    public Long getTotalAmount()
-    {
-        return totalAmount;
-    }
-    public void setOverAmount(Long overAmount)
-    {
-        this.overAmount = overAmount;
-    }
-
-    public Long getOverAmount()
-    {
-        return overAmount;
-    }
-    public void setWithdrawAmount(Long withdrawAmount)
-    {
-        this.withdrawAmount = withdrawAmount;
-    }
-
-    public Long getWithdrawAmount()
-    {
-        return withdrawAmount;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("title", getTitle())
-            .append("desc", getDesc())
-            .append("createTime", getCreateTime())
-            .append("promoterAddress", getPromoterAddress())
-            .append("status", getStatus())
-            .append("startTime", getStartTime())
-            .append("endTime", getEndTime())
-            .append("totalPeople", getTotalPeople())
-            .append("totalAmount", getTotalAmount())
-            .append("overAmount", getOverAmount())
-            .append("withdrawAmount", getWithdrawAmount())
-            .toString();
-    }
 }
