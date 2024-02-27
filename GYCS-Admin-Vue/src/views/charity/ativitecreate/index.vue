@@ -279,6 +279,7 @@ const options = [
 .step-card {
   margin-top: 10px;
   width: 100%;
+  height: 100%;
   border-radius: 15px;
   padding: 10px 100px;
 
@@ -288,6 +289,7 @@ const options = [
 .form-container {
   display: flex;
   justify-content: center;
+  height: auto;
 
 }
 

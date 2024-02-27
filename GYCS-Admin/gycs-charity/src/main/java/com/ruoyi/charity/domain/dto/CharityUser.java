@@ -6,10 +6,10 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 用户信息表对象 charity_user
- *
+ * 用户对象 charity_user
+ * 
  * @author zyh
- * @date 2024-02-01
+ * @date 2024-02-27
  */
 public class CharityUser extends BaseEntity
 {
@@ -18,17 +18,17 @@ public class CharityUser extends BaseEntity
     /** 用户的ID */
     private Long id;
 
-    /** 用户名称 */
-    @Excel(name = "用户名称")
+    /** 用户的名称 */
+    @Excel(name = "用户的名称")
     private String username;
 
-    /** 用户余额 */
-    @Excel(name = "用户余额")
-    private Long amount;
+    /** 用户的余额 */
+    @Excel(name = "用户的余额")
+    private Integer amount;
 
     /** 用户积分 */
     @Excel(name = "用户积分")
-    private String credit;
+    private Integer credit;
 
     /** 身份证ID */
     @Excel(name = "身份证ID")
@@ -38,161 +38,122 @@ public class CharityUser extends BaseEntity
     @Excel(name = "用户称号")
     private String designation;
 
-    /** 捐款记录ID */
-    @Excel(name = "捐款记录ID")
-    private String donateList;
-
-    /** 募资记录ID */
-    @Excel(name = "募资记录ID")
-    private String raiseList;
-
-    /** 公益活动捐赠记录ID */
-    @Excel(name = "公益活动捐赠记录ID")
-    private String welfareList;
-
     /** 参与投票的次数 */
     @Excel(name = "参与投票的次数")
-    private Long voteCount;
+    private Integer voteCount;
 
-    /** 提现次数 */
-    @Excel(name = "提现次数")
-    private Long withdrawCount;
+    /** 提现的次数 */
+    @Excel(name = "提现的次数")
+    private Integer withdrawCount;
 
-    /** 用户地址 */
-    @Excel(name = "用户地址")
+    /** 用户的地址 */
+    @Excel(name = "用户的地址")
     private String userAddress;
 
-    /** 用户私钥 */
-    @Excel(name = "用户私钥")
+    /** 用户的私钥 */
+    @Excel(name = "用户的私钥")
     private String privateKey;
 
-    /** 用户公钥 */
-    @Excel(name = "用户公钥")
+    /** 用户的公钥 */
+    @Excel(name = "用户的公钥")
     private String publicKey;
 
-    public void setId(Long id)
+    public void setId(Long id) 
     {
         this.id = id;
     }
 
-    public Long getId()
+    public Long getId() 
     {
         return id;
     }
-    public void setUsername(String username)
+    public void setUsername(String username) 
     {
         this.username = username;
     }
 
-    public String getUsername()
+    public String getUsername() 
     {
         return username;
     }
-    public void setAmount(Long amount)
+    public void setAmount(Integer amount) 
     {
         this.amount = amount;
     }
 
-    public Long getAmount()
+    public Integer getAmount() 
     {
         return amount;
     }
-    public void setCredit(String credit)
+    public void setCredit(Integer credit) 
     {
         this.credit = credit;
     }
 
-    public String getCredit()
+    public Integer getCredit() 
     {
         return credit;
     }
-    public void setCardId(String cardId)
+    public void setCardId(String cardId) 
     {
         this.cardId = cardId;
     }
 
-    public String getCardId()
+    public String getCardId() 
     {
         return cardId;
     }
-    public void setDesignation(String designation)
+    public void setDesignation(String designation) 
     {
         this.designation = designation;
     }
 
-    public String getDesignation()
+    public String getDesignation() 
     {
         return designation;
     }
-    public void setDonateList(String donateList)
-    {
-        this.donateList = donateList;
-    }
-
-    public String getDonateList()
-    {
-        return donateList;
-    }
-    public void setRaiseList(String raiseList)
-    {
-        this.raiseList = raiseList;
-    }
-
-    public String getRaiseList()
-    {
-        return raiseList;
-    }
-    public void setWelfareList(String welfareList)
-    {
-        this.welfareList = welfareList;
-    }
-
-    public String getWelfareList()
-    {
-        return welfareList;
-    }
-    public void setVoteCount(Long voteCount)
+    public void setVoteCount(Integer voteCount) 
     {
         this.voteCount = voteCount;
     }
 
-    public Long getVoteCount()
+    public Integer getVoteCount() 
     {
         return voteCount;
     }
-    public void setWithdrawCount(Long withdrawCount)
+    public void setWithdrawCount(Integer withdrawCount) 
     {
         this.withdrawCount = withdrawCount;
     }
 
-    public Long getWithdrawCount()
+    public Integer getWithdrawCount() 
     {
         return withdrawCount;
     }
-    public void setUserAddress(String userAddress)
+    public void setUserAddress(String userAddress) 
     {
         this.userAddress = userAddress;
     }
 
-    public String getUserAddress()
+    public String getUserAddress() 
     {
         return userAddress;
     }
-    public void setPrivateKey(String privateKey)
+    public void setPrivateKey(String privateKey) 
     {
         this.privateKey = privateKey;
     }
 
-    public String getPrivateKey()
+    public String getPrivateKey() 
     {
         return privateKey;
     }
-    public void setPublicKey(String publicKey)
+    public void setPublicKey(String publicKey) 
     {
         this.publicKey = publicKey;
     }
 
-    public String getPublicKey()
+    public String getPublicKey() 
     {
         return publicKey;
     }
@@ -206,9 +167,6 @@ public class CharityUser extends BaseEntity
             .append("credit", getCredit())
             .append("cardId", getCardId())
             .append("designation", getDesignation())
-            .append("donateList", getDonateList())
-            .append("raiseList", getRaiseList())
-            .append("welfareList", getWelfareList())
             .append("voteCount", getVoteCount())
             .append("withdrawCount", getWithdrawCount())
             .append("userAddress", getUserAddress())

@@ -23,7 +23,7 @@ public class RegisterRabbitConfig {
      */
     @Bean
     public DirectExchange registerDirectExchange() {
-        return new DirectExchange("REGISTER_EXCHANGE",true,false);
+        return new DirectExchange("direct_register_exchange",true,false);
     }
 
     /**
@@ -32,7 +32,7 @@ public class RegisterRabbitConfig {
      */
     @Bean
     public Queue registerQueue() {
-        return new Queue("REGISTER_QUEUE",true);
+        return new Queue("register.direct.queue",true);
     }
 
     @Bean

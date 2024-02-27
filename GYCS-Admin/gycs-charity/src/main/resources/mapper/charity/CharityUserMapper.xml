@@ -11,9 +11,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="credit"    column="credit"    />
         <result property="cardId"    column="card_id"    />
         <result property="designation"    column="designation"    />
-        <result property="donateList"    column="donate_list"    />
-        <result property="raiseList"    column="raise_list"    />
-        <result property="welfareList"    column="welfare_list"    />
         <result property="voteCount"    column="vote_count"    />
         <result property="withdrawCount"    column="withdraw_count"    />
         <result property="userAddress"    column="user_address"    />
@@ -22,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCharityUserVo">
-        select id, username, amount, credit, card_id, designation, donate_list, raise_list, welfare_list, vote_count, withdraw_count, user_address, private_key, public_key from charity_user
+        select id, username, amount, credit, card_id, designation, vote_count, withdraw_count, user_address, private_key, public_key from charity_user
     </sql>
 
     <select id="selectCharityUserList" parameterType="CharityUser" resultMap="CharityUserResult">
@@ -47,9 +44,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="credit != null">credit,</if>
             <if test="cardId != null">card_id,</if>
             <if test="designation != null">designation,</if>
-            <if test="donateList != null">donate_list,</if>
-            <if test="raiseList != null">raise_list,</if>
-            <if test="welfareList != null">welfare_list,</if>
             <if test="voteCount != null">vote_count,</if>
             <if test="withdrawCount != null">withdraw_count,</if>
             <if test="userAddress != null">user_address,</if>
@@ -63,9 +57,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="credit != null">#{credit},</if>
             <if test="cardId != null">#{cardId},</if>
             <if test="designation != null">#{designation},</if>
-            <if test="donateList != null">#{donateList},</if>
-            <if test="raiseList != null">#{raiseList},</if>
-            <if test="welfareList != null">#{welfareList},</if>
             <if test="voteCount != null">#{voteCount},</if>
             <if test="withdrawCount != null">#{withdrawCount},</if>
             <if test="userAddress != null">#{userAddress},</if>
@@ -82,9 +73,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="credit != null">credit = #{credit},</if>
             <if test="cardId != null">card_id = #{cardId},</if>
             <if test="designation != null">designation = #{designation},</if>
-            <if test="donateList != null">donate_list = #{donateList},</if>
-            <if test="raiseList != null">raise_list = #{raiseList},</if>
-            <if test="welfareList != null">welfare_list = #{welfareList},</if>
             <if test="voteCount != null">vote_count = #{voteCount},</if>
             <if test="withdrawCount != null">withdraw_count = #{withdrawCount},</if>
             <if test="userAddress != null">user_address = #{userAddress},</if>

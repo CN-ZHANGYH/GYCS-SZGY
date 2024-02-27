@@ -105,19 +105,19 @@ token:
   expireTime: 30
 
 # MyBatis配置
-mybatis:
-  # 搜索指定包别名
-  typeAliasesPackage: com.ruoyi.**.domain
-  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-  mapperLocations: classpath*:mapper/**/*Mapper.xml
-  # 加载全局的配置文件
-  configLocation: classpath:mybatis/mybatis-config.xml
+#mybatis:
+#  # 搜索指定包别名
+#  typeAliasesPackage: com.ruoyi.**.domain
+#  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+#  mapperLocations: classpath*:mapper/**/*Mapper.xml
+#  # 加载全局的配置文件
+#  configLocation: classpath:mybatis/mybatis-config.xml
 
 # PageHelper分页插件
-pagehelper:
-  helperDialect: mysql
-  supportMethodsArguments: true
-  params: count=countSql
+#pagehelper:
+#  helperDialect: mysql
+#  supportMethodsArguments: true
+#  params: count=countSql
 
 # Swagger配置
 swagger:
@@ -141,6 +141,7 @@ mybatis-plus:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   # 类型别名扫描包配置
   type-aliases-package: com.ruoyi.**.domain
+  # 加载全局的配置文件
   configuration:
     # MyBatis 自动映射策略
     # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射

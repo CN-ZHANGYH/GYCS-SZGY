@@ -46,7 +46,9 @@ span {
 
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  /*min-height: calc(100vh - 50px);
+  max-height: 100%;*/
+  height: auto;
   width: 100%;
   position: relative;
   overflow: hidden;

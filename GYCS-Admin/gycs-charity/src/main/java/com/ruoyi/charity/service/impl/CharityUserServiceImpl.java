@@ -8,22 +8,22 @@ import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.service.ICharityUserService;
 
 /**
- * 用户信息表Service业务层处理
- *
+ * 用户Service业务层处理
+ * 
  * @author zyh
- * @date 2024-02-01
+ * @date 2024-02-27
  */
 @Service
-public class CharityUserServiceImpl implements ICharityUserService
+public class CharityUserServiceImpl implements ICharityUserService 
 {
     @Autowired
     private CharityUserMapper charityUserMapper;
 
     /**
-     * 查询用户信息表
-     *
-     * @param id 用户信息表主键
-     * @return 用户信息表
+     * 查询用户
+     * 
+     * @param id 用户主键
+     * @return 用户
      */
     @Override
     public CharityUser selectCharityUserById(Long id)
@@ -32,10 +32,10 @@ public class CharityUserServiceImpl implements ICharityUserService
     }
 
     /**
-     * 查询用户信息表列表
-     *
-     * @param charityUser 用户信息表
-     * @return 用户信息表
+     * 查询用户列表
+     * 
+     * @param charityUser 用户
+     * @return 用户
      */
     @Override
     public List<CharityUser> selectCharityUserList(CharityUser charityUser)
@@ -44,9 +44,9 @@ public class CharityUserServiceImpl implements ICharityUserService
     }
 
     /**
-     * 新增用户信息表
-     *
-     * @param charityUser 用户信息表
+     * 新增用户
+     * 
+     * @param charityUser 用户
      * @return 结果
      */
     @Override
@@ -56,9 +56,9 @@ public class CharityUserServiceImpl implements ICharityUserService
     }
 
     /**
-     * 修改用户信息表
-     *
-     * @param charityUser 用户信息表
+     * 修改用户
+     * 
+     * @param charityUser 用户
      * @return 结果
      */
     @Override
@@ -68,9 +68,9 @@ public class CharityUserServiceImpl implements ICharityUserService
     }
 
     /**
-     * 批量删除用户信息表
-     *
-     * @param ids 需要删除的用户信息表主键
+     * 批量删除用户
+     * 
+     * @param ids 需要删除的用户主键
      * @return 结果
      */
     @Override
@@ -80,9 +80,9 @@ public class CharityUserServiceImpl implements ICharityUserService
     }
 
     /**
-     * 删除用户信息表信息
-     *
-     * @param id 用户信息表主键
+     * 删除用户信息
+     * 
+     * @param id 用户主键
      * @return 结果
      */
     @Override

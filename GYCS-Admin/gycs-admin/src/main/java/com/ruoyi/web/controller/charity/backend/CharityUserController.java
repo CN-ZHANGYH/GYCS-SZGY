@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.charity;
+package com.ruoyi.web.controller.charity.backend;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -22,22 +22,22 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 用户信息表Controller
- *
+ * 用户Controller
+ * 
  * @author zyh
- * @date 2024-02-01
+ * @date 2024-02-27
  */
 @RestController
-@RequestMapping("/charity/user")
+@RequestMapping("/charity/charityuser")
 public class CharityUserController extends BaseController
 {
     @Autowired
     private ICharityUserService charityUserService;
 
     /**
-     * 查询用户信息表列表
+     * 查询用户列表
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:list')")
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:list')")
     @GetMapping("/list")
     public TableDataInfo list(CharityUser charityUser)
     {
@@ -47,22 +47,22 @@ public class CharityUserController extends BaseController
     }
 
     /**
-     * 导出用户信息表列表
+     * 导出用户列表
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:export')")
-    @Log(title = "用户信息表", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:export')")
+    @Log(title = "用户", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, CharityUser charityUser)
     {
         List<CharityUser> list = charityUserService.selectCharityUserList(charityUser);
         ExcelUtil<CharityUser> util = new ExcelUtil<CharityUser>(CharityUser.class);
-        util.exportExcel(response, list, "用户信息表数据");
+        util.exportExcel(response, list, "用户数据");
     }
 
     /**
-     * 获取用户信息表详细信息
+     * 获取用户详细信息
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:query')")
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -70,10 +70,10 @@ public class CharityUserController extends BaseController
     }
 
     /**
-     * 新增用户信息表
+     * 新增用户
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:add')")
-    @Log(title = "用户信息表", businessType = BusinessType.INSERT)
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:add')")
+    @Log(title = "用户", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody CharityUser charityUser)
     {
@@ -81,10 +81,10 @@ public class CharityUserController extends BaseController
     }
 
     /**
-     * 修改用户信息表
+     * 修改用户
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:edit')")
-    @Log(title = "用户信息表", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:edit')")
+    @Log(title = "用户", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody CharityUser charityUser)
     {
@@ -92,10 +92,10 @@ public class CharityUserController extends BaseController
     }
 
     /**
-     * 删除用户信息表
+     * 删除用户
      */
-    @PreAuthorize("@ss.hasPermi('charity:user:remove')")
-    @Log(title = "用户信息表", businessType = BusinessType.DELETE)
+    @PreAuthorize("@ss.hasPermi('charity:charityuser:remove')")
+    @Log(title = "用户", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {

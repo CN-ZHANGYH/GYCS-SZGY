@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.charity;
+package com.ruoyi.web.controller.charity.backend;
 
 
 import com.ruoyi.charity.domain.dto.Org;
