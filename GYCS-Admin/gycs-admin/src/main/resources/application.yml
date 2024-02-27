@@ -64,7 +64,14 @@ spring:
   devtools:
     restart:
       # 热部署开关
-      enabled: true
+      enabled: false
+  # rabbitmq 配置
+  rabbitmq:
+    username: root
+    password: Wsczkmucdis251
+    port: 5672
+    virtual-host: /
+    host: 106.52.203.212
   # redis 配置
   redis:
     # 地址
@@ -76,7 +83,7 @@ spring:
     # 密码
     password: Wsczkmucdis251
     # 连接超时时间
-    timeout: 10s
+    timeout: 20s
     lettuce:
       pool:
         # 连接池中的最小空闲连接
@@ -169,7 +176,9 @@ system:
   ### Optional. Default will search conf,config,src/main/conf/src/main/config
   certPath: conf,config,src/main/resources/conf,src/main/resources/config
   ### Optional. If don't specify a random private key will be used
-  hexPrivateKey: 4ee910ec79a5074cad373f5805d9cee62ed785569e242dc4739cae1778f0d89a
+  hexPrivateKey: 4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f
   ### Optional. Please fill this address if you want to use related service
   contract:
-    charityControllerAddress: "0x8646ac366ad92320a1469202df32cbbfc3f9c1b1"
+    charityControllerAddress: "0x6838730366711e822273f86f95f969e6b95496b4"
+
+

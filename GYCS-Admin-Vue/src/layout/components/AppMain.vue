@@ -4,7 +4,7 @@
       <router-view v-slot="{ Component, route }">
         <transition name="fade-transform" mode="out-in">
           <keep-alive :include="tagsViewStore.cachedViews">
-            <el-card style="border-radius: 15px;margin: 10px 10px;height: 90vh;border: none">
+            <el-card style="border-radius: 15px;margin: 10px 10px;height: 100vh;border: none">
               <template #header>
                 <div class="card-header">
                   <span>{{route.meta.title}}</span>

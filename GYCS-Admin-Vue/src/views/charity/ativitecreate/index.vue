@@ -277,10 +277,10 @@ const options = [
 
 <style>
 .step-card {
-  margin-top: 30px;
+  margin-top: 10px;
   width: 100%;
   border-radius: 15px;
-  padding: 20px 20px;
+  padding: 10px 100px;
 
 
 }

@@ -21,5 +21,6 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>gycs-common</artifactId>
         </dependency>
+
     </dependencies>
 </project>
