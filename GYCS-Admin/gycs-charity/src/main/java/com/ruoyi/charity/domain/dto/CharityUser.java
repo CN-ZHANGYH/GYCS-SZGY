@@ -11,7 +11,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author zyh
  * @date 2024-02-27
  */
-public class CharityUser extends BaseEntity
+
+public class CharityUser
 {
     private static final long serialVersionUID = 1L;
 

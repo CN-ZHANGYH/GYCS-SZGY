@@ -69,7 +69,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="公益慈善ID" align="center" prop="id" />
       <el-table-column label="活动名称" align="center" prop="title" />
-      <el-table-column label="活动描述" align="center" prop="desc" />
+      <el-table-column label="活动描述" align="center" prop="description" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>

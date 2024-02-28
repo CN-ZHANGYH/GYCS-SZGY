@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.charity.mapper.CharityRaiseAuditMapper">
+    
+    <resultMap type="CharityRaiseAudit" id="CharityRaiseAuditResult">
+        <result property="id"    column="id"    />
+        <result property="raiseId"    column="raise_id"    />
+        <result property="status"    column="status"    />
+        <result property="username"    column="username"    />
+        <result property="applyTime"    column="apply_time"    />
+        <result property="auditTime"    column="audit_time"    />
+    </resultMap>
+
+    <sql id="selectCharityRaiseAuditVo">
+        select id, raise_id, status, username, apply_time, audit_time from charity_raise_audit
+    </sql>
+
+    <select id="selectCharityRaiseAuditList" parameterType="CharityRaiseAudit" resultMap="CharityRaiseAuditResult">
+        <include refid="selectCharityRaiseAuditVo"/>
+        <where>  
+            <if test="status != null "> and status = #{status}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCharityRaiseAuditById" parameterType="Long" resultMap="CharityRaiseAuditResult">
+        <include refid="selectCharityRaiseAuditVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCharityRaiseAudit" parameterType="CharityRaiseAudit" useGeneratedKeys="true" keyProperty="id">
+        insert into charity_raise_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="raiseId != null">raise_id,</if>
+            <if test="status != null">status,</if>
+            <if test="username != null">username,</if>
+            <if test="applyTime != null">apply_time,</if>
+            <if test="auditTime != null">audit_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="raiseId != null">#{raiseId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="username != null">#{username},</if>
+            <if test="applyTime != null">#{applyTime},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCharityRaiseAudit" parameterType="CharityRaiseAudit">
+        update charity_raise_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="raiseId != null">raise_id = #{raiseId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="applyTime != null">apply_time = #{applyTime},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCharityRaiseAuditById" parameterType="Long">
+        delete from charity_raise_audit where id = #{id}
+    </delete>
+
+    <delete id="deleteCharityRaiseAuditByIds" parameterType="String">
+        delete from charity_raise_audit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

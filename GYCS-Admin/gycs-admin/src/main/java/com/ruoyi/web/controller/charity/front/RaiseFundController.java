@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.charity.front;
 
 
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
+import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -33,4 +34,10 @@ public class RaiseFundController {
         return fundService.initiateRaiseFund(charityRaiseFund);
     }
 
+
+    @PostMapping("/uploadCertificate")
+    public AjaxResult uploadCertificate(@Valid @RequestBody CertificateInfoVo certificateInfoVo) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.uploadCertificate(certificateInfoVo,loginUser.getUsername());
+    }
 }

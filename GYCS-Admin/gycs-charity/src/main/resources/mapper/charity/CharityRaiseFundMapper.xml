@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="CharityRaiseFund" id="CharityRaiseFundResult">
         <result property="id"    column="id"    />
         <result property="title"    column="title"    />
-        <result property="desc"    column="desc"    />
+        <result property="description"    column="description"    />
         <result property="createTime"    column="create_time"    />
         <result property="promoterAddress"    column="promoter_address"    />
         <result property="status"    column="status"    />
@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCharityRaiseFundVo">
-        select id, title, desc, create_time, promoter_address, status, start_time, end_time, total_people, total_amount, over_amount, withdraw_amount from charity_raise_fund
+        select id, title, description, create_time, promoter_address, status, start_time, end_time, total_people, total_amount, over_amount, withdraw_amount from charity_raise_fund
     </sql>
 
     <select id="selectCharityRaiseFundList" parameterType="CharityRaiseFund" resultMap="CharityRaiseFundResult">
@@ -35,13 +35,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCharityRaiseFundVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertCharityRaiseFund" parameterType="CharityRaiseFund">
         insert into charity_raise_fund
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="title != null">title,</if>
-            <if test="desc != null">desc,</if>
+            <if test="description != null">description,</if>
             <if test="createTime != null">create_time,</if>
             <if test="promoterAddress != null">promoter_address,</if>
             <if test="status != null">status,</if>
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="title != null">#{title},</if>
-            <if test="desc != null">#{desc},</if>
+            <if test="description != null">#{description},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="promoterAddress != null">#{promoterAddress},</if>
             <if test="status != null">#{status},</if>
@@ -72,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update charity_raise_fund
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null">title = #{title},</if>
-            <if test="desc != null">desc = #{desc},</if>
+            <if test="description != null">description = #{description},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="promoterAddress != null">promoter_address = #{promoterAddress},</if>
             <if test="status != null">status = #{status},</if>

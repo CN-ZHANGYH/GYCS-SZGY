@@ -1,6 +1,8 @@
 package com.ruoyi.charity.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 
 /**
