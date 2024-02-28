@@ -1,4 +1,4 @@
-package com.ruoyi.charity.mapper;
+package com.ruoyi.charity.mapper.join;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.ruoyi.common.core.domain.entity.SysUser;

@@ -2,30 +2,41 @@ package com.ruoyi.charity.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.charity.domain.CharityRaiseAudit;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.ruoyi.charity.domain.bo.CharityControllerGetCertificateInfoDetailInputBO;
+import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import com.ruoyi.charity.domain.bo.CharityControllerInitiateFundRaisingInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerUploadCertificateInputBO;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
-import com.ruoyi.charity.mapper.CharityUserJMapper;
+import com.ruoyi.charity.domain.vo.RaiseFundAuditVo;
+import com.ruoyi.charity.mapper.join.CharityUserJMapper;
+import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
 import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.utils.BlockTimeUtil;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
+import org.aspectj.weaver.AdviceKind;
+import org.aspectj.weaver.ast.Var;
+import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.transform.Source;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -46,6 +57,13 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Autowired
     private RaiseAuditMapper raiseAuditMapper;
+
+    @Autowired
+    private RaiseFundJMapper raiseFundJMapper;
+
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 用户发起公益募资业务
@@ -111,9 +129,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
         // 根据用户名查询用户的地址然后根据公益募资的活动编号和用户的区块链账户地址进行查询详细的信息
         // SELECT * FROM charity_raise_fund WHERE id = '19' and promoter_address = (SELECT user_address FROM charity_user WHERE username = 'mmm');
-        CharityUser charityUser = charityUserJMapper.selectOne(Wrappers
-                .lambdaQuery(CharityUser.class)
-                .eq(CharityUser::getUsername, username));
+        CharityUser charityUser = queryCharityUserByUsername(username);
         CharityRaiseFund isRaiseFund = raiseFundMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseFund.class)
                 .eq(CharityRaiseFund::getId, certificateInfoVo.getRaiseId())
                 .eq(CharityRaiseFund::getPromoterAddress, charityUser.getUserAddress()));
@@ -133,7 +149,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                     // 如果交易成功就添加一条申请记录到审核中
                     CharityRaiseAudit charityRaiseAudit = new CharityRaiseAudit();
                     charityRaiseAudit.setRaiseId(certificateInfoVo.getRaiseId());
-                    charityRaiseAudit.setStatus(1);
+                    charityRaiseAudit.setApply_status(1);
                     charityRaiseAudit.setApplyTime(new Date());
                     charityRaiseAuditService.insertCharityRaiseAudit(charityRaiseAudit);
 
@@ -145,6 +161,67 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             }
         }
         return AjaxResult.error().put("msg","上传失败");
+    }
+
+    private CharityUser queryCharityUserByUsername(String username) {
+        CharityUser charityUser = charityUserJMapper.selectOne(Wrappers
+                .lambdaQuery(CharityUser.class)
+                .eq(CharityUser::getUsername, username));
+        return charityUser;
+    }
+
+    /**
+     * 查询发布的公益募资活动详细信息和上传的证明信息以及审批信息
+     *
+     * @param raiseId
+     * @param username
+     * @return
+     */
+    @SneakyThrows
+    @Override
+    public AjaxResult getRaiseFundInfo(Long raiseId, String username) {
+        // 默认如果没有数据直接查询Redis读取缓存数据
+        String raise_fund_audit_value = redisCache.getCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + username);
+        HashMap result = JSONObject.parseObject(raise_fund_audit_value, HashMap.class);
+        if (raise_fund_audit_value != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("data",result);
+            return success;
+        }
+        // 多表联查当前的公益募资活动信息和审批信息
+        CharityUser charityUser = queryCharityUserByUsername(username);
+        MPJLambdaWrapper<CharityRaiseFund> lambdaWrapper = new MPJLambdaWrapper<CharityRaiseFund>()
+                .eq(CharityRaiseFund::getPromoterAddress, charityUser.getUserAddress())
+                .selectAll(CharityRaiseFund.class)
+                .select(
+                        CharityRaiseAudit::getRaiseId,
+                        CharityRaiseAudit::getApply_status,
+                        CharityRaiseAudit::getUsername,
+                        CharityRaiseAudit::getApplyTime,
+                        CharityRaiseAudit::getAuditTime
+                ).leftJoin(CharityRaiseAudit.class, CharityRaiseAudit::getRaiseId, CharityRaiseFund::getId);
+
+        RaiseFundAuditVo raiseFundAuditVo = raiseFundJMapper.selectJoinOne(RaiseFundAuditVo.class, lambdaWrapper);
+
+        // 调用查询区块链的信息 查询区块链的上传的证明信息
+        CharityControllerGetCertificateInfoDetailInputBO detailInputBO = new CharityControllerGetCertificateInfoDetailInputBO();
+        detailInputBO.set_raiseId(BigInteger.valueOf(raiseId));
+        CallResponse callResponse = charityControllerService.getCertificateInfoDetail(detailInputBO);
+        if (callResponse.getReturnMessage().equals("Success")) {
+            String data = JSONArray.parseArray(callResponse.getValues()).get(0).toString();
+            CertificateInfoVo certificateInfoVo = JSONObject.parseObject(data, CertificateInfoVo.class);
+
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("raise_info",raiseFundAuditVo);
+            hashMap.put("certificate_info",certificateInfoVo);
+
+            // 存储到redis缓存中 用户在第一次查询的时候是需要久一点获取数据，当用户第二次获取数据的时候可以直接从redis中读取缓存
+            redisCache.setCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + username,JSON.toJSONString(hashMap),5, TimeUnit.MINUTES);
+            AjaxResult success = AjaxResult.success();
+            success.put("data",hashMap);
+            return success;
+        }
+        return AjaxResult.error().put("msg","查询失败");
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

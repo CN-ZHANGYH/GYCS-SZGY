@@ -1,8 +1,7 @@
 package com.ruoyi.charity.mapper.mp;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.ruoyi.charity.domain.CharityRaiseAudit;
+import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

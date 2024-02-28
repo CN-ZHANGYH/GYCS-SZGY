@@ -61,7 +61,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键ID" align="center" prop="id" />
       <el-table-column label="募资活动ID" align="center" prop="raiseId" />
-      <el-table-column label="审核状态" align="center" prop="status" />
+      <el-table-column label="审核状态" align="center" prop="apply_status" />
       <el-table-column label="审核人" align="center" prop="username" />
       <el-table-column label="申请时间" align="center" prop="applyTime" width="180">
         <template #default="scope">
@@ -80,7 +80,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -145,7 +145,7 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    status: null,
+    apply_status: null,
     username: null,
   },
   rules: {
@@ -175,7 +175,7 @@ function reset() {
   form.value = {
     id: null,
     raiseId: null,
-    status: null,
+    apply_status: null,
     username: null,
     applyTime: null,
     auditTime: null

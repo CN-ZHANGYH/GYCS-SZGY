@@ -8,10 +8,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,6 +21,7 @@ public class RaiseFundController {
     private RaiseFundService fundService;
 
 
+
     /**
      * 发起公益募资接口
      * @param charityRaiseFund
@@ -34,10 +32,22 @@ public class RaiseFundController {
         return fundService.initiateRaiseFund(charityRaiseFund);
     }
 
-
+    /**
+     * 上传证明信息
+     * @param certificateInfoVo
+     * @return AjaxResult
+     */
     @PostMapping("/uploadCertificate")
     public AjaxResult uploadCertificate(@Valid @RequestBody CertificateInfoVo certificateInfoVo) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         return fundService.uploadCertificate(certificateInfoVo,loginUser.getUsername());
     }
+
+
+    @GetMapping("/info")
+    public AjaxResult getRaiseFundInfo(@RequestParam("raiseId") Long raiseId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.getRaiseFundInfo(raiseId,loginUser.getUsername());
+    }
+
 }

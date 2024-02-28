@@ -4,24 +4,24 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.charity.mapper.CharityRaiseAuditMapper;
-import com.ruoyi.charity.domain.CharityRaiseAudit;
+import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
 
 /**
  * 审核Service业务层处理
- * 
+ *
  * @author zyh
  * @date 2024-02-28
  */
 @Service
-public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService 
+public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 {
     @Autowired
     private CharityRaiseAuditMapper charityRaiseAuditMapper;
 
     /**
      * 查询审核
-     * 
+     *
      * @param id 审核主键
      * @return 审核
      */
@@ -33,7 +33,7 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 
     /**
      * 查询审核列表
-     * 
+     *
      * @param charityRaiseAudit 审核
      * @return 审核
      */
@@ -45,7 +45,7 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 
     /**
      * 新增审核
-     * 
+     *
      * @param charityRaiseAudit 审核
      * @return 结果
      */
@@ -57,7 +57,7 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 
     /**
      * 修改审核
-     * 
+     *
      * @param charityRaiseAudit 审核
      * @return 结果
      */
@@ -69,7 +69,7 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 
     /**
      * 批量删除审核
-     * 
+     *
      * @param ids 需要删除的审核主键
      * @return 结果
      */
@@ -81,7 +81,7 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
 
     /**
      * 删除审核信息
-     * 
+     *
      * @param id 审核主键
      * @return 结果
      */

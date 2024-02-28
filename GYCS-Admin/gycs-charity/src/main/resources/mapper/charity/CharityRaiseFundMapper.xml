@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.charity.mapper.CharityRaiseFundMapper">
-    
+
     <resultMap type="CharityRaiseFund" id="CharityRaiseFundResult">
         <result property="id"    column="id"    />
         <result property="title"    column="title"    />
@@ -25,12 +25,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCharityRaiseFundList" parameterType="CharityRaiseFund" resultMap="CharityRaiseFundResult">
         <include refid="selectCharityRaiseFundVo"/>
-        <where>  
+        <where>
             <if test="title != null  and title != ''"> and title = #{title}</if>
             <if test="promoterAddress != null  and promoterAddress != ''"> and promoter_address = #{promoterAddress}</if>
         </where>
     </select>
-    
+
     <select id="selectCharityRaiseFundById" parameterType="Long" resultMap="CharityRaiseFundResult">
         <include refid="selectCharityRaiseFundVo"/>
         where id = #{id}
@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteCharityRaiseFundByIds" parameterType="String">
-        delete from charity_raise_fund where id in 
+        delete from charity_raise_fund where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

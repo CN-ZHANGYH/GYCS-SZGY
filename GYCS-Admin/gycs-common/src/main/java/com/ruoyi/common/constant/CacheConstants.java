@@ -2,7 +2,7 @@ package com.ruoyi.common.constant;
 
 /**
  * 缓存的key 常量
- * 
+ *
  * @author ruoyi
  */
 public class CacheConstants
@@ -41,4 +41,9 @@ public class CacheConstants
      * 登录账户密码错误次数 redis key
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
+
+    /**
+     * 获取用户的公益募资详细信息以及上传证明的信息包括审批信息的redis key
+     */
+    public static final String RAISE_FUND_AUDIT_KEY = "raise_fund_audit:";
 }

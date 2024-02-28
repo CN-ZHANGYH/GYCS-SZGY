@@ -1,4 +1,4 @@
-package com.ruoyi.charity.domain;
+package com.ruoyi.charity.domain.dto;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 审核对象 charity_raise_audit
- * 
+ *
  * @author zyh
  * @date 2024-02-28
  */
@@ -26,7 +26,7 @@ public class CharityRaiseAudit extends BaseEntity
 
     /** 审核状态 */
     @Excel(name = "审核状态")
-    private Integer status;
+    private Integer apply_status;
 
     /** 审核人 */
     @Excel(name = "审核人")
@@ -42,57 +42,57 @@ public class CharityRaiseAudit extends BaseEntity
     @Excel(name = "审核时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date auditTime;
 
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setRaiseId(Long raiseId) 
+    public void setRaiseId(Long raiseId)
     {
         this.raiseId = raiseId;
     }
 
-    public Long getRaiseId() 
+    public Long getRaiseId()
     {
         return raiseId;
     }
-    public void setStatus(Integer status) 
+    public void setApply_status(Integer apply_status)
     {
-        this.status = status;
+        this.apply_status = apply_status;
     }
 
-    public Integer getStatus() 
+    public Integer getApply_status()
     {
-        return status;
+        return apply_status;
     }
-    public void setUsername(String username) 
+    public void setUsername(String username)
     {
         this.username = username;
     }
 
-    public String getUsername() 
+    public String getUsername()
     {
         return username;
     }
-    public void setApplyTime(Date applyTime) 
+    public void setApplyTime(Date applyTime)
     {
         this.applyTime = applyTime;
     }
 
-    public Date getApplyTime() 
+    public Date getApplyTime()
     {
         return applyTime;
     }
-    public void setAuditTime(Date auditTime) 
+    public void setAuditTime(Date auditTime)
     {
         this.auditTime = auditTime;
     }
 
-    public Date getAuditTime() 
+    public Date getAuditTime()
     {
         return auditTime;
     }
@@ -102,7 +102,7 @@ public class CharityRaiseAudit extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("raiseId", getRaiseId())
-            .append("status", getStatus())
+            .append("apply_status", getApply_status())
             .append("username", getUsername())
             .append("applyTime", getApplyTime())
             .append("auditTime", getAuditTime())

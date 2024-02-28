@@ -9,4 +9,5 @@ public interface RaiseFundService {
 
     AjaxResult uploadCertificate(CertificateInfoVo certificateInfoVo, String username);
 
+    AjaxResult getRaiseFundInfo(Long raiseId,String username);
 }
