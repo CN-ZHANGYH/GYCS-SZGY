@@ -10,6 +10,7 @@ import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.mapper.CharityUserJMapper;
+import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
 import com.ruoyi.charity.service.RaiseFundService;
@@ -42,6 +43,9 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Autowired
     private ICharityRaiseAuditService charityRaiseAuditService;
+
+    @Autowired
+    private RaiseAuditMapper raiseAuditMapper;
 
     /**
      * 用户发起公益募资业务
@@ -91,7 +95,6 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         return AjaxResult.error().put("msg","发起公益活动失败");
     }
 
-
     /**
      * 上传证明信息接口
      * @param certificateInfoVo
@@ -100,6 +103,11 @@ public class RaiseFundServiceImpl implements RaiseFundService {
      */
     @Override
     public AjaxResult uploadCertificate(CertificateInfoVo certificateInfoVo, String username) {
+
+        // 查询当前是否有审批 有则说明已经上传过了 需要提示已经上传证明
+        CharityRaiseAudit isRaiseAudit = raiseAuditMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
+                .eq(CharityRaiseAudit::getRaiseId, certificateInfoVo.getRaiseId()));
+        if (isRaiseAudit != null) return AjaxResult.error().put("msg","当前已经上传了证明");
 
         // 根据用户名查询用户的地址然后根据公益募资的活动编号和用户的区块链账户地址进行查询详细的信息
         // SELECT * FROM charity_raise_fund WHERE id = '19' and promoter_address = (SELECT user_address FROM charity_user WHERE username = 'mmm');
@@ -110,6 +118,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                 .eq(CharityRaiseFund::getId, certificateInfoVo.getRaiseId())
                 .eq(CharityRaiseFund::getPromoterAddress, charityUser.getUserAddress()));
 
+        // 如果查询的结果不是空的说明已经发起了公益募资活动
         if (isRaiseFund != null) {
             // 如果不是空的 直接进行证明上链 然后需要进行审批
             CharityControllerUploadCertificateInputBO certificateInputBO = new CharityControllerUploadCertificateInputBO();

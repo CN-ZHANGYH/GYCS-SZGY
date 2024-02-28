@@ -181,7 +181,7 @@ function getCode() {
   getCodeImg().then(res => {
     captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img;
+      codeUrl.value = res.img;  // "data:image/gif;base64," +
       loginForm.value.uuid = res.uuid;
     }
   });
@@ -223,6 +223,8 @@ getCookie();
 .login-code-img {
   height: 36px;
   width: 75px;
+  border-radius: 5px;
+  border: #1c84c6 1px solid;
 }
 </style>
 

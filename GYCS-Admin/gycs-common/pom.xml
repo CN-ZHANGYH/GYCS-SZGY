@@ -157,6 +157,11 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!-- 自己加的验证码EasyCaptcha依赖  -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.yulichang</groupId>
             <artifactId>mybatis-plus-join-boot-starter</artifactId>

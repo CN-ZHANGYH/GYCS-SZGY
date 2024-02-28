@@ -215,6 +215,13 @@
                 <version>1.4.5</version>
             </dependency>
 
+            <!-- 自己加的验证码EasyCaptcha依赖  -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -6,6 +6,11 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+
+import com.wf.captcha.ArithmeticCaptcha;
+import com.wf.captcha.ChineseCaptcha;
+import com.wf.captcha.SpecCaptcha;
+import com.wf.captcha.base.Captcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,38 +62,27 @@ public class CaptchaController
         String uuid = IdUtils.simpleUUID();
         String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
 
-        String capStr = null, code = null;
-        BufferedImage image = null;
-
         // 生成验证码
         String captchaType = RuoYiConfig.getCaptchaType();
-        if ("math".equals(captchaType))
-        {
-            String capText = captchaProducerMath.createText();
-            capStr = capText.substring(0, capText.lastIndexOf("@"));
-            code = capText.substring(capText.lastIndexOf("@") + 1);
-            image = captchaProducerMath.createImage(capStr);
+
+        //验证码EasyCaptcha工具
+        Captcha captcha = null;
+        if ("math".equals(captchaType)) {//math 算术验证
+            //创建算术验证码
+            captcha = new ArithmeticCaptcha(115, 42);
+        } else if ("chinese".equals(captchaType)) {//chinese 中文验证
+            //中文验证
+            captcha = new ChineseCaptcha(115, 42);
+        } else if ("char".equals(captchaType)) {//char 字符验证
+            //创建字符验证码
+            captcha = new SpecCaptcha(115,42);
         }
-        else if ("char".equals(captchaType))
-        {
-            capStr = code = captchaProducer.createText();
-            image = captchaProducer.createImage(capStr);
-        }
+        // 得到验证码的值
+        String code = captcha.text();
 
         redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
-        // 转换流信息写出
-        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
-        try
-        {
-            ImageIO.write(image, "jpg", os);
-        }
-        catch (IOException e)
-        {
-            return AjaxResult.error(e.getMessage());
-        }
-
         ajax.put("uuid", uuid);
-        ajax.put("img", Base64.encode(os.toByteArray()));
+        ajax.put("img", captcha.toBase64());
         return ajax;
     }
 }
