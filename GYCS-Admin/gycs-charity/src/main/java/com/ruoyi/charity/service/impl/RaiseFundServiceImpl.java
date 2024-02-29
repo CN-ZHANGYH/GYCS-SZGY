@@ -24,6 +24,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
 import org.apache.poi.xssf.model.MapInfo;
+import org.aspectj.weaver.loadtime.Aj;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -339,6 +340,18 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             throw new RuntimeException(e);
         }
         return AjaxResult.error().put("msg","投票失败");
+    }
+
+    @Override
+    public AjaxResult getRaiseFundDetail(Long raiseId) {
+        CharityRaiseFund charityRaiseFund = raiseFundMapper.selectById(raiseId);
+        if (charityRaiseFund != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("data",charityRaiseFund);
+            success.put("msg","查询成功");
+            return  success;
+        }
+        return AjaxResult.error().put("msg","查询失败");
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

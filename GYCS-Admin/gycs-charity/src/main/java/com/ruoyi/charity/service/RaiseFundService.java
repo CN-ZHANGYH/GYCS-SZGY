@@ -16,4 +16,8 @@ public interface RaiseFundService {
     AjaxResult getRaiseFundVoteStatus(Long raiseId, String username);
 
     AjaxResult voteOfRaiseFund(Long raiseId, Boolean status, String username);
+
+    AjaxResult getRaiseFundDetail(Long raiseId);
+
+
 }

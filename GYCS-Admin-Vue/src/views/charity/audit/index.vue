@@ -75,6 +75,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
+          <el-button link type="primary" icon="View" @click="HandleCertificateInfo(scope.row)" >查看</el-button>
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:audit:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['charity:audit:remove']">删除</el-button>
         </template>
@@ -122,11 +123,66 @@
         </div>
       </template>
     </el-dialog>
+
+
+    <el-drawer
+        v-model="isInfoView"
+        title="证明信息审核"
+        direction="ltr"
+        size="40%"
+    >
+      <div style="margin-left: 5%">
+        <div class="card">
+          <el-descriptions title="公益募资活动详细信息" column="1">
+            <el-descriptions-item label="公益名称">
+              <template #label>
+                <div class="cell-item">
+                  <el-icon :style="iconStyle">
+                  </el-icon>
+                  Username
+                </div>
+              </template>
+              {{raiseFundInfo.title}}</el-descriptions-item>
+            <el-descriptions-item label="描述信息">{{raiseFundInfo.description}}</el-descriptions-item>
+            <el-descriptions-item label="发起时间">{{raiseFundInfo.createTime}}</el-descriptions-item>
+            <el-descriptions-item label="发起人">
+              <el-tag size="small">{{raiseFundInfo.promoterAddress}}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="开始时间">{{raiseFundInfo.startTime}}</el-descriptions-item>
+            <el-descriptions-item label="结束时间">{{raiseFundInfo.endTime}}</el-descriptions-item>
+            <el-descriptions-item label="总共金额">{{raiseFundInfo.totalAmount}}</el-descriptions-item>
+            <el-descriptions-item label="已完成金额">{{raiseFundInfo.overAmount}}</el-descriptions-item>
+            <el-descriptions-item label="参与人数">{{raiseFundInfo.totalPeople}}</el-descriptions-item>
+            <el-descriptions-item label="提现金额">{{raiseFundInfo.withdrawAmount}}</el-descriptions-item>
+          </el-descriptions>
+        </div>
+
+        <div class="card" style="margin-top: 30px">
+          <el-descriptions title="公益募资活动详细信息" column="1">
+            <el-descriptions-item label="姓名">{{certificateInfo.name}}</el-descriptions-item>
+            <el-descriptions-item label="身份证号码">{{certificateInfo.cardId}}</el-descriptions-item>
+            <el-descriptions-item label="家庭地址">{{certificateInfo.address}}</el-descriptions-item>
+            <el-descriptions-item label="联系人">
+              <el-tag size="small">{{certificateInfo.phone}}</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="第三方认证">
+              <img src="@/assets/images/img.png" style="width: 200px;height: 100px;border-radius: 5px;">
+            </el-descriptions-item>
+            <el-descriptions-item label="申请的原因">
+              <img src="@/assets/images/img.png"  style="width: 200px;height: 100px;border-radius: 5px;">
+            </el-descriptions-item>
+          </el-descriptions>
+        </div>
+      </div>
+    </el-drawer>
+
   </div>
 </template>
 
 <script setup name="Audit">
 import { listAudit, getAudit, delAudit, addAudit, updateAudit } from "@/api/charity/audit";
+import {getCertificateInfo, getRaiseFundDetail} from "@/api/charity/raiseFund.js";
+import {Ticket} from "@element-plus/icons-vue";
 
 const { proxy } = getCurrentInstance();
 
@@ -139,6 +195,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
+const isInfoView = ref(false)
 
 const data = reactive({
   form: {},
@@ -151,8 +208,18 @@ const data = reactive({
   rules: {
   }
 });
-
+const size = ref('')
 const { queryParams, form, rules } = toRefs(data);
+const iconStyle = computed(() => {
+  const marginMap = {
+    large: '8px',
+    default: '6px',
+    small: '4px',
+  }
+  return {
+    marginRight: marginMap[size.value] || marginMap.default,
+  }
+})
 
 /** 查询审核列表 */
 function getList() {
@@ -259,5 +326,47 @@ function handleExport() {
   }, `audit_${new Date().getTime()}.xlsx`)
 }
 
+
+
+const raiseFundInfo = ref({})
+const certificateInfo = ref({})
+/** 查看审批信息对应的上传证明信息*/
+function HandleCertificateInfo(row) {
+  isInfoView.value = true
+  getRaiseFundDetail({raiseId: row.raiseId}).then(res => {
+    if (res.code == 200) {
+      raiseFundInfo.value = res.data
+      console.log(res.data)
+    }
+  })
+
+  getCertificateInfo({raiseId: row.raiseId}).then(res => {
+    if (res.code == 200) {
+      certificateInfo.value = res.data
+      console.log(res.data)
+    }
+  })
+
+}
+
 getList();
 </script>
+
+
+<style scoped>
+.card {
+  cursor: pointer;
+  width: 600px;
+  height: 450px;
+  background: rgb(255, 255, 255);
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 255, .2);
+  transition: all .2s;
+  box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+  padding: 20px 30px;
+}
+
+.card:hover {
+  box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, .2);
+}
+</style>

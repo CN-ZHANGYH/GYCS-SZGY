@@ -56,6 +56,13 @@ public class RaiseFundController {
     }
 
 
+    @GetMapping("/detail")
+    public AjaxResult getRaiseFundDetail(@RequestParam("raiseId") Long raiseId) {
+        return fundService.getRaiseFundDetail(raiseId);
+    }
+
+
+
     @GetMapping("/getCertificateInfo")
     public AjaxResult getCertificateInfo(@RequestParam("raiseId") Long raiseId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
