@@ -10,4 +10,10 @@ public interface RaiseFundService {
     AjaxResult uploadCertificate(CertificateInfoVo certificateInfoVo, String username);
 
     AjaxResult getRaiseFundInfo(Long raiseId,String username);
+
+    AjaxResult getCertificateInfo(Long raiseId,String username);
+
+    AjaxResult getRaiseFundVoteStatus(Long raiseId, String username);
+
+    AjaxResult voteOfRaiseFund(Long raiseId, Boolean status, String username);
 }

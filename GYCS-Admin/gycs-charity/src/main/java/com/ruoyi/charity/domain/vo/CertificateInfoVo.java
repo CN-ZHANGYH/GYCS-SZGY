@@ -4,9 +4,10 @@ package com.ruoyi.charity.domain.vo;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
-public class CertificateInfoVo {
+public class CertificateInfoVo implements Serializable {
 
 
     @NotNull(message = "公益募资活动编号不能为空")

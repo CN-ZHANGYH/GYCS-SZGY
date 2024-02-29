@@ -44,10 +44,36 @@ public class RaiseFundController {
     }
 
 
+    /**
+     * 获取公益募资信息和上传证明信息以及审批的信息
+     * @param raiseId
+     * @return AjaxResult
+     */
     @GetMapping("/info")
     public AjaxResult getRaiseFundInfo(@RequestParam("raiseId") Long raiseId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         return fundService.getRaiseFundInfo(raiseId,loginUser.getUsername());
+    }
+
+
+    @GetMapping("/getCertificateInfo")
+    public AjaxResult getCertificateInfo(@RequestParam("raiseId") Long raiseId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.getCertificateInfo(raiseId,loginUser.getUsername());
+    }
+
+
+    @GetMapping("/getVoteStatus")
+    public AjaxResult getRaiseFundVoteStatus(@RequestParam("raiseId") Long raiseId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.getRaiseFundVoteStatus(raiseId,loginUser.getUsername());
+    }
+
+
+    @PostMapping("/vote")
+    public AjaxResult voteOfRaiseFund(@RequestParam("raiseId") Long raiseId,@RequestParam("status") Boolean status) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.voteOfRaiseFund(raiseId,status,loginUser.getUsername());
     }
 
 }

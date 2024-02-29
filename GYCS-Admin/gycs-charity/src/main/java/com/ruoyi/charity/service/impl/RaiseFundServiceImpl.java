@@ -5,14 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.ruoyi.charity.domain.bo.CharityControllerGetCertificateInfoDetailInputBO;
+import com.ruoyi.charity.domain.bo.*;
 import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
-import com.ruoyi.charity.domain.bo.CharityControllerInitiateFundRaisingInputBO;
-import com.ruoyi.charity.domain.bo.CharityControllerUploadCertificateInputBO;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.RaiseFundAuditVo;
+import com.ruoyi.charity.domain.vo.VoteInfo;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
 import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
@@ -24,8 +23,7 @@ import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
-import org.aspectj.weaver.AdviceKind;
-import org.aspectj.weaver.ast.Var;
+import org.apache.poi.xssf.model.MapInfo;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
@@ -222,6 +219,126 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             return success;
         }
         return AjaxResult.error().put("msg","查询失败");
+    }
+
+    /**
+     * 根据ID查询对应公益活动的上传证明信息
+     *
+     * @param raiseId
+     * @param username
+     * @return AjaxResult
+     */
+    @Override
+    public AjaxResult getCertificateInfo(Long raiseId, String username) {
+        // 默认先查询redis的缓存中是否有该数据
+        CertificateInfoVo certificateInfoVoResult = redisCache.getCacheObject(CacheConstants.CERTIFICATE_INFO_KEY + username);
+        if (certificateInfoVoResult != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("data",certificateInfoVoResult);
+            success.put("msg","查询成功");
+            return success;
+        }
+
+        // 调用区块链查询当前的上传证明信息
+        CharityControllerGetCertificateInfoDetailInputBO detailInputBO = new CharityControllerGetCertificateInfoDetailInputBO();
+        detailInputBO.set_raiseId(BigInteger.valueOf(raiseId));
+        try
+        {
+            CallResponse callResponse = charityControllerService.getCertificateInfoDetail(detailInputBO);
+            if (callResponse.getReturnMessage().equals("Success")) {
+                String data = JSONArray.parseArray(callResponse.getValues()).get(0).toString();
+                CertificateInfoVo certificateInfoVo = JSONObject.parseObject(data, CertificateInfoVo.class);
+
+                // 第一次查询直接存储到Redis缓存中
+                redisCache.setCacheObject(CacheConstants.CERTIFICATE_INFO_KEY + username,certificateInfoVo,5,TimeUnit.MINUTES);
+                AjaxResult success = AjaxResult.success();
+                success.put("data",certificateInfoVo);
+                success.put("msg","查询成功");
+                return success;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return AjaxResult.error().put("msg","查询失败");
+
+    }
+
+
+    /**
+     * 查询当前的公益募资活动的投票状态和详细信息
+     * @param raiseId
+     * @param username
+     * @return
+     */
+    @Override
+    public AjaxResult getRaiseFundVoteStatus(Long raiseId, String username) {
+
+        // 先从redis中进行查询
+        VoteInfo voteInfoResult = redisCache.getCacheObject(CacheConstants.VOTE_INFO + username);
+        if (voteInfoResult != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("data",voteInfoResult);
+            success.put("msg","查询成功");
+            return success;
+        }
+
+        // 如果redis中没有则需要重新查询区块链上的数据
+        CharityControllerGetVoteInfoInputBO infoInputBO = new CharityControllerGetVoteInfoInputBO();
+        infoInputBO.set_raiseId(BigInteger.valueOf(raiseId));
+
+        try
+        {
+            CallResponse callResponse = charityControllerService.getVoteInfo(infoInputBO);
+            if (callResponse.getReturnMessage().equals("Success")) {
+
+                JSONArray result = JSONArray.parseArray(callResponse.getValues());
+                VoteInfo voteInfo = new VoteInfo();
+                voteInfo.setIsYes(result.getBigInteger(0));
+                voteInfo.setIsNo(result.getBigInteger(1));
+                voteInfo.setIsTrue(result.getBoolean(2));
+
+                // 存储到redis中
+                redisCache.setCacheObject(CacheConstants.VOTE_INFO + username,voteInfo,5,TimeUnit.MINUTES);
+                AjaxResult success = AjaxResult.success();
+                success.put("data",voteInfo);
+                success.put("msg","查询成功");
+                return success;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return AjaxResult.error().put("msg","查询失败");
+    }
+
+    /**
+     * 参与投票
+     * @param raiseId
+     * @param status
+     * @param username
+     * @return
+     */
+    @Override
+    public AjaxResult voteOfRaiseFund(Long raiseId, Boolean status, String username) {
+        CharityUser charityUser = queryCharityUserByUsername(username);
+
+        CharityControllerVoteOfRaiseFundInputBO voteInfo = new CharityControllerVoteOfRaiseFundInputBO();
+        voteInfo.set_raiseId(BigInteger.valueOf(raiseId));
+        voteInfo.set_flag(status);
+        voteInfo.set_userAddress(charityUser.getUserAddress());
+        try
+        {
+            TransactionResponse transactionResponse = charityControllerService.voteOfRaiseFund(voteInfo);
+            if (transactionResponse.getReturnMessage().equals("Success")) {
+                Boolean isStatus = (Boolean) JSONArray.parseArray(transactionResponse.getValues()).get(0);
+                if (isStatus){
+                    return AjaxResult.success().put("msg","投票成功");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return AjaxResult.error().put("msg","投票失败");
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

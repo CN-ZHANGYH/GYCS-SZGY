@@ -46,4 +46,16 @@ public class CacheConstants
      * 获取用户的公益募资详细信息以及上传证明的信息包括审批信息的redis key
      */
     public static final String RAISE_FUND_AUDIT_KEY = "raise_fund_audit:";
+
+
+    /**
+     * 获取用户的公益募资的上传证明的redis key
+     */
+    public static final String CERTIFICATE_INFO_KEY =  "certificate_info:";
+
+
+    /**
+     * 获取公益募资活动的投票情况redis key
+     */
+    public static final String VOTE_INFO = "vote_info:";
 }
