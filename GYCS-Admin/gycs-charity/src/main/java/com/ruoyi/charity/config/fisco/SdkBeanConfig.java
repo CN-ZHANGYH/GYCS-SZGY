@@ -1,4 +1,4 @@
-package com.ruoyi.charity.config;
+package com.ruoyi.charity.config.fisco;
 
 import java.math.BigInteger;
 import java.util.Arrays;

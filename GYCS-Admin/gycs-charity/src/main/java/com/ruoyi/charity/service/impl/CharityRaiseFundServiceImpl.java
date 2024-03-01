@@ -66,6 +66,7 @@ public class CharityRaiseFundServiceImpl implements ICharityRaiseFundService
     @Override
     public int updateCharityRaiseFund(CharityRaiseFund charityRaiseFund)
     {
+        System.out.println(charityRaiseFund);
         return charityRaiseFundMapper.updateCharityRaiseFund(charityRaiseFund);
     }
 

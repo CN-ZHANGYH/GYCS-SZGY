@@ -96,7 +96,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             charityRaiseFund.setId(result.getLongValue(0));
             charityRaiseFund.setCreateTime(sdf.parse(BlockTimeUtil.convertToDateTime(result.getLongValue(3))));
-            charityRaiseFund.setStatus(result.getLongValue(5));
+            charityRaiseFund.setStatus(result.getBigInteger(5));
             charityRaiseFund.setTotalPeople(BigInteger.valueOf(result.getLongValue(8)));
             charityRaiseFund.setOverAmount(BigInteger.valueOf(result.getLongValue(9)));
             charityRaiseFund.setWithdrawAmount(BigInteger.valueOf(result.getLongValue(10)));
@@ -147,7 +147,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                     // 如果交易成功就添加一条申请记录到审核中
                     CharityRaiseAudit charityRaiseAudit = new CharityRaiseAudit();
                     charityRaiseAudit.setRaiseId(certificateInfoVo.getRaiseId());
-                    charityRaiseAudit.setApply_status(1);
+                    charityRaiseAudit.setApplyStatus(1);
                     charityRaiseAudit.setApplyTime(new Date());
                     charityRaiseAuditService.insertCharityRaiseAudit(charityRaiseAudit);
 
@@ -193,7 +193,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                 .selectAll(CharityRaiseFund.class)
                 .select(
                         CharityRaiseAudit::getRaiseId,
-                        CharityRaiseAudit::getApply_status,
+                        CharityRaiseAudit::getApplyStatus,
                         CharityRaiseAudit::getUsername,
                         CharityRaiseAudit::getApplyTime,
                         CharityRaiseAudit::getAuditTime

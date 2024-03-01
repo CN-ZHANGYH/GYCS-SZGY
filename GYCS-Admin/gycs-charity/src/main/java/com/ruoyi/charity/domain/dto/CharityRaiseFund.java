@@ -63,7 +63,7 @@ public class CharityRaiseFund
     /** 活动状态 */
     @Excel(name = "活动状态")
     @TableField(value = "status")
-    private Long status;
+    private BigInteger status;
 
 
 

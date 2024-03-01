@@ -18,22 +18,13 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="Plus"
-          @click="handleAdd"
-          v-hasPermi="['charity:audit:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="success"
           plain
           icon="Edit"
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['charity:audit:edit']"
-        >修改</el-button>
+        >审批</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -59,9 +50,14 @@
 
     <el-table v-loading="loading" :data="auditList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键ID" align="center" prop="id" />
-      <el-table-column label="募资活动ID" align="center" prop="raiseId" />
-      <el-table-column label="审核状态" align="center" prop="apply_status" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="募资活动编号" align="center" prop="raiseId" />
+      <el-table-column label="审核状态" align="center" prop="applyStatus">
+        <template #default="scope">
+          <el-tag v-if="scope.row.applyStatus == 1" type="danger" effect="dark">待审核</el-tag>
+          <el-tag v-if="scope.row.applyStatus == 2" type="success" effect="dark">上链</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="审核人" align="center" prop="username" />
       <el-table-column label="申请时间" align="center" prop="applyTime" width="180">
         <template #default="scope">
@@ -76,7 +72,7 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="View" @click="HandleCertificateInfo(scope.row)" >查看</el-button>
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:audit:edit']">修改</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:audit:edit']">审核</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['charity:audit:remove']">删除</el-button>
         </template>
       </el-table-column>
@@ -92,9 +88,14 @@
 
     <!-- 添加或修改审核对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+      <el-steps :active="3" style="margin-bottom: 20px;padding: 20px 20px">
+        <el-step title="审核信息" :icon="View" />
+        <el-step title="确认审核" :icon="CircleCheck" />
+        <el-step title="审核通过" :icon="Paperclip" />
+      </el-steps>
       <el-form ref="auditRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="募资活动ID" prop="raiseId">
-          <el-input v-model="form.raiseId" placeholder="请输入募资活动ID" />
+        <el-form-item label="活动ID" prop="raiseId">
+          <el-input v-model="form.raiseId" placeholder="请输入募资活动ID" disabled/>
         </el-form-item>
         <el-form-item label="审核人" prop="username">
           <el-input v-model="form.username" placeholder="请输入审核人" />
@@ -115,6 +116,12 @@
             placeholder="请选择审核时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="审核状态" prop="apply_status">
+          <el-radio-group v-model="apply_status" size="large">
+            <el-radio-button label="通过"/>
+            <el-radio-button label="不通过"/>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -131,18 +138,11 @@
         direction="ltr"
         size="40%"
     >
+      <el-alert title="如下是需要进行审批的公益活动信息以及上传证明资料" type="success" :closable="false" style="margin-bottom: 10px"/>
       <div style="margin-left: 5%">
         <div class="card">
-          <el-descriptions title="公益募资活动详细信息" column="1">
-            <el-descriptions-item label="公益名称">
-              <template #label>
-                <div class="cell-item">
-                  <el-icon :style="iconStyle">
-                  </el-icon>
-                  Username
-                </div>
-              </template>
-              {{raiseFundInfo.title}}</el-descriptions-item>
+          <el-descriptions title="公益募资活动详细信息" column="1" border>
+            <el-descriptions-item label="公益名称">{{raiseFundInfo.title}}</el-descriptions-item>
             <el-descriptions-item label="描述信息">{{raiseFundInfo.description}}</el-descriptions-item>
             <el-descriptions-item label="发起时间">{{raiseFundInfo.createTime}}</el-descriptions-item>
             <el-descriptions-item label="发起人">
@@ -158,7 +158,7 @@
         </div>
 
         <div class="card" style="margin-top: 30px">
-          <el-descriptions title="公益募资活动详细信息" column="1">
+          <el-descriptions title="公益募资活动详细信息" column="1" border>
             <el-descriptions-item label="姓名">{{certificateInfo.name}}</el-descriptions-item>
             <el-descriptions-item label="身份证号码">{{certificateInfo.cardId}}</el-descriptions-item>
             <el-descriptions-item label="家庭地址">{{certificateInfo.address}}</el-descriptions-item>
@@ -182,7 +182,7 @@
 <script setup name="Audit">
 import { listAudit, getAudit, delAudit, addAudit, updateAudit } from "@/api/charity/audit";
 import {getCertificateInfo, getRaiseFundDetail} from "@/api/charity/raiseFund.js";
-import {Ticket} from "@element-plus/icons-vue";
+import {CircleCheck, View,Paperclip} from "@element-plus/icons-vue";
 
 const { proxy } = getCurrentInstance();
 
@@ -196,7 +196,7 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
 const isInfoView = ref(false)
-
+const apply_status = ref("通过")
 const data = reactive({
   form: {},
   queryParams: {
@@ -210,16 +210,6 @@ const data = reactive({
 });
 const size = ref('')
 const { queryParams, form, rules } = toRefs(data);
-const iconStyle = computed(() => {
-  const marginMap = {
-    large: '8px',
-    default: '6px',
-    small: '4px',
-  }
-  return {
-    marginRight: marginMap[size.value] || marginMap.default,
-  }
-})
 
 /** 查询审核列表 */
 function getList() {
@@ -242,7 +232,7 @@ function reset() {
   form.value = {
     id: null,
     raiseId: null,
-    apply_status: null,
+    applyStatus: null,
     username: null,
     applyTime: null,
     auditTime: null
@@ -292,6 +282,11 @@ function submitForm() {
   proxy.$refs["auditRef"].validate(valid => {
     if (valid) {
       if (form.value.id != null) {
+        if (apply_status.value == "通过"){
+          form.value.applyStatus = 2
+        }else if (apply_status.value == "不通过") {
+          form.value.applyStatus = 1
+        }
         updateAudit(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
@@ -357,7 +352,7 @@ getList();
 .card {
   cursor: pointer;
   width: 600px;
-  height: 450px;
+  height: 500px;
   background: rgb(255, 255, 255);
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 255, .2);
@@ -368,5 +363,17 @@ getList();
 
 .card:hover {
   box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, .2);
+}
+
+
+.el-descriptions {
+  margin-top: 20px;
+}
+.cell-item {
+  display: flex;
+  align-items: center;
+}
+.margin-top {
+  margin-top: 20px;
 }
 </style>

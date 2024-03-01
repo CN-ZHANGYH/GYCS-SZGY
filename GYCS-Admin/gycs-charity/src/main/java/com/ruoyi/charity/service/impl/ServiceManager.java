@@ -1,6 +1,6 @@
 package com.ruoyi.charity.service.impl;
 
-import com.ruoyi.charity.config.SystemConfig;
+import com.ruoyi.charity.config.fisco.SystemConfig;
 import java.lang.Exception;
 import java.lang.String;
 import java.util.Arrays;

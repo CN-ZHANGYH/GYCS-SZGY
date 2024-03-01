@@ -88,6 +88,7 @@ public class CharityRaiseFundController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody CharityRaiseFund charityRaiseFund)
     {
+        System.out.println(charityRaiseFund);
         return toAjax(charityRaiseFundService.updateCharityRaiseFund(charityRaiseFund));
     }
 

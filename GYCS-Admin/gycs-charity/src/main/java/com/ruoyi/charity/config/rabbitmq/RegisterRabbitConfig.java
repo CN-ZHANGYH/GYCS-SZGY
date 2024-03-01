@@ -1,4 +1,4 @@
-package com.ruoyi.charity.config;
+package com.ruoyi.charity.config.rabbitmq;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
