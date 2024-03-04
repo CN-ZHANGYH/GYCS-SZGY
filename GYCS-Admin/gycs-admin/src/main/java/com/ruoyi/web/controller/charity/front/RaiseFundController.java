@@ -3,10 +3,12 @@ package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
+import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
+import org.bouncycastle.jcajce.provider.symmetric.util.PBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +58,7 @@ public class RaiseFundController {
     }
 
 
-    @GetMapping("/detail")
+    @GetMapping("detail")
     public AjaxResult getRaiseFundDetail(@RequestParam("raiseId") Long raiseId) {
         return fundService.getRaiseFundDetail(raiseId);
     }
@@ -81,6 +83,12 @@ public class RaiseFundController {
     public AjaxResult voteOfRaiseFund(@RequestParam("raiseId") Long raiseId,@RequestParam("status") Boolean status) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         return fundService.voteOfRaiseFund(raiseId,status,loginUser.getUsername());
+    }
+
+
+    @PostMapping("/donation")
+    public AjaxResult donation(@Valid @RequestBody DonatedFundVo donatedFundVo){
+        return fundService.donation(donatedFundVo);
     }
 
 }

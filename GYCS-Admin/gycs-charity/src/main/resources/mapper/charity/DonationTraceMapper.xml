@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.charity.mapper.DonationTraceMapper">
-    
+
     <resultMap type="DonationTrace" id="DonationTraceResult">
         <result property="donationId"    column="donation_id"    />
         <result property="donorAddress"    column="donor_address"    />
@@ -12,28 +12,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="transType"    column="trans_type"    />
         <result property="isDonation"    column="is_donation"    />
         <result property="source"    column="source"    />
-        <result property="desc"    column="desc"    />
+        <result property="description"    column="description"    />
         <result property="destAddress"    column="dest_address"    />
         <result property="raiseId"    column="raise_id"    />
     </resultMap>
 
     <sql id="selectDonationTraceVo">
-        select donation_id, donor_address, amount, trans_time, trans_type, is_donation, source, desc, dest_address, raise_id from charity_donation
+        select donation_id, donor_address, amount, trans_time, trans_type, is_donation, source, description, dest_address, raise_id from charity_donation
     </sql>
 
     <select id="selectDonationTraceList" parameterType="DonationTrace" resultMap="DonationTraceResult">
         <include refid="selectDonationTraceVo"/>
-        <where>  
+        <where>
             <if test="donorAddress != null  and donorAddress != ''"> and donor_address = #{donorAddress}</if>
             <if test="amount != null "> and amount = #{amount}</if>
         </where>
     </select>
-    
+
     <select id="selectDonationTraceByDonationId" parameterType="Long" resultMap="DonationTraceResult">
         <include refid="selectDonationTraceVo"/>
         where donation_id = #{donationId}
     </select>
-        
+
     <insert id="insertDonationTrace" parameterType="DonationTrace">
         insert into charity_donation
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transType != null">trans_type,</if>
             <if test="isDonation != null">is_donation,</if>
             <if test="source != null">source,</if>
-            <if test="desc != null">desc,</if>
+            <if test="description != null">description,</if>
             <if test="destAddress != null">dest_address,</if>
             <if test="raiseId != null">raise_id,</if>
          </trim>
@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transType != null">#{transType},</if>
             <if test="isDonation != null">#{isDonation},</if>
             <if test="source != null">#{source},</if>
-            <if test="desc != null">#{desc},</if>
+            <if test="description != null">#{description},</if>
             <if test="destAddress != null">#{destAddress},</if>
             <if test="raiseId != null">#{raiseId},</if>
          </trim>
@@ -71,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transType != null">trans_type = #{transType},</if>
             <if test="isDonation != null">is_donation = #{isDonation},</if>
             <if test="source != null">source = #{source},</if>
-            <if test="desc != null">desc = #{desc},</if>
+            <if test="description != null">description = #{description},</if>
             <if test="destAddress != null">dest_address = #{destAddress},</if>
             <if test="raiseId != null">raise_id = #{raiseId},</if>
         </trim>
@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteDonationTraceByDonationIds" parameterType="String">
-        delete from charity_donation where donation_id in 
+        delete from charity_donation where donation_id in
         <foreach item="donationId" collection="array" open="(" separator="," close=")">
             #{donationId}
         </foreach>
