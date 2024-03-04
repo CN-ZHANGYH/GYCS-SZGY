@@ -9,17 +9,20 @@ import com.ruoyi.charity.domain.bo.*;
 import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.dto.CharityUser;
-import com.ruoyi.charity.domain.vo.CertificateInfoVo;
-import com.ruoyi.charity.domain.vo.RaiseFundAuditVo;
-import com.ruoyi.charity.domain.vo.VoteInfo;
+import com.ruoyi.charity.domain.dto.DonationTrace;
+import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
+import com.ruoyi.charity.mapper.mp.DonationMapper;
 import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
+import com.ruoyi.charity.service.ICharityRaiseFundService;
+import com.ruoyi.charity.service.IDonationTraceService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.utils.BlockTimeUtil;
 import com.ruoyi.common.constant.CacheConstants;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
@@ -27,13 +30,17 @@ import org.apache.poi.xssf.model.MapInfo;
 import org.aspectj.weaver.loadtime.Aj;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -62,6 +69,15 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private IDonationTraceService donationTraceService;
+
+    @Autowired
+    private DonationMapper donationMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 用户发起公益募资业务
@@ -293,11 +309,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             CallResponse callResponse = charityControllerService.getVoteInfo(infoInputBO);
             if (callResponse.getReturnMessage().equals("Success")) {
 
-                JSONArray result = JSONArray.parseArray(callResponse.getValues());
-                VoteInfo voteInfo = new VoteInfo();
-                voteInfo.setIsYes(result.getBigInteger(0));
-                voteInfo.setIsNo(result.getBigInteger(1));
-                voteInfo.setIsTrue(result.getBoolean(2));
+                VoteInfo voteInfo = VoteInfoByCallResponse(callResponse);
 
                 // 存储到redis中
                 redisCache.setCacheObject(CacheConstants.VOTE_INFO + username,voteInfo,5,TimeUnit.MINUTES);
@@ -310,6 +322,15 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             throw new RuntimeException(e);
         }
         return AjaxResult.error().put("msg","查询失败");
+    }
+
+    private static VoteInfo VoteInfoByCallResponse(CallResponse callResponse) {
+        JSONArray result = JSONArray.parseArray(callResponse.getValues());
+        VoteInfo voteInfo = new VoteInfo();
+        voteInfo.setIsYes(result.getBigInteger(0));
+        voteInfo.setIsNo(result.getBigInteger(1));
+        voteInfo.setIsTrue(result.getBoolean(2));
+        return voteInfo;
     }
 
     /**
@@ -352,6 +373,71 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             return  success;
         }
         return AjaxResult.error().put("msg","查询失败");
+    }
+
+
+    @Override
+    public AjaxResult donation(DonatedFundVo donatedFundVo) {
+        // 直接进入缓存读取数据查询是否已经被审核和是否已经被票选通过
+        CallResponse callResponse = null;
+        VoteInfo voteInfo = null;
+        CharityRaiseAudit charityRaiseAudit = null;
+
+        Map<String, Object> cacheMap = redisCache.getCacheMap(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId());
+        if (!cacheMap.isEmpty()) {
+            charityRaiseAudit = (CharityRaiseAudit) cacheMap.get("charityRaiseAudit");
+            voteInfo = (VoteInfo) cacheMap.get("VoteInfo");
+
+            if (charityRaiseAudit.getApplyStatus() != 2) {
+                return AjaxResult.error().put("msg","当前的公益活动未审核通过");
+            }
+
+            if (!voteInfo.getIsTrue()){
+                return AjaxResult.error().put("msg","当前公益活动未通过票选");
+            }
+        }
+        // 查询当前捐款的公益活动是否被审核
+        charityRaiseAudit = raiseAuditMapper
+                .selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
+                        .eq(CharityRaiseAudit::getRaiseId, donatedFundVo.get_raiseId()));
+
+        if (charityRaiseAudit.getApplyStatus() != 2) {
+            return AjaxResult.error().put("msg","当前的公益活动未审核通过");
+        }
+
+        // 查询当前的公益活动是否已经投票成功
+        CharityControllerGetVoteInfoInputBO voteInfoInputBO = new CharityControllerGetVoteInfoInputBO();
+        voteInfoInputBO.set_raiseId(donatedFundVo.get_raiseId());
+        try
+        {
+            callResponse = charityControllerService.getVoteInfo(voteInfoInputBO);
+        } catch (Exception e) {
+            // 交易失败
+            throw new RuntimeException(e);
+        }
+        if (callResponse.getReturnMessage().equals("Success")) {
+            voteInfo = VoteInfoByCallResponse(callResponse);
+            if (!voteInfo.getIsTrue()){
+                return AjaxResult.error().put("msg","当前公益活动未通过票选");
+            }
+        }
+
+        // 将两次的查询直接读入到Redis缓存中 避免吗每一次访问查询都需要进行数据库的IO交互
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("charityRaiseAudit",charityRaiseAudit);
+        dataMap.put("VoteInfo",voteInfo);
+        redisCache.setCacheMap(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId(),dataMap);
+        redisCache.expire(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId(),5,TimeUnit.MINUTES);
+
+
+        // 使用rabbitmq消息队列进行异步处理 优化当前的接口耗时
+        MessageResult messageResult = new MessageResult();
+        messageResult.setCode(HttpStatus.SUCCESS);
+        messageResult.setMessage("用户参与捐款");
+        messageResult.setData(JSONObject.toJSONString(donatedFundVo));
+        rabbitTemplate.convertAndSend("direct_donation_fund_exchange","DONATION_FUND_KEY",JSONObject.toJSONString(messageResult));
+
+        return AjaxResult.success().put("msg","捐款成功");
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

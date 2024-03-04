@@ -58,4 +58,8 @@ public class CacheConstants
      * 获取公益募资活动的投票情况redis key
      */
     public static final String VOTE_INFO = "vote_info:";
+
+
+
+    public static final String DONATINA_FUND_KEY = "donatina_fund:";
 }

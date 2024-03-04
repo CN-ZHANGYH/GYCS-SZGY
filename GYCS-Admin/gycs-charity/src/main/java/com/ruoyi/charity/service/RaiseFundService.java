@@ -2,6 +2,7 @@ package com.ruoyi.charity.service;
 
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
+import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.common.core.domain.AjaxResult;
 
 public interface RaiseFundService {
@@ -19,5 +20,7 @@ public interface RaiseFundService {
 
     AjaxResult getRaiseFundDetail(Long raiseId);
 
+
+    AjaxResult donation(DonatedFundVo donatedFundVo);
 
 }
