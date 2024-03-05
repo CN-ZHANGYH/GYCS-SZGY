@@ -5,6 +5,8 @@ import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.common.core.domain.AjaxResult;
 
+import java.math.BigInteger;
+
 public interface RaiseFundService {
     AjaxResult initiateRaiseFund(CharityRaiseFund charityRaiseFund);
 
@@ -22,5 +24,7 @@ public interface RaiseFundService {
 
 
     AjaxResult donation(DonatedFundVo donatedFundVo);
+
+    AjaxResult getRaiseFundTrace(BigInteger raiseId);
 
 }

@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.charity.front;
 
 
+import com.alibaba.fastjson2.util.Fnv;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 
 @RestController
 @RequestMapping("/raise_fund")
@@ -89,6 +91,11 @@ public class RaiseFundController {
     @PostMapping("/donation")
     public AjaxResult donation(@Valid @RequestBody DonatedFundVo donatedFundVo){
         return fundService.donation(donatedFundVo);
+    }
+
+    @GetMapping("/trace")
+    public AjaxResult getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
+        return fundService.getRaiseFundTrace(raiseId);
     }
 
 }

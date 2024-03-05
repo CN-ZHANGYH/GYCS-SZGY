@@ -440,6 +440,21 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         return AjaxResult.success().put("msg","捐款成功");
     }
 
+
+    /**
+     * select this raise fund all trace,about user's address and transaction id
+     * @param raiseId
+     * @return AjaxResult
+     */
+    @SneakyThrows
+    @Override
+    public AjaxResult getRaiseFundTrace(BigInteger raiseId) {
+        CharityControllerGetFundRaisingOtherInfoInputBO otherInfoInputBO = new CharityControllerGetFundRaisingOtherInfoInputBO();
+        otherInfoInputBO.set_raiseId(raiseId);
+        CallResponse raisingOtherInfo = charityControllerService.getFundRaisingOtherInfo(otherInfoInputBO);
+        return null;
+    }
+
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {
         CharityControllerInitiateFundRaisingInputBO fundRaisingInputBO = new CharityControllerInitiateFundRaisingInputBO();
         fundRaisingInputBO.set_title(charityRaiseFund.getTitle());

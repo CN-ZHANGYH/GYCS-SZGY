@@ -3,11 +3,11 @@ package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigInteger;
 
 @RestController
 @RequestMapping("/user")
@@ -19,5 +19,11 @@ public class UserController {
     @GetMapping("/profile")
     public AjaxResult getUserProfile(@RequestParam String username) {
         return userService.getUserProfile(userService,username);
+    }
+
+    @PostMapping("/update_balance")
+    public AjaxResult updateBalance(@RequestParam("amount") BigInteger amount) {
+        String username = SecurityUtils.getLoginUser().getUsername();
+        return userService.updateBalance(username,amount);
     }
 }

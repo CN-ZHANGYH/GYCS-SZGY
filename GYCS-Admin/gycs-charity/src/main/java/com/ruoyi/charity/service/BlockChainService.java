@@ -1,8 +1,13 @@
-package com.ruoyi.charity.service;/**
- * 
+package com.ruoyi.charity.service;
+
+import com.ruoyi.common.core.domain.AjaxResult;
+
+/**
  * @author zyh
  * @date 2024/3/5 8:39
  * @desc IntelliJ IDEA
- *
- */public class BlockChainService {
+ */
+public interface BlockChainService {
+    AjaxResult getBlockNumber();
+
 }
