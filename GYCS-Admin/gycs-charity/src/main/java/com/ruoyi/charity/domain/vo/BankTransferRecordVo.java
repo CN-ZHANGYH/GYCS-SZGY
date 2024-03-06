@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
@@ -18,7 +19,9 @@ import java.math.BigInteger;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankTransferRecordVo {
+public class BankTransferRecordVo implements Serializable {
+
+    private BigInteger raiseId;
 
     /**
      *  捐款人姓名

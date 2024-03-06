@@ -9,7 +9,6 @@ import com.ruoyi.charity.domain.bo.*;
 import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.dto.CharityUser;
-import com.ruoyi.charity.domain.dto.DonationTrace;
 import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
@@ -17,7 +16,6 @@ import com.ruoyi.charity.mapper.mp.DonationMapper;
 import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
-import com.ruoyi.charity.service.ICharityRaiseFundService;
 import com.ruoyi.charity.service.IDonationTraceService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.utils.BlockTimeUtil;
@@ -26,24 +24,23 @@ import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
-import org.apache.poi.xssf.model.MapInfo;
-import org.aspectj.weaver.loadtime.Aj;
+import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
+@Slf4j
 @Service
 public class RaiseFundServiceImpl implements RaiseFundService {
 
@@ -453,6 +450,112 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         otherInfoInputBO.set_raiseId(raiseId);
         CallResponse raisingOtherInfo = charityControllerService.getFundRaisingOtherInfo(otherInfoInputBO);
         return null;
+    }
+
+
+    /**
+     * user can donate fund to this raise fund by bank to bank
+     * @param bankTransferRecordVo
+     * @return AjaxResult
+     */
+    @Override
+    public AjaxResult donationBankTransfer(BankTransferRecordVo bankTransferRecordVo) {
+        CharityControllerDonationByBankTransferInputBO transferInputBO = new CharityControllerDonationByBankTransferInputBO();
+        transferInputBO.set_raiseId(bankTransferRecordVo.getRaiseId());
+        transferInputBO.set_cardId(bankTransferRecordVo.getDonorCardId());
+        transferInputBO.set_transferRecordInfo(JSONObject.toJSONString(bankTransferRecordVo));
+        try
+        {
+            TransactionResponse transactionResponse = charityControllerService.donationByBankTransfer(transferInputBO);
+            if (transactionResponse.getReturnMessage().equals("Success"))
+            {
+                // 删除Redis的捐款溯源记录缓存
+                boolean deleteBankTransferFlag = redisCache
+                        .deleteObject(CacheConstants.USER_DONATION_BANK_TRANSFER_KEY + bankTransferRecordVo.getDonorCardId());
+
+                if (!deleteBankTransferFlag){
+                    log.info("当前的缓存已经删除,redis的key为：{}",CacheConstants.USER_DONATION_BANK_TRANSFER_KEY + bankTransferRecordVo.getDonorCardId());
+                }
+                return AjaxResult.success().put("msg","转账成功");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return AjaxResult.error().put("msg","转账失败");
+    }
+
+    @Override
+    public AjaxResult getDonationBankTransferInfo(String cardId) {
+        // 查询Redis缓存中是否有最新的溯源记录
+        ArrayList<BankTransferRecordVo> result = redisCache.getCacheObject(CacheConstants.USER_DONATION_BANK_TRANSFER_KEY + cardId);
+        if (result != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("msg","查询成功");
+            success.put("data",result);
+            success.put("total",result.size());
+            return success;
+        }
+
+        CharityControllerGetDonationTaceByBankTransferInputBO transferInputBO = new CharityControllerGetDonationTaceByBankTransferInputBO();
+        transferInputBO.set_cardId(cardId);
+        try
+        {
+            TransactionResponse donationTraceByBankTransfer = charityControllerService.getDonationTaceByBankTransfer(transferInputBO);
+            if (donationTraceByBankTransfer.getReturnMessage().equals("Success")) {
+                JSONArray jsonArray = JSONArray.parseArray(JSONArray.parseArray(donationTraceByBankTransfer.getValues()).get(0).toString());
+
+                ArrayList<BankTransferRecordVo> transferRecordVos = new ArrayList<>();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    BankTransferRecordVo bankTransferRecordVo = JSONObject.parseObject(jsonArray.get(i).toString(), BankTransferRecordVo.class);
+                    transferRecordVos.add(bankTransferRecordVo);
+                }
+                AjaxResult success = AjaxResult.success();
+                success.put("msg","查询成功");
+                success.put("data",transferRecordVos);
+                success.put("total",transferRecordVos.size());
+
+                // 添加到Redis 缓存中
+                redisCache.setCacheObject(CacheConstants.USER_DONATION_BANK_TRANSFER_KEY + cardId,transferRecordVos,5,TimeUnit.MINUTES);
+                return success;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return AjaxResult.error().put("msg","查询失败");
+    }
+
+    @SneakyThrows
+    @Override
+    public AjaxResult getDonationBankTransferRecordList(Integer pageNum, Integer pageSize, BigInteger raiseId) {
+
+        CharityControllerGetRaiseFundBankTransferRecordInputBO recordInputBO = new CharityControllerGetRaiseFundBankTransferRecordInputBO();
+        recordInputBO.set_raiseId(raiseId);
+        TransactionResponse raiseFundBankTransferRecord = charityControllerService.getRaiseFundBankTransferRecord(recordInputBO);
+        if (raiseFundBankTransferRecord.getReturnMessage().equals("Success")) {
+            JSONArray jsonArray = JSONArray.parseArray(JSONArray.parseArray(raiseFundBankTransferRecord.getValues()).get(0).toString());
+
+            // 基于入参的pageNum和pageSize实现对jsonArray数组的分页查询
+            int fromIndex = (pageNum - 1) * pageSize;
+            int toIndex = Math.min(pageNum * pageSize, jsonArray.size());
+            JSONArray subArray = new JSONArray();
+            if (fromIndex <= toIndex) {
+                subArray.addAll(jsonArray.subList(fromIndex, toIndex));
+            }
+
+            ArrayList<BankTransferRecordVo> transferRecordVos = new ArrayList<>();
+            for (int i = 0; i < subArray.size(); i++) {
+                BankTransferRecordVo bankTransferRecordVo = JSONObject.parseObject(jsonArray.get(i).toString(), BankTransferRecordVo.class);
+                transferRecordVos.add(bankTransferRecordVo);
+            }
+            AjaxResult success = AjaxResult.success();
+            success.put("msg","查询成功");
+            success.put("data",transferRecordVos);
+            success.put("total",transferRecordVos.size());
+            return success;
+        }
+
+        return AjaxResult.error().put("msg","查询失败");
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

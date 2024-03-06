@@ -1,6 +1,7 @@
 package com.ruoyi.charity.service;
 
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
+import com.ruoyi.charity.domain.vo.BankTransferRecordVo;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -27,4 +28,9 @@ public interface RaiseFundService {
 
     AjaxResult getRaiseFundTrace(BigInteger raiseId);
 
+    AjaxResult donationBankTransfer(BankTransferRecordVo bankTransferRecordVo);
+
+    AjaxResult getDonationBankTransferInfo(String  cardId);
+
+    AjaxResult getDonationBankTransferRecordList(Integer pageNum, Integer pageSize,BigInteger raiseId);
 }
