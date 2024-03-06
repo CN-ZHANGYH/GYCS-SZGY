@@ -185,6 +185,6 @@ system:
   hexPrivateKey: 4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f
   ### Optional. Please fill this address if you want to use related service
   contract:
-    charityControllerAddress: "0x6838730366711e822273f86f95f969e6b95496b4"
+    charityControllerAddress: "0x3d8bb19aae0dcffb1a321a8e4ac47d5c4dd73dba"
 
 
