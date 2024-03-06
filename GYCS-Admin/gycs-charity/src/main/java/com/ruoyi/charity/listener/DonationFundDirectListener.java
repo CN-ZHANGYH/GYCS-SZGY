@@ -51,6 +51,7 @@ public class DonationFundDirectListener {
         log.info("DirectReceiver消费者收到消息  : {}" + messageResult.getMessage());
 
         DonatedFundVo donatedFundVo = JSONObject.parseObject(messageResult.getData(), DonatedFundVo.class);
+        System.out.println(donatedFundVo);
         CharityControllerDonatedFundsInputBO fundsInputBO = new CharityControllerDonatedFundsInputBO();
         BeanUtils.copyProperties(donatedFundVo,fundsInputBO);
         try
