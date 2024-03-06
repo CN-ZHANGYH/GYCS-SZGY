@@ -8,6 +8,9 @@ import com.ruoyi.common.core.domain.AjaxResult;
  * @desc IntelliJ IDEA
  */
 public interface BlockChainService {
-    AjaxResult getBlockNumber();
+    AjaxResult getBlockInfo();
+
+    AjaxResult getNodeInfo();
+
 
 }
