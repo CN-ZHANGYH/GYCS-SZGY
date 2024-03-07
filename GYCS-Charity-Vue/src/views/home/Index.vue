@@ -1,5 +1,5 @@
 <template>
-  <div class="center">
+  <div class="center example-nav">
     <vs-navbar v-model="active" shadow shape="square"
                center-collapsed
                target-scroll="#padding-scroll-content"
@@ -196,12 +196,12 @@
         </vs-row>
       </template>
     </vs-sidebar>
-  </div>
-  <div>
     <div id="padding-scroll-content" class="square">
-      <div class="child">child 1</div>
-      <div class="child">child 2</div>
-      <div class="child">child 3</div>
+      <div class="child" style="background-image: url('../../assets/images/background.png')">
+      </div>
+      <!--页脚内容-->
+      <Footer>
+      </Footer>
     </div>
   </div>
 
@@ -209,6 +209,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import {Category} from '@vuesax-alpha/icons-vue'
+import Footer from "@/components/Layout/Footer.vue";
 
 const active = ref('home')
 const activeSidebar = ref(false)
@@ -217,12 +218,19 @@ const activeSidebar = ref(false)
 
 <style scoped lang="scss">
 .square {
-  height: 400px;
+  height: 1010px;
   position: relative;
   overflow: auto;
   width: 100%;
   .child {
-    height: 400px;
+    height: 1010px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .footer {
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,4 +245,9 @@ const activeSidebar = ref(false)
     max-height: 22px;
   }
 }
+
+
+
+
+
 </style>
