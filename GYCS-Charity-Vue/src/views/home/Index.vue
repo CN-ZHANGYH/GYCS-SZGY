@@ -85,19 +85,19 @@
             个人中心
           </vs-sidebar-item>
         </template>
-        <vs-sidebar-item id="Instagram">
+        <vs-sidebar-item id="profile">
           <template #icon>
             <vs-icon><SecurityUserBold /></vs-icon>
           </template>
           身份信息
         </vs-sidebar-item>
-        <vs-sidebar-item id="twitter">
+        <vs-sidebar-item id="donation_record">
           <template #icon>
             <vs-icon><MobileProgrammingBold /></vs-icon>
           </template>
           捐款记录
         </vs-sidebar-item>
-        <vs-sidebar-item id="Facebook">
+        <vs-sidebar-item id="feedback_record">
           <template #icon>
             <vs-icon><SmsEditBold /></vs-icon>
           </template>
@@ -113,26 +113,26 @@
             公益中心
           </vs-sidebar-item>
         </template>
-        <vs-sidebar-item id="github">
+        <vs-sidebar-item id="disaster_area">
           <template #icon>
             <vs-icon><BoxTickBold /></vs-icon>
           </template>
           灾区公益
         </vs-sidebar-item>
-        <vs-sidebar-item id="codepen">
+        <vs-sidebar-item id="raise_fund">
           <template #icon>
             <vs-icon><ScreenmirroringBold /></vs-icon>
           </template>
           慈善公益
         </vs-sidebar-item>
-        <vs-sidebar-item id="discord">
+        <vs-sidebar-item id="rank">
           <template #icon>
             <vs-icon><HeartBold /></vs-icon>
           </template>
           公益排行
         </vs-sidebar-item>
       </vs-sidebar-group>
-      <vs-sidebar-item id="donate">
+      <vs-sidebar-item id="trace">
         <template #icon>
           <vs-icon><HierarchySquareBold /></vs-icon>
         </template>
@@ -166,7 +166,7 @@
 
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, watch} from 'vue'
+import {onMounted, reactive, ref, watch} from 'vue'
 import {
   Category,
   Home2Bold,
@@ -185,15 +185,63 @@ import router from '../../router/index.js'
 const active = ref('home')
 const activeSidebar = ref(false)
 
+const menuOptions = reactive([
+  {
+    id: 1,
+    name: "home"
+  },
+  {
+    id: 2,
+    name: "activity"
+  },
+  {
+    id: 3,
+    name: "user"
+  },
+  {
+    id: 4,
+    name: "about"
+  },
+  {
+    id: 5,
+    name: "profile"
+  },
+  {
+    id: 6,
+    name: "donation_record"
+  },
+  {
+    id: 7,
+    name: "feedback_record"
+  },
+  {
+    id: 8,
+    name: "disaster_area"
+  },
+  {
+    id: 9,
+    name: "raise_fund"
+  },
+  {
+    id: 10,
+    name: "rank"
+  },
+  {
+    id: 11,
+    name: "trace"
+  }
+])
 
 // 使用路由
 // 监听当前的菜单栏的值
 watch(active,(val,old) => {
-  if (val == "user") {
-    router.push({
-      path: "/home/user"
-    })
-  }
+  menuOptions.forEach((item) =>{
+    if (val == item.name) {
+      router.push({
+        name: item.name
+      })
+    }
+  })
 })
 
 </script>
@@ -246,3 +294,4 @@ watch(active,(val,old) => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 </style>
+

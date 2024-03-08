@@ -25,11 +25,10 @@
   justify-content: center;
   text-align: center;
   gap: 10px;
-  background-color: rgba(255, 255, 254, 0.8); /* 使用半透明背景颜色 */
+  /*background-color: rgba(255, 255, 254, 0.8); !* 使用半透明背景颜色 *!*/
   border-radius: 15px;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px); /* 添加毛玻璃效果 */
 }
 
 .card::before {
@@ -41,7 +40,8 @@
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   border-bottom: 3px solid #fefefe;
-  background: linear-gradient(40deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+  background-color: #0093E9;
+  background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
   transition: all 0.5s ease;
 }
 

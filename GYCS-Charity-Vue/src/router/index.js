@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/', redirect: '/home' },
     {
       path: '/home',
       name: 'home',
@@ -17,6 +18,11 @@ const router = createRouter({
           path: 'about',
           name: 'about',
           component: () => import('../views/about/Index.vue')
+        },
+        {
+          path: 'rank',
+          name: 'rank',
+          component: () => import('../views/charity/rank/Index.vue')
         }
       ]
     },
