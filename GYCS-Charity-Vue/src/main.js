@@ -3,7 +3,7 @@ import Vuesax from 'vuesax-alpha'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
-import router from './router'
+import router from './router/index.js'
 import './assets/style/index.scss'
 
 import 'vuesax-alpha/theme-chalk/index.css'
