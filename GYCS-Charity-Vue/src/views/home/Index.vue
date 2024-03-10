@@ -125,6 +125,12 @@
           </template>
           慈善公益
         </vs-sidebar-item>
+        <vs-sidebar-item id="vote">
+          <template #icon>
+            <vs-icon><TrashBold /></vs-icon>
+          </template>
+          参与投票
+        </vs-sidebar-item>
         <vs-sidebar-item id="rank">
           <template #icon>
             <vs-icon><HeartBold /></vs-icon>
@@ -178,10 +184,12 @@ import {
   BoxTickBold,
   ScreenmirroringBold,
   HeartBold,
-  HierarchySquareBold
+  HierarchySquareBold,
+  TrashBold
 } from '@vuesax-alpha/icons-vue'
 import Footer from "@/components/Layout/Footer.vue";
 import router from '../../router/index.js'
+import menuRoteToView from '../../utils/routerUtil'
 const active = ref('home')
 const activeSidebar = ref(false)
 
@@ -229,12 +237,19 @@ const menuOptions = reactive([
   {
     id: 11,
     name: "trace"
+  },
+  {
+    id: 12,
+    name: "vote"
   }
 ])
 
 // 使用路由
 // 监听当前的菜单栏的值
 watch(active,(val,old) => {
+
+
+
   menuOptions.forEach((item) =>{
     if (val == item.name) {
       router.push({

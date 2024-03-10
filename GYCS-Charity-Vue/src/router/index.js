@@ -23,6 +23,21 @@ const router = createRouter({
           path: 'rank',
           name: 'rank',
           component: () => import('../views/charity/rank/Index.vue')
+        },
+        {
+          path: 'disaster_area',
+          name: 'disaster_area',
+          component: () => import('../views/charity/disaster/Index.vue')
+        },
+        {
+          path: 'raise_fund',
+          name: 'raise_fund',
+          component: () => import('../views/charity/donation/Index.vue')
+        },
+        {
+          path: 'vote',
+          name: 'vote',
+          component: () => import('../views/charity/vote/Index.vue')
         }
       ]
     },

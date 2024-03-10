@@ -145,7 +145,17 @@ const users = reactive([
 }
 
 .rank-table {
-  width: 900px;
+  width: 1320px;
   margin: 10px 20px;
+}
+
+/*修改card的深度属性*/
+
+:deep(.vs-card) {
+  width: 350px;
+  height: 380px;
+}
+:deep(.vs-card:hover) {
+  box-shadow: 0 5px 10px 0 rgba(0,0,0,var(--vs-shadow-opacity)) !important;
 }
 </style>

@@ -394,11 +394,12 @@
 }
 
 .rank-container {
-  width: 350px;
+  width: 380px;
 }
 
 .rank-container > .cards {
   margin: 10px 20px;
+  padding-left: 20px;
 }
 
 </style>
