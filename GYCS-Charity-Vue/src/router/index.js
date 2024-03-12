@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('../views/login/Index.vue')
     },
     {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/about/Index.vue')
+    },
+    {
       path: '/home',
       name: 'home',
       component: () => import('../views/home/Index.vue'),
@@ -18,11 +23,6 @@ const router = createRouter({
           path: 'user',
           name: 'user',
           component: () => import('../views/user/Index.vue')
-        },
-        {
-          path: 'about',
-          name: 'about',
-          component: () => import('../views/about/Index.vue')
         },
         {
           path: 'rank',
@@ -63,7 +63,7 @@ const router = createRouter({
           path: 'materials',
           name: 'materials',
           component: () => import('../views/charity/materials/Index.vue'),
-        } 
+        }
       ]
     },
   ]
