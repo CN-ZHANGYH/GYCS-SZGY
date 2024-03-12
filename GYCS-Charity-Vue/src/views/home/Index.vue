@@ -241,6 +241,10 @@ const menuOptions = reactive([
   {
     id: 12,
     name: "vote"
+  },
+  {
+    id: 13,
+    name: "online"
   }
 ])
 

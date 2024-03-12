@@ -5,6 +5,11 @@ const router = createRouter({
   routes: [
     { path: '/', redirect: '/home' },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/login/Index.vue')
+    },
+    {
       path: '/home',
       name: 'home',
       component: () => import('../views/home/Index.vue'),
@@ -27,7 +32,7 @@ const router = createRouter({
         {
           path: 'disaster_area',
           name: 'disaster_area',
-          component: () => import('../views/charity/disaster/Index.vue')
+          component: () => import('../views/charity/disaster/Index.vue'),
         },
         {
           path: 'raise_fund',
@@ -38,7 +43,27 @@ const router = createRouter({
           path: 'vote',
           name: 'vote',
           component: () => import('../views/charity/vote/Index.vue')
-        }
+        },
+        {
+          path: 'online',
+          name: 'online',
+          component: ()=> import('../views/payment/online/Index.vue')
+        },
+        {
+          path: 'bank_transfer',
+          name: 'bank_transfer',
+          component: ()=> import('../views/payment/banktransfer/Index.vue')
+        },
+        {
+          path: 'trace',
+          name: 'trace',
+          component: () => import('../views/trace/Index.vue')
+        },
+        {
+          path: 'materials',
+          name: 'materials',
+          component: () => import('../views/charity/materials/Index.vue'),
+        } 
       ]
     },
   ]
