@@ -1,14 +1,16 @@
 package com.ruoyi.charity.listener;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerUpdateFundRaisingStatusInputBO;
-import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
-import com.ruoyi.charity.domain.dto.CharityRaiseFund;
-import com.ruoyi.charity.domain.dto.DonationTrace;
+import com.ruoyi.charity.domain.dto.*;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
+import com.ruoyi.charity.mapper.mp.DonationTransactionMapper;
+import com.ruoyi.charity.mapper.mp.UserMapper;
 import com.ruoyi.charity.service.ICharityRaiseFundService;
+import com.ruoyi.charity.service.ICharityUserService;
 import com.ruoyi.charity.service.IDonationTraceService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
@@ -48,6 +50,13 @@ public class DonationFundDirectListener {
     @Autowired
     private ICharityRaiseFundService raiseFundService;
 
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private DonationTransactionMapper donationTransactionMapper;
+
     @RabbitHandler
     public void process(String message) {
         // 接收key为register的订阅模式交换机发来的消息进行消费
@@ -84,6 +93,24 @@ public class DonationFundDirectListener {
                 charityRaiseFund.setOverAmount(overAmount.add(amount));
                 charityRaiseFund.setTotalPeople(totalPeople.add(BigInteger.valueOf(1)));
                 raiseFundService.updateCharityRaiseFund(charityRaiseFund);
+
+                // there need update credit of user
+                CharityUser charityUser = userMapper
+                        .selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUserAddress, donatedFundVo.get_donorAddress()));
+                Integer credit = charityUser.getCredit();
+                BigInteger oldBalance = charityUser.getAmount();
+                charityUser.setAmount(oldBalance.subtract(donatedFundVo.get_amount()));
+                charityUser.setCredit(credit + 50);
+                userMapper.updateById(charityUser);
+
+                // update transaction and blockNumber by this donation
+                DonationTransaction donationTransaction = new DonationTransaction();
+                donationTransaction.setRaiseId(donatedFundVo.get_raiseId());
+                donationTransaction.setStatus(true);
+                donationTransaction.setBlockNumber(BigInteger.valueOf(Integer.parseInt(transactionResponse.getTransactionReceipt().getBlockNumber().substring(2), 16)));
+                donationTransaction.setTransactionHash(transactionResponse.getTransactionReceipt().getTransactionHash());
+
+                donationTransactionMapper.insert(donationTransaction);
 
                 log.info("用户捐款成功： {}",donatedFundVo.get_donorAddress());
             }

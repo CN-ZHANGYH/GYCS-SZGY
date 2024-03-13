@@ -12,11 +12,9 @@ import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
-import com.ruoyi.charity.mapper.mp.DonationMapper;
 import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
-import com.ruoyi.charity.service.IDonationTraceService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.utils.BlockTimeUtil;
 import com.ruoyi.common.constant.CacheConstants;
@@ -67,11 +65,6 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     @Autowired
     private RedisCache redisCache;
 
-    @Autowired
-    private IDonationTraceService donationTraceService;
-
-    @Autowired
-    private DonationMapper donationMapper;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -351,6 +344,12 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             if (transactionResponse.getReturnMessage().equals("Success")) {
                 Boolean isStatus = (Boolean) JSONArray.parseArray(transactionResponse.getValues()).get(0);
                 if (isStatus){
+
+                    // 如果投票成功这里直接更新当前的用户投票次数
+                    Integer oldVoteCount = charityUser.getVoteCount();
+                    charityUser.setVoteCount(oldVoteCount + 1);
+                    charityUserJMapper.updateById(charityUser);
+
                     return AjaxResult.success().put("msg","投票成功");
                 }
             }
@@ -374,16 +373,18 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
 
     @Override
-    public AjaxResult donation(DonatedFundVo donatedFundVo) {
+    public AjaxResult donation(DonatedFundVo donatedFundVo, String username) {
         // 直接进入缓存读取数据查询是否已经被审核和是否已经被票选通过
         CallResponse callResponse = null;
         VoteInfo voteInfo = null;
         CharityRaiseAudit charityRaiseAudit = null;
+        CharityUser charityUser = null;
 
         Map<String, Object> cacheMap = redisCache.getCacheMap(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId());
         if (!cacheMap.isEmpty()) {
             charityRaiseAudit = (CharityRaiseAudit) cacheMap.get("charityRaiseAudit");
-            voteInfo = (VoteInfo) cacheMap.get("VoteInfo");
+            voteInfo = (VoteInfo) cacheMap.get("voteInfo");
+            charityUser = (CharityUser) cacheMap.get("userInfo");
 
             if (charityRaiseAudit.getApplyStatus() != 2) {
                 return AjaxResult.error().put("msg","当前的公益活动未审核通过");
@@ -392,7 +393,19 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             if (!voteInfo.getIsTrue()){
                 return AjaxResult.error().put("msg","当前公益活动未通过票选");
             }
+
+            if (charityUser.getAmount().compareTo(donatedFundVo.get_amount()) == -1) {
+                return AjaxResult.error("msg","当前的用户余额不足");
+            }
+
         }
+        charityUser = charityUserJMapper
+                .selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
+        // 判断当前的用户是否有足够的金额进行支付
+        if (charityUser.getAmount().compareTo(donatedFundVo.get_amount()) == -1) {
+            return AjaxResult.error("msg","当前的用户余额不足");
+        }
+
         // 查询当前捐款的公益活动是否被审核
         charityRaiseAudit = raiseAuditMapper
                 .selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
@@ -422,7 +435,8 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         // 将两次的查询直接读入到Redis缓存中 避免吗每一次访问查询都需要进行数据库的IO交互
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("charityRaiseAudit",charityRaiseAudit);
-        dataMap.put("VoteInfo",voteInfo);
+        dataMap.put("voteInfo",voteInfo);
+        dataMap.put("userInfo",charityUser);
         redisCache.setCacheMap(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId(),dataMap);
         redisCache.expire(CacheConstants.DONATINA_FUND_KEY + donatedFundVo.get_raiseId(),5,TimeUnit.MINUTES);
 

@@ -66,7 +66,7 @@ public class RaiseFundController {
      * @param raiseId
      * @return AjaxResult
      */
-    @GetMapping("detail")
+    @GetMapping("/detail")
     public AjaxResult getRaiseFundDetail(@RequestParam("raiseId") Long raiseId) {
         return fundService.getRaiseFundDetail(raiseId);
     }
@@ -116,7 +116,8 @@ public class RaiseFundController {
      */
     @PostMapping("/donation")
     public AjaxResult donation(@Valid @RequestBody DonatedFundVo donatedFundVo){
-        return fundService.donation(donatedFundVo);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        return fundService.donation(donatedFundVo,loginUser.getUsername());
     }
 
 

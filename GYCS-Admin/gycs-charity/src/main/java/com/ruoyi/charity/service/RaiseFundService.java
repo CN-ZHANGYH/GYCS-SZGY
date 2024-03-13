@@ -24,7 +24,7 @@ public interface RaiseFundService {
     AjaxResult getRaiseFundDetail(Long raiseId);
 
 
-    AjaxResult donation(DonatedFundVo donatedFundVo);
+    AjaxResult donation(DonatedFundVo donatedFundVo,String username);
 
     AjaxResult getRaiseFundTrace(BigInteger raiseId);
 
