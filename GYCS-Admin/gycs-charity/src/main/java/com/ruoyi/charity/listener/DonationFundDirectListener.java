@@ -10,6 +10,7 @@ import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.service.ICharityRaiseFundService;
 import com.ruoyi.charity.service.IDonationTraceService;
+import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
@@ -44,6 +45,9 @@ public class DonationFundDirectListener {
     @Autowired
     private IDonationTraceService donationTraceService;
 
+    @Autowired
+    private ICharityRaiseFundService raiseFundService;
+
     @RabbitHandler
     public void process(String message) {
         // 接收key为register的订阅模式交换机发来的消息进行消费
@@ -70,6 +74,16 @@ public class DonationFundDirectListener {
                 donationTrace.setAmount(donatedFundVo.get_amount());
                 donationTrace.setDescription(donatedFundVo.get_desc());
                 donationTraceService.insertDonationTrace(donationTrace);
+
+                // update raise fund active info
+                BigInteger amount = donatedFundVo.get_amount();
+                CharityRaiseFund charityRaiseFund = raiseFundService
+                        .selectCharityRaiseFundById(Long.valueOf(String.valueOf(donatedFundVo.get_raiseId())));
+                BigInteger overAmount = charityRaiseFund.getOverAmount();
+                BigInteger totalPeople = charityRaiseFund.getTotalPeople();
+                charityRaiseFund.setOverAmount(overAmount.add(amount));
+                charityRaiseFund.setTotalPeople(totalPeople.add(BigInteger.valueOf(1)));
+                raiseFundService.updateCharityRaiseFund(charityRaiseFund);
 
                 log.info("用户捐款成功： {}",donatedFundVo.get_donorAddress());
             }

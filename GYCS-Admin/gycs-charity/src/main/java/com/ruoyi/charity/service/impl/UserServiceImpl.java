@@ -99,6 +99,13 @@ public class UserServiceImpl implements UserService {
         // use the @SneakyThrows annotate solve this mistake
         TransactionResponse transactionResponse = charityControllerService.updateUserBalance(balanceInputBO);
         if (transactionResponse.getReturnMessage().equals("Success")) {
+            // update balance of user insert to mysql as new record
+            BigInteger oldAmount = charityUser.getAmount();
+            BigInteger newAmount = oldAmount.add(amount);
+            charityUser.setAmount(newAmount);
+
+            userMapper.updateById(charityUser);
+
             return AjaxResult.success().put("msg","更新账户余额成功");
         }
         return AjaxResult.error().put("msg","更新账户余额失败");

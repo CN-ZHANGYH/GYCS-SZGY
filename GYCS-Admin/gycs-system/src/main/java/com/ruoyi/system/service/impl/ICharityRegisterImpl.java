@@ -25,6 +25,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+
 /**
  * @author zyh
  * @date 2024/2/26 9:05
@@ -96,7 +98,7 @@ public class ICharityRegisterImpl implements ICharityRegister {
             charityUser.setId(sysUser.getUserId());
             charityUser.setCardId(sysUser.getUserName());
             charityUser.setUsername(sysUser.getUserName());
-            charityUser.setAmount(0);
+            charityUser.setAmount(BigInteger.valueOf(0));
             charityUser.setCredit(0);
             charityUser.setVoteCount(0);
             charityUser.setWithdrawCount(0);
