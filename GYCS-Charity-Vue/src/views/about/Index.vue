@@ -8,7 +8,7 @@
       <div class="container-fluid d-flex align-items-center justify-content-between container-1470">
         <div class="header-left">
           <div class="site-logo">
-            <a href="index.html"><img src="../../assets/picture/logo.png" alt="Markpro"></a>
+            <a href="index.html"><img src="" alt=""></a>
           </div>
         </div>
         <div class="header-right d-flex align-items-center justify-content-end">
@@ -266,111 +266,10 @@
       <div class="row justify-content-center">
         <div class="col-xl-6 col-md-10 wow fadeInUp" data-wow-delay="0.3s">
           <div class="section-head text-center">
-            <h2 class="title">What Our Clients Say About Us </h2>
-            <p class="text">Anything embarrassing hidden in the middle of text. All the Lorem Ipsum
-              generators on the Internet tend to repeat predefined necessary.</p>
-          </div>
-        </div>
-      </div>
-      <div class="row justify-content-xl-end justify-content-center">
-        <div class="col-xl-12 col-lg-12 wow fadeInUp">
-          <div class="testothree owl-carousel owl-theme">
-            <div class="single">
-              <div class="icon">
-                <img src="../../assets/picture/people-1.png" alt="">
-              </div>
-              <div class="content">
-                <p class="text">
-                  "Anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators
-                  on the Internet tend to repeat predefined"
-                </p>
-                <div class="man">
-                  <div class="content">
-                    <div class="review">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                    </div>
-                    <h5 class="name">Jakariya Hosen Butta</h5>
-                    <span class="position">Ui/Ux Designer</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="single">
-              <div class="icon">
-                <img src="../../assets/picture/people-2.png" alt="">
-              </div>
-              <div class="content">
-                <p class="text">
-                  "Anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators
-                  on the Internet tend to repeat predefined"
-                </p>
-                <div class="man">
-                  <div class="content">
-                    <div class="review">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                    </div>
-                    <h5 class="name">Rasalina De Willamson</h5>
-                    <span class="position">Founder Of Vision Trust</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="single">
-              <div class="icon">
-                <img src="../../assets/picture/people-3.png" alt="">
-              </div>
-              <div class="content">
-                <p class="text">
-                  "Anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators
-                  on the Internet tend to repeat predefined"
-                </p>
-                <div class="man">
-                  <div class="content">
-                    <div class="review">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                    </div>
-                    <h5 class="name">Zubayer Hossen Kabila</h5>
-                    <span class="position">Web Developer</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="single">
-              <div class="icon">
-                <img src="../../assets/picture/people-3.png" alt="">
-              </div>
-              <div class="content">
-                <p class="text">
-                  "Anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators
-                  on the Internet tend to repeat predefined"
-                </p>
-                <div class="man">
-                  <div class="content">
-                    <div class="review">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                    </div>
-                    <h5 class="name">Zubayer Hossen Kabila</h5>
-                    <span class="position">Web Developer</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h2 class="title">什么样的群体可以使用我们的平台</h2>
+            <p class="text">
+              任何需要进行公益慈善参与与发起的人都可以使用该平台，所有的公益记录都是公开、透明、不可篡改、真实可信的。
+            </p>
           </div>
         </div>
       </div>
