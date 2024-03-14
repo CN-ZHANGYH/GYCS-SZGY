@@ -1,10 +1,13 @@
 package com.ruoyi.charity.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.ruoyi.charity.domain.bo.CharityControllerInitiateWelfareActivitieInputBO;
 import com.ruoyi.charity.domain.dto.ActivityArticle;
 import com.ruoyi.charity.domain.dto.CharityActivitieInfo;
 import com.ruoyi.charity.domain.vo.ActivityInfoVo;
+import com.ruoyi.charity.mapper.join.ActivityJMapper;
+import com.ruoyi.charity.mapper.join.ArticleJMapper;
 import com.ruoyi.charity.mapper.mp.ActivityArticleMapper;
 import com.ruoyi.charity.mapper.mp.ActivityMapper;
 import com.ruoyi.charity.service.ActivityService;
@@ -18,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.List;
 
 
 @Service
@@ -32,6 +36,12 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private CharityControllerService charityControllerService;
+
+    @Autowired
+    private ActivityJMapper activityJMapper;
+
+    @Autowired
+    private ArticleJMapper articleJMapper;
 
 
     /**
@@ -71,14 +81,17 @@ public class ActivityServiceImpl implements ActivityService {
                 return AjaxResult.success().put("msg","发布成功");
             }
         }
-        return null;
-
+        return AjaxResult.error().put("msg","发布失败");
     }
 
     @Override
     public AjaxResult selectActivityList() {
-        
-        return null;
+        MPJLambdaWrapper<CharityActivitieInfo> lambdaWrapper = new MPJLambdaWrapper<CharityActivitieInfo>()
+                .selectAll(CharityActivitieInfo.class)
+                .selectAll(ActivityArticle.class)
+                .leftJoin(ActivityArticle.class, ActivityArticle::getActivityId, CharityActivitieInfo::getId);
 
+        List<ActivityInfoVo> activityInfoVos = activityJMapper.selectJoinList(ActivityInfoVo.class, lambdaWrapper);
+        return AjaxResult.success().put("data",activityInfoVos);
     }
 }
