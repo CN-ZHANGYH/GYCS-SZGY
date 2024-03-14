@@ -53,7 +53,6 @@ public class CharityActivitieInfoServiceImpl implements ICharityActivitieInfoSer
     @Override
     public int insertCharityActivitieInfo(CharityActivitieInfo charityActivitieInfo)
     {
-        charityActivitieInfo.setCreateTime(DateUtils.getNowDate());
         return charityActivitieInfoMapper.insertCharityActivitieInfo(charityActivitieInfo);
     }
 

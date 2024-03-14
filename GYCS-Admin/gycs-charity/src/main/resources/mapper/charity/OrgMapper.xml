@@ -8,14 +8,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="orgName"    column="org_name"    />
         <result property="amount"    column="amount"    />
-        <result property="activitiesList"    column="activities_list"    />
         <result property="orgAddress"    column="org_address"    />
         <result property="privateKey"    column="private_key"    />
         <result property="publicKey"    column="public_key"    />
     </resultMap>
 
     <sql id="selectOrgVo">
-        select id, org_name, amount, activities_list, org_address, private_key, public_key from charity_org
+        select id, org_name, amount, org_address, private_key, public_key from charity_org
     </sql>
 
     <select id="selectOrgList" parameterType="Org" resultMap="OrgResult">
@@ -23,7 +22,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
             <if test="amount != null "> and amount = #{amount}</if>
-            <if test="activitiesList != null  and activitiesList != ''"> and activities_list = #{activitiesList}</if>
             <if test="orgAddress != null  and orgAddress != ''"> and org_address = #{orgAddress}</if>
             <if test="privateKey != null  and privateKey != ''"> and private_key = #{privateKey}</if>
             <if test="publicKey != null  and publicKey != ''"> and public_key = #{publicKey}</if>
@@ -41,7 +39,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">id,</if>
             <if test="orgName != null">org_name,</if>
             <if test="amount != null">amount,</if>
-            <if test="activitiesList != null">activities_list,</if>
             <if test="orgAddress != null">org_address,</if>
             <if test="privateKey != null">private_key,</if>
             <if test="publicKey != null">public_key,</if>
@@ -50,7 +47,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">#{id},</if>
             <if test="orgName != null">#{orgName},</if>
             <if test="amount != null">#{amount},</if>
-            <if test="activitiesList != null">#{activitiesList},</if>
             <if test="orgAddress != null">#{orgAddress},</if>
             <if test="privateKey != null">#{privateKey},</if>
             <if test="publicKey != null">#{publicKey},</if>
@@ -62,7 +58,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="orgName != null">org_name = #{orgName},</if>
             <if test="amount != null">amount = #{amount},</if>
-            <if test="activitiesList != null">activities_list = #{activitiesList},</if>
             <if test="orgAddress != null">org_address = #{orgAddress},</if>
             <if test="privateKey != null">private_key = #{privateKey},</if>
             <if test="publicKey != null">public_key = #{publicKey},</if>
