@@ -1,7 +1,7 @@
 package com.ruoyi.charity.mapper.mp;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.charity.domain.dto.DonationTransaction;
+import com.ruoyi.charity.domain.dto.ActiviteTransaction;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 
 @Mapper
-public interface DonationTransactionMapper  extends BaseMapper<DonationTransaction> {
+public interface MPActiviteTransactionMapper extends BaseMapper<ActiviteTransaction> {
 }

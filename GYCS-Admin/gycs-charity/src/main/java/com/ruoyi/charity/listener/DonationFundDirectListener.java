@@ -3,16 +3,13 @@ package com.ruoyi.charity.listener;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
-import com.ruoyi.charity.domain.bo.CharityControllerUpdateFundRaisingStatusInputBO;
 import com.ruoyi.charity.domain.dto.*;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
-import com.ruoyi.charity.mapper.mp.DonationTransactionMapper;
-import com.ruoyi.charity.mapper.mp.UserMapper;
+import com.ruoyi.charity.mapper.mp.MPDonationTransactionMapper;
+import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.ICharityRaiseFundService;
-import com.ruoyi.charity.service.ICharityUserService;
 import com.ruoyi.charity.service.IDonationTraceService;
-import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
@@ -52,10 +49,10 @@ public class DonationFundDirectListener {
 
 
     @Autowired
-    private UserMapper userMapper;
+    private MPUserMapper MPUserMapper;
 
     @Autowired
-    private DonationTransactionMapper donationTransactionMapper;
+    private MPDonationTransactionMapper MPDonationTransactionMapper;
 
     @RabbitHandler
     public void process(String message) {
@@ -64,7 +61,7 @@ public class DonationFundDirectListener {
         log.info("DirectReceiver消费者收到消息  : {}" + messageResult.getMessage());
 
         DonatedFundVo donatedFundVo = JSONObject.parseObject(messageResult.getData(), DonatedFundVo.class);
-        System.out.println(donatedFundVo);
+
         CharityControllerDonatedFundsInputBO fundsInputBO = new CharityControllerDonatedFundsInputBO();
         BeanUtils.copyProperties(donatedFundVo,fundsInputBO);
         try
@@ -95,13 +92,13 @@ public class DonationFundDirectListener {
                 raiseFundService.updateCharityRaiseFund(charityRaiseFund);
 
                 // there need update credit of user
-                CharityUser charityUser = userMapper
+                CharityUser charityUser = MPUserMapper
                         .selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUserAddress, donatedFundVo.get_donorAddress()));
                 Integer credit = charityUser.getCredit();
                 BigInteger oldBalance = charityUser.getAmount();
                 charityUser.setAmount(oldBalance.subtract(donatedFundVo.get_amount()));
                 charityUser.setCredit(credit + 50);
-                userMapper.updateById(charityUser);
+                MPUserMapper.updateById(charityUser);
 
                 // update transaction and blockNumber by this donation
                 DonationTransaction donationTransaction = new DonationTransaction();
@@ -110,7 +107,7 @@ public class DonationFundDirectListener {
                 donationTransaction.setBlockNumber(BigInteger.valueOf(Integer.parseInt(transactionResponse.getTransactionReceipt().getBlockNumber().substring(2), 16)));
                 donationTransaction.setTransactionHash(transactionResponse.getTransactionReceipt().getTransactionHash());
 
-                donationTransactionMapper.insert(donationTransaction);
+                MPDonationTransactionMapper.insert(donationTransaction);
 
                 log.info("用户捐款成功： {}",donatedFundVo.get_donorAddress());
             }

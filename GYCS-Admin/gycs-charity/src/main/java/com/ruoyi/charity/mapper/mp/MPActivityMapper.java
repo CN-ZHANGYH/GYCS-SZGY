@@ -6,5 +6,5 @@ import com.ruoyi.charity.domain.dto.CharityActivitieInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ActivityMapper extends BaseMapper<CharityActivitieInfo> {
+public interface MPActivityMapper extends BaseMapper<CharityActivitieInfo> {
 }

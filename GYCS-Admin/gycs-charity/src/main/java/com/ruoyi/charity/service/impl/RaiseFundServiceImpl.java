@@ -12,8 +12,8 @@ import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
-import com.ruoyi.charity.mapper.mp.RaiseAuditMapper;
-import com.ruoyi.charity.mapper.mp.RaiseFundMapper;
+import com.ruoyi.charity.mapper.mp.MPRaiseAuditMapper;
+import com.ruoyi.charity.mapper.mp.MPRaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
 import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.utils.BlockTimeUtil;
@@ -47,7 +47,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     private CharityControllerService charityControllerService;
 
     @Autowired
-    private RaiseFundMapper raiseFundMapper;
+    private MPRaiseFundMapper MPRaiseFundMapper;
 
     @Autowired
     private CharityUserJMapper charityUserJMapper;
@@ -56,7 +56,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     private ICharityRaiseAuditService charityRaiseAuditService;
 
     @Autowired
-    private RaiseAuditMapper raiseAuditMapper;
+    private MPRaiseAuditMapper MPRaiseAuditMapper;
 
     @Autowired
     private RaiseFundJMapper raiseFundJMapper;
@@ -78,7 +78,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     @Override
     public AjaxResult initiateRaiseFund(CharityRaiseFund charityRaiseFund) {
         // 查询当前的公益活动是否已经存在
-        CharityRaiseFund isRaiseFund = raiseFundMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseFund.class)
+        CharityRaiseFund isRaiseFund = MPRaiseFundMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseFund.class)
                 .eq(CharityRaiseFund::getTitle, charityRaiseFund.getTitle())
                 .eq(CharityRaiseFund::getPromoterAddress, charityRaiseFund.getPromoterAddress()));
         if (isRaiseFund != null) return AjaxResult.error("当前的公益活动已经存在");
@@ -108,7 +108,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             charityRaiseFund.setWithdrawAmount(BigInteger.valueOf(result.getLongValue(10)));
 
             // 判断当前是否插入数据库成功
-            int status = raiseFundMapper.insert(charityRaiseFund);
+            int status = MPRaiseFundMapper.insert(charityRaiseFund);
             if (status > 0)
             {
                 return AjaxResult.success().put("msg","发起公益活动成功");
@@ -127,14 +127,14 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     public AjaxResult uploadCertificate(CertificateInfoVo certificateInfoVo, String username) {
 
         // 查询当前是否有审批 有则说明已经上传过了 需要提示已经上传证明
-        CharityRaiseAudit isRaiseAudit = raiseAuditMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
+        CharityRaiseAudit isRaiseAudit = MPRaiseAuditMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
                 .eq(CharityRaiseAudit::getRaiseId, certificateInfoVo.getRaiseId()));
         if (isRaiseAudit != null) return AjaxResult.error().put("msg","当前已经上传了证明");
 
         // 根据用户名查询用户的地址然后根据公益募资的活动编号和用户的区块链账户地址进行查询详细的信息
         // SELECT * FROM charity_raise_fund WHERE id = '19' and promoter_address = (SELECT user_address FROM charity_user WHERE username = 'mmm');
         CharityUser charityUser = queryCharityUserByUsername(username);
-        CharityRaiseFund isRaiseFund = raiseFundMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseFund.class)
+        CharityRaiseFund isRaiseFund = MPRaiseFundMapper.selectOne(Wrappers.lambdaQuery(CharityRaiseFund.class)
                 .eq(CharityRaiseFund::getId, certificateInfoVo.getRaiseId())
                 .eq(CharityRaiseFund::getPromoterAddress, charityUser.getUserAddress()));
 
@@ -361,7 +361,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Override
     public AjaxResult getRaiseFundDetail(Long raiseId) {
-        CharityRaiseFund charityRaiseFund = raiseFundMapper.selectById(raiseId);
+        CharityRaiseFund charityRaiseFund = MPRaiseFundMapper.selectById(raiseId);
         if (charityRaiseFund != null) {
             AjaxResult success = AjaxResult.success();
             success.put("data",charityRaiseFund);
@@ -407,7 +407,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         }
 
         // 查询当前捐款的公益活动是否被审核
-        charityRaiseAudit = raiseAuditMapper
+        charityRaiseAudit = MPRaiseAuditMapper
                 .selectOne(Wrappers.lambdaQuery(CharityRaiseAudit.class)
                         .eq(CharityRaiseAudit::getRaiseId, donatedFundVo.get_raiseId()));
 

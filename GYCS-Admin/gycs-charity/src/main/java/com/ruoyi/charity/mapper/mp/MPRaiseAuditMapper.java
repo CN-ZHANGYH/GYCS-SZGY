@@ -1,15 +1,15 @@
 package com.ruoyi.charity.mapper.mp;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.charity.domain.dto.ActiviteTransaction;
+import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author zyh
- * @date 2024/3/13 23:32
+ * @date 2024/2/28 19:28
  * @desc IntelliJ IDEA
  */
 
 @Mapper
-public interface ActiviteTransactionMapper extends BaseMapper<ActiviteTransaction> {
+public interface MPRaiseAuditMapper extends BaseMapper<CharityRaiseAudit> {
 }

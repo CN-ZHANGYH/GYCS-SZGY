@@ -6,7 +6,7 @@ import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.UserVo;
 import com.ruoyi.charity.mapper.join.SysUserJMapper;
-import com.ruoyi.charity.mapper.mp.UserMapper;
+import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Autowired
-    private UserMapper userMapper;
+    private MPUserMapper MPUserMapper;
 
 
     @Autowired
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     public AjaxResult updateBalance(String username, BigInteger amount) {
 
         // select one charityuser info by query the username
-        CharityUser charityUser = userMapper
+        CharityUser charityUser = MPUserMapper
                 .selectOne(Wrappers.lambdaQuery(CharityUser.class)
                         .eq(CharityUser::getUsername, username));
 
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
             BigInteger newAmount = oldAmount.add(amount);
             charityUser.setAmount(newAmount);
 
-            userMapper.updateById(charityUser);
+            MPUserMapper.updateById(charityUser);
 
             return AjaxResult.success().put("msg","更新账户余额成功");
         }

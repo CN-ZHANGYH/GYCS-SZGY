@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.charity.front;
 
 
-import com.ruoyi.charity.domain.dto.CharityActivitieInfo;
 import com.ruoyi.charity.domain.vo.ActivityInfoVo;
 import com.ruoyi.charity.service.ActivityService;
 import com.ruoyi.common.core.controller.BaseController;
@@ -28,7 +27,6 @@ public class ActivityController extends BaseController {
                 SecurityUtils.getUserId()
         );
     }
-
 
     @GetMapping("/list")
     public AjaxResult selectActivityList() {
