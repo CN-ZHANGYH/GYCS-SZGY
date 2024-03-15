@@ -67,7 +67,7 @@ public class DonationFundDirectListener {
         try
         {
             TransactionResponse transactionResponse = charityControllerService.donatedFunds(fundsInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success"))
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
             {
                 DonationTrace donationTrace = new DonationTrace();
                 donationTrace.setIsDonation(true);

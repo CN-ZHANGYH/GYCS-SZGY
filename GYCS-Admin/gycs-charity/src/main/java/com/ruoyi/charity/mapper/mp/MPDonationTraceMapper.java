@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 
 @Mapper
-public interface MPDonationMapper extends BaseMapper<DonationTrace> {
+public interface MPDonationTraceMapper extends BaseMapper<DonationTrace> {
 }

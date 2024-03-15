@@ -91,7 +91,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         CharityControllerInitiateFundRaisingInputBO fundRaisingInputBO = getRaisingInputBO(charityRaiseFund, startTime, endTime);
         TransactionResponse transactionResponse = charityControllerService.InitiateFundRaising(fundRaisingInputBO);
 
-        if (transactionResponse.getReturnMessage().equals("Success"))
+        if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
         {
             // 获取返回的值
             JSONArray result = JSONArray.parseArray(
@@ -148,7 +148,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             try
             {
                 TransactionResponse transactionResponse = charityControllerService.uploadCertificate(certificateInputBO);
-                if (transactionResponse.getReturnMessage().equals("Success"))
+                if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
                 {
                     // 如果交易成功就添加一条申请记录到审核中
                     CharityRaiseAudit charityRaiseAudit = new CharityRaiseAudit();
@@ -211,7 +211,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         CharityControllerGetCertificateInfoDetailInputBO detailInputBO = new CharityControllerGetCertificateInfoDetailInputBO();
         detailInputBO.set_raiseId(BigInteger.valueOf(raiseId));
         CallResponse callResponse = charityControllerService.getCertificateInfoDetail(detailInputBO);
-        if (callResponse.getReturnMessage().equals("Success")) {
+        if (callResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
             String data = JSONArray.parseArray(callResponse.getValues()).get(0).toString();
             CertificateInfoVo certificateInfoVo = JSONObject.parseObject(data, CertificateInfoVo.class);
 
@@ -252,7 +252,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         try
         {
             CallResponse callResponse = charityControllerService.getCertificateInfoDetail(detailInputBO);
-            if (callResponse.getReturnMessage().equals("Success")) {
+            if (callResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
                 String data = JSONArray.parseArray(callResponse.getValues()).get(0).toString();
                 CertificateInfoVo certificateInfoVo = JSONObject.parseObject(data, CertificateInfoVo.class);
 
@@ -297,7 +297,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         try
         {
             CallResponse callResponse = charityControllerService.getVoteInfo(infoInputBO);
-            if (callResponse.getReturnMessage().equals("Success")) {
+            if (callResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
 
                 VoteInfo voteInfo = VoteInfoByCallResponse(callResponse);
 
@@ -341,7 +341,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         try
         {
             TransactionResponse transactionResponse = charityControllerService.voteOfRaiseFund(voteInfo);
-            if (transactionResponse.getReturnMessage().equals("Success")) {
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
                 Boolean isStatus = (Boolean) JSONArray.parseArray(transactionResponse.getValues()).get(0);
                 if (isStatus){
 
@@ -425,7 +425,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             // 交易失败
             throw new RuntimeException(e);
         }
-        if (callResponse.getReturnMessage().equals("Success")) {
+        if (callResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
             voteInfo = VoteInfoByCallResponse(callResponse);
             if (!voteInfo.getIsTrue()){
                 return AjaxResult.error().put("msg","当前公益活动未通过票选");
@@ -481,7 +481,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         try
         {
             TransactionResponse transactionResponse = charityControllerService.donationByBankTransfer(transferInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success"))
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
             {
                 // 删除Redis的捐款溯源记录缓存
                 boolean deleteBankTransferFlag = redisCache
@@ -515,7 +515,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         try
         {
             TransactionResponse donationTraceByBankTransfer = charityControllerService.getDonationTaceByBankTransfer(transferInputBO);
-            if (donationTraceByBankTransfer.getReturnMessage().equals("Success")) {
+            if (donationTraceByBankTransfer.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
                 JSONArray jsonArray = JSONArray.parseArray(JSONArray.parseArray(donationTraceByBankTransfer.getValues()).get(0).toString());
 
                 ArrayList<BankTransferRecordVo> transferRecordVos = new ArrayList<>();
@@ -546,7 +546,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         CharityControllerGetRaiseFundBankTransferRecordInputBO recordInputBO = new CharityControllerGetRaiseFundBankTransferRecordInputBO();
         recordInputBO.set_raiseId(raiseId);
         TransactionResponse raiseFundBankTransferRecord = charityControllerService.getRaiseFundBankTransferRecord(recordInputBO);
-        if (raiseFundBankTransferRecord.getReturnMessage().equals("Success")) {
+        if (raiseFundBankTransferRecord.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
             JSONArray jsonArray = JSONArray.parseArray(JSONArray.parseArray(raiseFundBankTransferRecord.getValues()).get(0).toString());
 
             // 基于入参的pageNum和pageSize实现对jsonArray数组的分页查询

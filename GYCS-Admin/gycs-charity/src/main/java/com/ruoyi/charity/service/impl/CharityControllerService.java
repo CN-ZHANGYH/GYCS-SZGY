@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @Data
 public class CharityControllerService {
+
+  public static final String SUCCESS = "Success";
   public static final String ABI = com.ruoyi.charity.utils.IOUtil.readResourceAsString("abi/CharityController.abi");
 
   public static final String BINARY = com.ruoyi.charity.utils.IOUtil.readResourceAsString("bin/ecc/CharityController.bin");

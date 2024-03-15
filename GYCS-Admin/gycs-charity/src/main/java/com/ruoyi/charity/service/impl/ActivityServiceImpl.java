@@ -79,7 +79,7 @@ public class ActivityServiceImpl implements ActivityService {
             activitieInputBO.set_logisticType(charityActivitieInfo.getLogisticType());
 
             TransactionResponse transactionResponse = charityControllerService.InitiateWelfareActivitie(activitieInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success")) {
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
                 // 这里是链上交易成功， 但是需要更新一张新的表，就是附带的文章表，所以这里需要直接进行Rabbitmq消息队列 通知异步操作
                 // 使用rabbitmq消息队列进行异步处理 优化当前的接口耗时
                 MessageResult messageResult = new MessageResult();

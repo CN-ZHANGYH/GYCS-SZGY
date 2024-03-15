@@ -1,12 +1,14 @@
 package com.ruoyi.web.controller.charity.front;
 
+import com.ruoyi.charity.domain.vo.MaterialInfoVo;
+import com.ruoyi.charity.service.ActivityTraceService;
 import com.ruoyi.charity.service.LogisticService;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author zyh
@@ -21,13 +23,17 @@ public class MaterialFlowController {
     @Autowired
     private LogisticService logisticService;
 
+    @Autowired
+    private ActivityTraceService activityTraceService;
+
     @GetMapping("/address_list")
     public AjaxResult selectLogisticAddressList() {
         return logisticService.selectLogisticAddressList();
     }
 
     @PostMapping("/donation")
-    public AjaxResult donation(){
-        return null;
+    public AjaxResult donation(@Valid @RequestBody MaterialInfoVo materialInfoVo){
+        String username = SecurityUtils.getLoginUser().getUsername();
+        return activityTraceService.donation(materialInfoVo,username);
     }
 }

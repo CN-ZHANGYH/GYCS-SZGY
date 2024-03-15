@@ -55,7 +55,7 @@ public class RegisterDirectListener {
         try
         {
             TransactionResponse transactionResponse = charityControllerService.init_user(init_userInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success"))
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
             {
                 // 进行日志捕获
                 log.info("新用户注册成功： {}",sysUser.getUserName());

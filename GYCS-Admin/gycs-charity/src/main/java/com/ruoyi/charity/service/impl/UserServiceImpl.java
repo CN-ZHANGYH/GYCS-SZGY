@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
         // use the @SneakyThrows annotate solve this mistake
         TransactionResponse transactionResponse = charityControllerService.updateUserBalance(balanceInputBO);
-        if (transactionResponse.getReturnMessage().equals("Success")) {
+        if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
             // update balance of user insert to mysql as new record
             BigInteger oldAmount = charityUser.getAmount();
             BigInteger newAmount = oldAmount.add(amount);
