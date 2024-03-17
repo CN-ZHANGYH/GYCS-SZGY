@@ -460,7 +460,7 @@ public class SysUserServiceImpl implements ISysUserService
                     org.setOrgAddress(blockChainUser.getUserAddress());
                     org.setPrivateKey(blockChainUser.getPrivateKey());
                     org.setPublicKey(blockChainUser.getPublicKey());
-                    org.setOrgName(user.getUserName());
+                    org.setOrgName(user.getNickName());
                     org.setId(userId);
                     org.setAmount(0L);
                     orgService.insertOrg(org);
@@ -472,7 +472,7 @@ public class SysUserServiceImpl implements ISysUserService
                     logistic.setLogAddress(blockChainUser.getUserAddress());
                     logistic.setPrivateKey(blockChainUser.getPrivateKey());
                     logistic.setPublicKey(blockChainUser.getPublicKey());
-                    logistic.setLogName(user.getUserName());
+                    logistic.setLogName(user.getNickName());
                     logistic.setId(userId);
                     logisticService.insertLogistic(logistic);
                 }

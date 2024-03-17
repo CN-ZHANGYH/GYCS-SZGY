@@ -57,6 +57,9 @@ public class ActivityInitDirectListener {
         Long activityId = MPActivityMapper
                 .selectOne(Wrappers.lambdaQuery(CharityActivitieInfo.class).eq(CharityActivitieInfo::getTitle, activityInfoVo.getTitle()))
                 .getId();
+        if (activityId.intValue() == 0) {
+            log.error("查询失败： {}",activityId);
+        }
         // 使用BeanUtils工具类复制对象
         ActivityArticle activityArticle = new ActivityArticle();
         BeanUtils.copyProperties(activityInfoVo,activityArticle);

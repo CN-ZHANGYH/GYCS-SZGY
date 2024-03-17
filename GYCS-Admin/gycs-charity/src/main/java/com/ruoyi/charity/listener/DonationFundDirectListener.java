@@ -1,5 +1,6 @@
 package com.ruoyi.charity.listener;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
@@ -69,7 +70,10 @@ public class DonationFundDirectListener {
             TransactionResponse transactionResponse = charityControllerService.donatedFunds(fundsInputBO);
             if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
             {
+                Integer traceId = JSONArray.parseArray(transactionResponse.getValues()).getIntValue(1);
+
                 DonationTrace donationTrace = new DonationTrace();
+                donationTrace.setDonationId(Long.valueOf(traceId));
                 donationTrace.setIsDonation(true);
                 donationTrace.setDonorAddress(donatedFundVo.get_donorAddress());
                 donationTrace.setDestAddress(donatedFundVo.get_destAddress());
@@ -102,7 +106,7 @@ public class DonationFundDirectListener {
 
                 // update transaction and blockNumber by this donation
                 DonationTransaction donationTransaction = new DonationTransaction();
-                donationTransaction.setRaiseId(donatedFundVo.get_raiseId());
+                donationTransaction.setRaiseId(BigInteger.valueOf(traceId));
                 donationTransaction.setStatus(true);
                 donationTransaction.setBlockNumber(BigInteger.valueOf(Integer.parseInt(transactionResponse.getTransactionReceipt().getBlockNumber().substring(2), 16)));
                 donationTransaction.setTransactionHash(transactionResponse.getTransactionReceipt().getTransactionHash());

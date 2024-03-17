@@ -61,9 +61,51 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="物流商ID" align="center" prop="id" />
       <el-table-column label="物流商的名称" align="center" prop="logName" />
-      <el-table-column label="物流商的地址" align="center" prop="logAddress" />
-      <el-table-column label="用户的私钥" align="center" prop="privateKey" />
-      <el-table-column label="用户的公钥" align="center" prop="publicKey" />
+      <el-table-column label="物流商地址" align="center" prop="logAddress">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="区块链账户"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.logAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看区块链地址</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户私钥" align="center" prop="privateKey">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="用户私钥"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.privateKey"
+          >
+            <template #reference>
+              <el-button class="m-2">查看私钥</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户公钥" align="center" prop="publicKey">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="用户公钥"
+              :width="600"
+              trigger="hover"
+              :content="scope.row.publicKey"
+          >
+            <template #reference>
+              <el-button class="m-2">查看公钥</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:logistic:edit']">修改</el-button>

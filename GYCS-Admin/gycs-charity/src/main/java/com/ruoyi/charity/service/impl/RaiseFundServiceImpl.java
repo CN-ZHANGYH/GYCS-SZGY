@@ -6,11 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.ruoyi.charity.domain.bo.*;
-import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
-import com.ruoyi.charity.domain.dto.CharityRaiseFund;
-import com.ruoyi.charity.domain.dto.CharityUser;
+import com.ruoyi.charity.domain.dto.*;
 import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
+import com.ruoyi.charity.mapper.join.DonationTraceJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
 import com.ruoyi.charity.mapper.mp.MPRaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.MPRaiseFundMapper;
@@ -21,6 +20,7 @@ import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -60,6 +57,9 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Autowired
     private RaiseFundJMapper raiseFundJMapper;
+
+    @Autowired
+    private DonationTraceJMapper donationTraceJMapper;
 
 
     @Autowired
@@ -459,11 +459,15 @@ public class RaiseFundServiceImpl implements RaiseFundService {
      */
     @SneakyThrows
     @Override
-    public AjaxResult getRaiseFundTrace(BigInteger raiseId) {
-        CharityControllerGetFundRaisingOtherInfoInputBO otherInfoInputBO = new CharityControllerGetFundRaisingOtherInfoInputBO();
-        otherInfoInputBO.set_raiseId(raiseId);
-        CallResponse raisingOtherInfo = charityControllerService.getFundRaisingOtherInfo(otherInfoInputBO);
-        return null;
+    public List<DonationTraceVo> getRaiseFundTrace(BigInteger raiseId) {
+        MPJLambdaWrapper<DonationTrace> lambdaWrapper = new MPJLambdaWrapper<DonationTrace>()
+                .eq(DonationTrace::getRaiseId, raiseId)
+                .selectAll(DonationTrace.class)
+                .select(DonationTransaction::getTransactionHash, DonationTransaction::getBlockNumber, DonationTransaction::getStatus)
+                .leftJoin(DonationTransaction.class, DonationTransaction::getRaiseId, DonationTrace::getDonationId);
+
+        List<DonationTraceVo> donationTraceVos = donationTraceJMapper.selectJoinList(DonationTraceVo.class, lambdaWrapper);
+        return donationTraceVos;
     }
 
 

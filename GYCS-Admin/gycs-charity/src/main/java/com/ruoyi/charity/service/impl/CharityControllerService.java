@@ -1,11 +1,50 @@
 package com.ruoyi.charity.service.impl;
 
-
+import com.ruoyi.charity.domain.bo.CharityControllerAddLogisticsTraceInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerAddSignTraceInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerBankTransferIdsMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerBankTransferRecordMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerCharityActivitieMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerCharityRaiseFundMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerCharityTraceAddressMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerDonatedMaterialsInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerDonationByBankTransferInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerDonationTraceAddressMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetCertificateInfoDetailInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetDonationTaceByBankTransferInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingApplyStatusInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingInfoDetailInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingOtherInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetLogisticInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetOrgInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetRaiseFundBankTransferRecordInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetUserInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetVoteInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetWelfareActivitieInfoDetailInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetWelfareActivitieOtherInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerInit_logisticInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerInit_orgInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerInit_userInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerInitiateFundRaisingInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerInitiateWelfareActivitieInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerLogisticMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerOrgMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerRaiseFundBankTransferMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerScoringOfActiviteInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerScoringOfRaiseFundInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerSelectCharityTraceInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerSelectDonationTraceInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerUpdateFundRaisingStatusInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerUploadCertificateInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerUserMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerVoteOfRaiseFundInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerWithdrawInputBO;
 import java.lang.Exception;
 import java.lang.String;
 import java.util.Arrays;
 import javax.annotation.PostConstruct;
-import com.ruoyi.charity.domain.bo.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fisco.bcos.sdk.client.Client;
@@ -21,8 +60,8 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @Data
 public class CharityControllerService {
-
   public static final String SUCCESS = "Success";
+
   public static final String ABI = com.ruoyi.charity.utils.IOUtil.readResourceAsString("abi/CharityController.abi");
 
   public static final String BINARY = com.ruoyi.charity.utils.IOUtil.readResourceAsString("bin/ecc/CharityController.bin");
@@ -130,6 +169,10 @@ public class CharityControllerService {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "addLogisticsTrace", input.toArgs());
   }
 
+  public TransactionResponse donatedMaterials(CharityControllerDonatedMaterialsInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedMaterials", input.toArgs());
+  }
+
   public CallResponse orgCount() throws Exception {
     return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "orgCount", Arrays.asList());
   }
@@ -162,8 +205,8 @@ public class CharityControllerService {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "selectDonationTraceInfo", input.toArgs());
   }
 
-  public TransactionResponse donatedMaterials(CharityControllerDonatedMaterialsInputBO input) throws Exception {
-    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedMaterials", input.toArgs());
+  public TransactionResponse donatedFunds(CharityControllerDonatedFundsInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedFunds", input.toArgs());
   }
 
   public TransactionResponse getRaiseFundBankTransferRecord(CharityControllerGetRaiseFundBankTransferRecordInputBO input) throws Exception {
@@ -228,9 +271,5 @@ public class CharityControllerService {
 
   public TransactionResponse getUserInfo(CharityControllerGetUserInfoInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "getUserInfo", input.toArgs());
-  }
-
-  public TransactionResponse donatedFunds(CharityControllerDonatedFundsInputBO input) throws Exception {
-    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedFunds", input.toArgs());
   }
 }

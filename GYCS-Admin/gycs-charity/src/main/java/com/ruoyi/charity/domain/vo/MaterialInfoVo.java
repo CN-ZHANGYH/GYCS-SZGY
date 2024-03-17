@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * @author zyh
@@ -25,13 +26,13 @@ public class MaterialInfoVo implements Serializable {
     private String _userAddress;
 
     @NotNull(message = "物资类型不能为空")
-    private Integer _materialType;
+    private BigInteger _materialType;
 
     @NotNull(message = "物资名称不能为空")
     private String _materialName;
 
     @NotNull(message = "物资数量不能为空")
-    private Integer _materialCount;
+    private BigInteger _materialCount;
 
     @NotNull(message = "物流商地址不能为空")
     private String _logisticAddress;
@@ -40,7 +41,7 @@ public class MaterialInfoVo implements Serializable {
     private String  _destAddress;
 
     @NotNull(message = "公益活动ID不能为空")
-    private Integer _activiteId;
+    private BigInteger _activiteId;
 
 
 }
