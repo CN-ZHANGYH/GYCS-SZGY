@@ -1,6 +1,7 @@
 package com.ruoyi.charity.domain.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -83,7 +84,7 @@ public class CharityActivitieInfo implements Serializable
     /** 状态 */
     @Excel(name = "状态")
     @TableField(value = "status")
-    private Long status;
+    private BigInteger status;
 
     /** 总参与人数 */
     @Excel(name = "总参与人数")

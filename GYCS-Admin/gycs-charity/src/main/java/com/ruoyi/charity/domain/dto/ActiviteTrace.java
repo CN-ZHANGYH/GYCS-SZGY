@@ -1,5 +1,6 @@
 package com.ruoyi.charity.domain.dto;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -35,7 +36,7 @@ public class ActiviteTrace
     /** 种类 */
     @Excel(name = "种类")
     @TableField(value = "material_type")
-    private Long materialType;
+    private BigInteger materialType;
 
     /** 物资的名称 */
     @Excel(name = "物资的名称")
@@ -45,7 +46,7 @@ public class ActiviteTrace
     /** 物资的数量 */
     @Excel(name = "物资的数量")
     @TableField(value = "material_count")
-    private Long materialCount;
+    private BigInteger materialCount;
 
     /** 源地址 */
     @Excel(name = "源地址")
@@ -76,7 +77,7 @@ public class ActiviteTrace
     /** 公益活动ID */
     @Excel(name = "公益活动ID")
     @TableField(value = "activit_id")
-    private Long activitId;
+    private BigInteger activitId;
 
     /** 溯源状态 */
     @Excel(name = "溯源状态")

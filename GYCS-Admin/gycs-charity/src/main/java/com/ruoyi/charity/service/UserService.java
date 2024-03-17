@@ -9,4 +9,6 @@ public interface UserService {
 
     AjaxResult updateBalance(String username, BigInteger amount);
 
+    AjaxResult getOrgAddress(String nickName);
+
 }

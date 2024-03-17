@@ -26,4 +26,11 @@ public class UserController {
         String username = SecurityUtils.getLoginUser().getUsername();
         return userService.updateBalance(username,amount);
     }
+
+    @PostMapping("/org_address")
+    public AjaxResult getOrgAddress(){
+        return userService.getOrgAddress(SecurityUtils.getLoginUser().getUser().getNickName());
+    }
+
+
 }

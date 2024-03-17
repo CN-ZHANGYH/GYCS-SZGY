@@ -37,6 +37,6 @@ public class ActiviteTransaction {
     @TableField(value = "status")
     private Boolean status;
 
-    @TableField(value = "activity_id")
-    private BigInteger activity_id;
+    @TableField(value = "activite_id")
+    private BigInteger activiteId;
 }

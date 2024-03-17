@@ -42,3 +42,10 @@ export function delLogistic(id) {
     method: 'delete'
   })
 }
+
+export function getAllLogisticAddress() {
+  return request({
+    url: '/material/address_list',
+    method: 'get'
+  })
+}

@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
 import com.ruoyi.charity.domain.dto.CharityUser;
+import com.ruoyi.charity.domain.dto.Org;
 import com.ruoyi.charity.domain.vo.UserVo;
+import com.ruoyi.charity.mapper.OrgMapper;
 import com.ruoyi.charity.mapper.join.SysUserJMapper;
+import com.ruoyi.charity.mapper.mp.MPOrgMapper;
 import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -29,6 +32,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MPUserMapper MPUserMapper;
+
+
+    @Autowired
+    private MPOrgMapper mpOrgMapper;
 
 
     @Autowired
@@ -109,5 +116,11 @@ public class UserServiceImpl implements UserService {
             return AjaxResult.success().put("msg","更新账户余额成功");
         }
         return AjaxResult.error().put("msg","更新账户余额失败");
+    }
+
+    @Override
+    public AjaxResult getOrgAddress(String nickName) {
+        String orgAddress = mpOrgMapper.selectOne(Wrappers.lambdaQuery(Org.class).eq(Org::getOrgName, nickName)).getOrgAddress();
+        return AjaxResult.success().put("localAddress",orgAddress);
     }
 }

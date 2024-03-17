@@ -6,9 +6,12 @@ import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.BankTransferRecordVo;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
+import com.ruoyi.charity.domain.vo.DonationTraceVo;
 import com.ruoyi.charity.service.RaiseFundService;
+import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
 import org.bouncycastle.jcajce.provider.symmetric.util.PBE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigInteger;
+import java.util.List;
 
 @RestController
 @RequestMapping("/raise_fund")
-public class RaiseFundController {
+public class RaiseFundController  extends BaseController {
 
 
     @Autowired
@@ -127,10 +131,12 @@ public class RaiseFundController {
      * @return AjaxResult
      */
    @GetMapping("/trace")
-    public AjaxResult getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
+    public TableDataInfo getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
         // Get the raiseId from the request parameter
-        return fundService.getRaiseFundTrace(raiseId);
-        // Return the trace information of the raiseId
+       startPage();
+       List<DonationTraceVo> raiseFundTrace = fundService.getRaiseFundTrace(raiseId);
+       // Return the trace information of the raiseId
+       return getDataTable(raiseFundTrace);
     }
 
    @PostMapping("/donation_bank_transfer")

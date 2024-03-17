@@ -42,3 +42,13 @@ export function delActivite(charityId) {
     method: 'delete'
   })
 }
+
+
+export function initActivite(data) {
+  return request({
+    url: '/activity/initiate/',
+    method: 'post',
+    data: data
+  })
+}
+

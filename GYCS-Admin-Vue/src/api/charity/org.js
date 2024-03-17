@@ -42,3 +42,11 @@ export function delOrg(id) {
     method: 'delete'
   })
 }
+
+
+export function getOrgAddress() {
+  return request({
+    url: '/user/org_address/',
+    method: 'post'
+  })
+}

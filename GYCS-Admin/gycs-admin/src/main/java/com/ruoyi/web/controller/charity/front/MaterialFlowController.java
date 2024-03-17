@@ -17,7 +17,7 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/logistic")
+@RequestMapping("/material")
 public class MaterialFlowController {
 
     @Autowired
