@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.charity.front;
 
 
-import com.alibaba.fastjson2.util.Fnv;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.BankTransferRecordVo;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
@@ -82,7 +81,7 @@ public class RaiseFundController  extends BaseController {
      * @return AjaxResult
      */
     @GetMapping("/getCertificateInfo")
-    public AjaxResult getCertificateInfo(@RequestParam("raiseId") Long raiseId) {
+    public AjaxResult getCertificateInfo(@RequestParam("raiseId") BigInteger raiseId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         return fundService.getCertificateInfo(raiseId,loginUser.getUsername());
     }

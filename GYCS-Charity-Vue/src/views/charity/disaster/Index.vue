@@ -13,17 +13,17 @@
     </div>
     <div style="margin-left: 5%">
       <vs-row style="padding: 5px 15%;">
-        <vs-col v-for="_ in 6" :key="_" :sm="4" style="margin-bottom: 10px">
+        <vs-col v-for="(item,index) in getPage(activityList, queryParams.pageNum, queryParams.pageSize)" :key="index" :sm="4" style="margin-bottom: 10px">
           <div class="disaster-container">
             <vs-card>
               <template #title>
-                <h3>Trendy clothing</h3>
+                <h3>{{item.title}}</h3>
               </template>
               <template #img>
-                <img src="../../../assets/matter/one.png" alt="" style="width: 270px;height: 160px"/>
+                <img :src="item.img" alt="" style="width: 270px;height: 160px"/>
               </template>
               <template #text>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+                <p>{{item.content.substring(0,30) + "......"}}</p>
                 <div style="display: flex;justify-content: center;margin-top: 20px">
                   <vs-button style="width: 200px" @click="donationMaterials()">
                     捐赠物资
@@ -36,7 +36,7 @@
                 </vs-button>
                 <vs-button class="btn-chat" type="shadow">
                   <vs-icon><EyeBold /></vs-icon>
-                  <span class="span" @click="isDialogOpen = true"> 查看 </span>
+                  <span class="span" @click="viewActivity(item)"> 查看 </span>
                 </vs-button>
               </template>
             </vs-card>
@@ -46,85 +46,80 @@
     </div>
     <div class="con-pagination">
       <vs-pagination
-          v-model:current-page="page"
+          v-model:current-page="queryParams.pageNum"
+          v-model:page-size="queryParams.pageSize"
           :layout="['total', 'prev', 'pager', 'next', 'jumper', 'sizes']"
-          :total="50"
+          :total="total"
+          :page-sizes="[1,3,5,6]"
       />
     </div>
   </div>
-
-  <vs-dialog v-model="isDialogOpen" scroll lock-scroll not-close auto-width>
+  <vs-dialog v-model="isDialogOpen" scroll lock-scroll auto-width>
     <template #header>
-      <h3>Introduction</h3>
+      <h2>关于{{form.title}}的公益活动详细内容</h2>
     </template>
     <div class="con-content-scroll">
-      <h4>Whats is Vuesax?</h4>
-      <p>
-        Vuesax (pronounced / vjusacksː /, as view sacks) is a framework of UI
-        components created with Vuejs to make projects easily and with a
-        unique and pleasant style, vuesax is created from scratch and designed
-        for all types of developers from the frontend lover to the backend who
-        wants to easily create their visual approach to the end-user We are
-        focused on streamlining the work of the programmer by giving
-        components created in their entirety and with independent
-        customization and very easy to implement, so creativity is in our
-        hands but we do not neglect that each project is different both
-        visually and in its ecosystem Vuesax does not have a design line such
-        as other component frameworks based on Material Design, we believe
-        that there are already emaciated frameworks that look visually and in
-        UI / UX and we don't want to be one more of the bunch, apart from that
-        we love to create and design new experiences and surprise you with new
-        elements or details that we can only do by being visually free.
-      </p>
+      <vs-alert type="shadow" color="dark">
+        <template #title>发布作者： {{form.author}}</template>
+        <div>
+          {{form.content}}
+        </div>
 
-      <h4>Why Vuesax?</h4>
-
-      <p>
-        Vuesax is a relatively new framework with a refreshing design and in
-        the latest trends, vuesax based on vuejs which means that we go hand
-        in hand with one of the most popular javascript frameworks in the
-        world and with a huge community with which you will have all the help
-        and documentation to create and make your project
-        <br />
-        <br />
-        - Vuesax, unlike many frameworks, is designed from scratch and we are
-        not anchored to any design line, this is something great since your
-        project is going to be unique and very different from the others
-
-        <br />
-        <br />
-        - We are focused on the quick and easy creation of projects giving a
-        beautiful visual line but without forgetting the personalization and
-        independence of the developer
-
-        <br />
-        <br />
-        - Vuesax uses native css variables for better customization and
-        production changes such as changing to dark theme or changing the main
-        color of the entire application with few javascript lines
-        <br />
-        <br />
-
-        - Vuesax is a frame designed to have a great visual impact and that is
-        always in trend with respect to design.
-        <br />
-        <br />
-
-        - An open-source community to create, improve and correct any
-        component or function.
-        <br />
-        <br />
-
-        - Independent components to avoid importing unnecessary code.
-        <br />
-        <br />
-
-        - Markdown documents for better sustainability.
-        <br />
-        <br />
-
-        - and much more.
-      </p>
+        <template #footer>发布时间： {{form.createTime}}</template>
+      </vs-alert>
+      <vs-alert style="margin-top: 10px" type="shadow">
+        <div style="display: flex;flex: 1;">
+          <div>
+            <img :src="form.img" alt="灾区活动的图片" width="400" height="250" style="border-radius: 10px">
+          </div>
+          <div style="margin-top: 20px;">
+            <div style="display: flex;justify-content: space-between;margin-bottom: 15px">
+              <h2 style="margin: 10px 10px;font-size: 14px">当前状态: </h2>
+              <vs-input v-model="form.status" placeholder="Name" disabled/>
+            </div>
+            <div style="display: flex;justify-content: space-between;margin-bottom: 15px">
+              <h2 style="margin: 10px 10px;font-size: 14px">开始时间: </h2>
+              <vs-input v-model="form.startTime" placeholder="Name" disabled/>
+            </div>
+            <div style="display: flex;justify-content: space-between;margin-bottom: 15px">
+              <h2 style="margin: 10px 10px;font-size: 14px">结束时间: </h2>
+              <vs-input v-model="form.endTime" placeholder="Name" disabled/>
+            </div>
+            <div style="display: flex;justify-content: space-between;margin-bottom: 15px">
+              <h2 style="margin: 10px 10px;font-size: 14px">运输方式: </h2>
+              <vs-input v-model="form.logisticType" placeholder="Name" disabled/>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <div style="display: flex;flex: 1">
+            <div>
+              <vs-button
+                  color="primary"
+                  type="flat"
+              >
+                物流公司地址
+              </vs-button>
+            </div>
+            <div style="margin-top: 13px;font-size: 15px;font-weight: bold">
+              {{form.logisticAddress}}
+            </div>
+          </div>
+          <div style="display: flex;flex: 1">
+            <div>
+              <vs-button
+                  color="primary"
+                  type="flat"
+              >
+                代理机构地址
+              </vs-button>
+            </div>
+            <div style="margin-top: 13px;font-size: 15px;font-weight: bold">
+              {{form.lncomeAddress}}
+            </div>
+          </div>
+        </div>
+      </vs-alert>
     </div>
   </vs-dialog>
 </template>
@@ -135,16 +130,45 @@ import {
   HeartBold,
   SearchStatusBold
 } from '@vuesax-alpha/icons-vue'
-import {ref} from "vue";
+import {reactive, ref, toRefs, watch} from "vue";
 import router from "@/router/index.js";
+import {getActivityList} from "@/api/charity/activite.js";
+import {getPage} from "vuesax-alpha";
 
 const isDialogOpen = ref(false)
+const activityList = ref([])
+const total = ref(0)
+const data = reactive({
+  form: {},
+  queryParams: {
+    pageNum: 1,
+    pageSize: 6
+  },
+});
+
+const { queryParams, form } = toRefs(data);
+
 function donationMaterials(){
   router.push({
     name: "materials"
   })
 }
 
+
+function viewActivity(item){
+  isDialogOpen.value = true
+  form.value = item
+
+}
+
+function selectActivityList() {
+  getActivityList().then(res => {
+    activityList.value = res.rows
+    total.value = res.total;
+  })
+}
+
+selectActivityList()
 </script>
 
 <style lang="scss" scoped>

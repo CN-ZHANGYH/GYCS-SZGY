@@ -17,7 +17,7 @@ public interface RaiseFundService {
 
     AjaxResult getRaiseFundInfo(Long raiseId,String username);
 
-    AjaxResult getCertificateInfo(Long raiseId,String username);
+    AjaxResult getCertificateInfo(BigInteger raiseId,String username);
 
     AjaxResult getRaiseFundVoteStatus(Long raiseId, String username);
 

@@ -10,9 +10,6 @@ export function getCertificateInfo(query) {
     })
 }
 
-
-
-
 export function getRaiseFundDetail(query) {
     return request({
         url: '/raise_fund/detail',
@@ -20,3 +17,17 @@ export function getRaiseFundDetail(query) {
         params: query
     })
 }
+
+
+// 查询所有的公益募资活动
+export function getRaiseFundList(query) {
+    return request({
+        url: '/charity/fund/list',
+        method: 'get',
+        params: query
+    })
+}
+
+
+
+

@@ -20,7 +20,6 @@ import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.CallResponse;
@@ -236,7 +235,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
      * @return AjaxResult
      */
     @Override
-    public AjaxResult getCertificateInfo(Long raiseId, String username) {
+    public AjaxResult getCertificateInfo(BigInteger raiseId, String username) {
         // 默认先查询redis的缓存中是否有该数据
         CertificateInfoVo certificateInfoVoResult = redisCache.getCacheObject(CacheConstants.CERTIFICATE_INFO_KEY + username);
         if (certificateInfoVoResult != null) {
@@ -248,7 +247,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
         // 调用区块链查询当前的上传证明信息
         CharityControllerGetCertificateInfoDetailInputBO detailInputBO = new CharityControllerGetCertificateInfoDetailInputBO();
-        detailInputBO.set_raiseId(BigInteger.valueOf(raiseId));
+        detailInputBO.set_raiseId(raiseId);
         try
         {
             CallResponse callResponse = charityControllerService.getCertificateInfoDetail(detailInputBO);
