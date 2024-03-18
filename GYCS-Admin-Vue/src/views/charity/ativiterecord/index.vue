@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="active-container">
     <div class="flex-container">
       <div>
         <div class="card-left">
@@ -9,93 +9,199 @@
           </div>
         </div>
       </div>
-      <div class="right-container" style="width: 80%;height: 600px" >
+      <div class="right-container" style="width: 80%;height: 600px" v-loading="loading">
         <template v-for="item in activitieRecordList">
           <div class="card " >
             <div class="header">
-              <img src="@/assets/images/img.png" class="card-image">
+              <img :src="item.img" class="card-image">
             </div>
             <div class="info">
-              <p class="title">灾区公益活动</p>
+              <p class="title">{{item.title}}</p>
             </div>
             <div class="footer">
               <p class="tag">⭐反馈：5星</p>
-              <button class="button">
+              <button class="button" @click="openModal(item)">
                 <svg class="svgIcon" viewBox="0 0 384 512">
                   <path
                       d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"
                   ></path>
                 </svg>
               </button>
-
             </div>
           </div>
         </template>
       </div>
     </div>
+    <div style="display: flex;justify-content: center;margin-left: 15%;margin-top: 10%">
+      <pagination
+          v-show="total>0"
+          :total="total"
+          v-model:page="queryParams.pageNum"
+          v-model:limit="queryParams.pageSize"
+          @pagination="getList"
+      />
+    </div>
   </div>
+  <el-drawer
+      v-model="drawer"
+      title="公益活动详细信息"
+      :direction="direction"
+      size="70%"
+      style="padding: 20px 20px"
+  >
+    <div>
+      <el-descriptions
+          title="⭐请确认当前的公益活动信息"
+          :column="2"
+          size="large"
+          border
+      >
+        <el-descriptions-item >
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <document />
+              </el-icon>
+              活动标题
+            </div>
+          </template>
+          {{form.title}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <user />
+              </el-icon>
+              发布作者
+            </div>
+          </template>
+          {{form.author}}
+        </el-descriptions-item>
+        <el-descriptions-item :span="2">
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <collection-tag />
+              </el-icon>
+              文章信息
+            </div>
+          </template>
+          {{form.content}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <alarm-clock />
+              </el-icon>
+              开始时间
+            </div>
+          </template>
+          <el-tag size="small">{{form.startTime}}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <alarm-clock />
+              </el-icon>
+              结束时间
+            </div>
+          </template>
+          {{form.endTime}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <van />
+              </el-icon>
+              物流方式
+            </div>
+          </template>
+          {{form.logisticType}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <coordinate />
+              </el-icon>
+              物流商地址
+            </div>
+          </template>
+          {{form.logisticAddress}}
+        </el-descriptions-item>
+        <el-descriptions-item :span="2">
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <place />
+              </el-icon>
+              代理机构地址
+            </div>
+          </template>
+          {{form.lncomeAddress}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon class="iconStyle">
+                <Picture />
+              </el-icon>
+              活动图片
+            </div>
+          </template>
+          <img :src="form.img" width="400" height="300"  style="border-radius: 10px">
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
+  </el-drawer>
 </template>
 
 <script setup name="ActivitieRecord">
 
+import {getActivityList} from "@/api/charity/activite.js";
+import {AlarmClock, CollectionTag, Coordinate, Document, Picture, Place, User, Van} from "@element-plus/icons-vue";
+
 const { proxy } = getCurrentInstance();
 
-const activitieRecordList = ref([
-  {
-    id: 1,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 2,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 3,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 4,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 5,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 6,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-  {
-    id: 7,
-    title: "地震灾区",
-    desc: "这是地震的灾区"
-  },
-]);
+const activitieRecordList = ref([]);
 
 const total = ref(0);
 const title = ref("");
-
+const direction = ref('rtl')
+const loading = ref(true);
+const drawer = ref(false)
 const data = reactive({
   form: {},
   queryParams: {
     pageNum: 1,
-    pageSize: 10
+    pageSize: 8
   },
   rules: {
   }
 });
-
 const { queryParams, form, rules } = toRefs(data);
 
 
+function openModal(item) {
+  drawer.value = true
+  form.value = item
+}
 
-
+function getList(){
+  loading.value = true
+  getActivityList(queryParams.value).then(res => {
+    activitieRecordList.value = res.rows
+    total.value = res.total;
+    loading.value = false;
+  })
+}
+onMounted(() => {
+  getList()
+})
 
 </script>
 
@@ -309,6 +415,12 @@ const { queryParams, form, rules } = toRefs(data);
   bottom: unset;
   /* transform: translateY(-30px); */
   transition-duration: 0.3s;
+}
+
+
+.active-container {
+  display: flex;
+  flex-direction: column;
 }
 
 </style>

@@ -51,7 +51,9 @@ public class ActivityController extends BaseController {
     }
 
     @GetMapping("/list")
-    public AjaxResult selectActivityList() {
-        return activityService.selectActivityList();
+    public TableDataInfo selectActivityList() {
+        startPage();
+        List<ActivityInfoVo> activityInfoVos = activityService.selectActivityList();
+        return getDataTable(activityInfoVos);
     }
 }

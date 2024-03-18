@@ -150,10 +150,11 @@
 <script setup>
 
 
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import { getPage } from 'vuesax-alpha'
 import BankCard from "@/components/BankCard/BankCard.vue";
 import Avatar from "@/components/Avatar/Avatar.vue";
+import {getAllLogisticAddress} from "@/api/charity/logistic.js";
 const activeTab = ref(0);
 const tabs = reactive([
   { id: '1', title: '银行卡信息' },
@@ -239,9 +240,13 @@ const totalUser = reactive([
     website: 'ambrose.net',
   },
 ])
+
+onMounted(() => {
+  getAllLogisticAddress().then(res => {
+    console.log(res)
+  })
+})
 </script>
-
-
 <style scoped>
 
 

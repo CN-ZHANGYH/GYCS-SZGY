@@ -23,8 +23,7 @@
         关于
       </vs-navbar-item>
       <template #right>
-        <vs-button type="flat">Login</vs-button>
-        <vs-button>Get Started</vs-button>
+        <vs-button @click="handleLogout" >退出登录</vs-button>
       </template>
     </vs-navbar>
     <vs-sidebar v-model="active" v-model:open="activeSidebar" absolute>
@@ -186,10 +185,11 @@ import {
   HeartBold,
   HierarchySquareBold,
   TrashBold
-} from '@vuesax-alpha/icons-vue'
+} from "@vuesax-alpha/icons-vue";
 import Footer from "@/components/Layout/Footer.vue";
-import router from '../../router/index.js'
-import menuRoteToView from '../../utils/routerUtil'
+import router from '../../router/index.js';
+import useUserStore from "@/stores/modules/user.js";
+const userStore = useUserStore()
 const active = ref('home')
 const activeSidebar = ref(false)
 
@@ -251,9 +251,6 @@ const menuOptions = reactive([
 // 使用路由
 // 监听当前的菜单栏的值
 watch(active,(val,old) => {
-
-
-
   menuOptions.forEach((item) =>{
     if (val == item.name) {
       router.push({
@@ -263,6 +260,12 @@ watch(active,(val,old) => {
   })
 })
 
+// 退出登录
+function handleLogout() {
+  userStore.logOut().then(() => {
+    location.href = '/login';
+  })
+}
 </script>
 
 

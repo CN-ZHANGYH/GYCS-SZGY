@@ -31,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -117,37 +115,21 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     @Override
-    public AjaxResult selectActivityList() {
-        // 直接先从Redis中读取数据 如果没有则继续从Mysql重新读取
-        List<ActivityInfoVo> activityInfoVoList = redisCache.getCacheObject(CacheConstants.ACTIVITY_LIST_KEY);
+    public List<ActivityInfoVo> selectActivityList() {
+        MPJLambdaWrapper<CharityActivitieInfo> lambdaWrapper = new MPJLambdaWrapper<CharityActivitieInfo>()
+                .selectAll(CharityActivitieInfo.class)
+                .selectAll(ActivityArticle.class)
+                .leftJoin(ActivityArticle.class, ActivityArticle::getActivityId, CharityActivitieInfo::getId);
 
-        if (activityInfoVoList == null) {
-            MPJLambdaWrapper<CharityActivitieInfo> lambdaWrapper = new MPJLambdaWrapper<CharityActivitieInfo>()
-                    .selectAll(CharityActivitieInfo.class)
-                    .selectAll(ActivityArticle.class)
-                    .leftJoin(ActivityArticle.class, ActivityArticle::getActivityId, CharityActivitieInfo::getId);
+        List<ActivityInfoVo> activityInfoVoList = activityJMapper.selectJoinList(ActivityInfoVo.class, lambdaWrapper);
 
-            List<ActivityInfoVo> activityInfoVos = activityJMapper.selectJoinList(ActivityInfoVo.class, lambdaWrapper);
-
-            // 直接存储Redis
-            redisCache.setCacheObject(CacheConstants.ACTIVITY_LIST_KEY,activityInfoVos,5, TimeUnit.MINUTES);
-            AjaxResult success = AjaxResult.success();
-            success.put("msg","查询成功");
-            success.put("data",activityInfoVos);
-            return success;
-        }
-
-        AjaxResult success = AjaxResult.success();
-        success.put("msg","查询成功");
-        success.put("data",activityInfoVoList);
-        return success;
+        // 直接存储Redis
+        return activityInfoVoList;
     }
 
     @Override
     public AjaxResult feedBackActivity(BigInteger activityId, BigInteger score, String username) {
         // 查询当前的用户是否已经反馈过
-
-
 
         CharityControllerScoringOfActiviteInputBO scoreInput = new CharityControllerScoringOfActiviteInputBO();
         scoreInput.set_activitieId(activityId);

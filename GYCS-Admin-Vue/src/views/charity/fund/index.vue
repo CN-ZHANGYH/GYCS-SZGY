@@ -75,7 +75,21 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="活动组织者" align="center" prop="promoterAddress" />
+      <el-table-column label="活动组织者" align="center" prop="promoterAddress">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="活动组织者"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.promoterAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看发起者</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>>
       <el-table-column label="活动状态" align="center" prop="status" />
       <el-table-column label="开始时间" align="center" prop="startTime" width="180">
         <template #default="scope">
