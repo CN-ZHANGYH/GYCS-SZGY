@@ -1,13 +1,14 @@
 package com.ruoyi.charity.listener;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
-import com.ruoyi.charity.domain.bo.CharityControllerUpdateFundRaisingStatusInputBO;
-import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
-import com.ruoyi.charity.domain.dto.CharityRaiseFund;
-import com.ruoyi.charity.domain.dto.DonationTrace;
+import com.ruoyi.charity.domain.dto.*;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
+import com.ruoyi.charity.mapper.mp.MPDonationTransactionMapper;
+import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.ICharityRaiseFundService;
 import com.ruoyi.charity.service.IDonationTraceService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
@@ -44,6 +45,16 @@ public class DonationFundDirectListener {
     @Autowired
     private IDonationTraceService donationTraceService;
 
+    @Autowired
+    private ICharityRaiseFundService raiseFundService;
+
+
+    @Autowired
+    private MPUserMapper MPUserMapper;
+
+    @Autowired
+    private MPDonationTransactionMapper MPDonationTransactionMapper;
+
     @RabbitHandler
     public void process(String message) {
         // 接收key为register的订阅模式交换机发来的消息进行消费
@@ -51,14 +62,18 @@ public class DonationFundDirectListener {
         log.info("DirectReceiver消费者收到消息  : {}" + messageResult.getMessage());
 
         DonatedFundVo donatedFundVo = JSONObject.parseObject(messageResult.getData(), DonatedFundVo.class);
+
         CharityControllerDonatedFundsInputBO fundsInputBO = new CharityControllerDonatedFundsInputBO();
         BeanUtils.copyProperties(donatedFundVo,fundsInputBO);
         try
         {
             TransactionResponse transactionResponse = charityControllerService.donatedFunds(fundsInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success"))
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS))
             {
+                Integer traceId = JSONArray.parseArray(transactionResponse.getValues()).getIntValue(1);
+
                 DonationTrace donationTrace = new DonationTrace();
+                donationTrace.setDonationId(Long.valueOf(traceId));
                 donationTrace.setIsDonation(true);
                 donationTrace.setDonorAddress(donatedFundVo.get_donorAddress());
                 donationTrace.setDestAddress(donatedFundVo.get_destAddress());
@@ -69,6 +84,34 @@ public class DonationFundDirectListener {
                 donationTrace.setAmount(donatedFundVo.get_amount());
                 donationTrace.setDescription(donatedFundVo.get_desc());
                 donationTraceService.insertDonationTrace(donationTrace);
+
+                // update raise fund active info
+                BigInteger amount = donatedFundVo.get_amount();
+                CharityRaiseFund charityRaiseFund = raiseFundService
+                        .selectCharityRaiseFundById(Long.valueOf(String.valueOf(donatedFundVo.get_raiseId())));
+                BigInteger overAmount = charityRaiseFund.getOverAmount();
+                BigInteger totalPeople = charityRaiseFund.getTotalPeople();
+                charityRaiseFund.setOverAmount(overAmount.add(amount));
+                charityRaiseFund.setTotalPeople(totalPeople.add(BigInteger.valueOf(1)));
+                raiseFundService.updateCharityRaiseFund(charityRaiseFund);
+
+                // there need update credit of user
+                CharityUser charityUser = MPUserMapper
+                        .selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUserAddress, donatedFundVo.get_donorAddress()));
+                Integer credit = charityUser.getCredit();
+                BigInteger oldBalance = charityUser.getAmount();
+                charityUser.setAmount(oldBalance.subtract(donatedFundVo.get_amount()));
+                charityUser.setCredit(credit + 50);
+                MPUserMapper.updateById(charityUser);
+
+                // update transaction and blockNumber by this donation
+                DonationTransaction donationTransaction = new DonationTransaction();
+                donationTransaction.setRaiseId(BigInteger.valueOf(traceId));
+                donationTransaction.setStatus(true);
+                donationTransaction.setBlockNumber(BigInteger.valueOf(Integer.parseInt(transactionResponse.getTransactionReceipt().getBlockNumber().substring(2), 16)));
+                donationTransaction.setTransactionHash(transactionResponse.getTransactionReceipt().getTransactionHash());
+
+                MPDonationTransactionMapper.insert(donationTransaction);
 
                 log.info("用户捐款成功： {}",donatedFundVo.get_donorAddress());
             }

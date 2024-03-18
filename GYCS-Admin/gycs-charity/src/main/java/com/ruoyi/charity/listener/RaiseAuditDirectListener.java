@@ -66,7 +66,7 @@ public class RaiseAuditDirectListener {
         try
         {
             TransactionResponse transactionResponse = charityControllerService.updateFundRaisingStatus(statusInputBO);
-            if (transactionResponse.getReturnMessage().equals("Success")) {
+            if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
                 // 记录当前的区块链交易日志
                 log.info("当前的审核交易已经完成上链：{}",raiseAudit);
             }

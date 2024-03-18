@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.math.BigInteger;
+
 /**
  * 用户对象 charity_user
  * 
@@ -25,7 +27,7 @@ public class CharityUser
 
     /** 用户的余额 */
     @Excel(name = "用户的余额")
-    private Integer amount;
+    private BigInteger amount;
 
     /** 用户积分 */
     @Excel(name = "用户积分")
@@ -77,12 +79,12 @@ public class CharityUser
     {
         return username;
     }
-    public void setAmount(Integer amount) 
+    public void setAmount(BigInteger amount)
     {
         this.amount = amount;
     }
 
-    public Integer getAmount() 
+    public BigInteger getAmount()
     {
         return amount;
     }

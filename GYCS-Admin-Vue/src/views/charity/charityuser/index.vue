@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户的名称" prop="username">
+      <el-form-item label="用户名称" prop="username">
         <el-input
           v-model="queryParams.username"
           placeholder="请输入用户的名称"
@@ -75,9 +75,51 @@
       <el-table-column label="用户称号" align="center" prop="designation" />
       <el-table-column label="投票次数" align="center" prop="voteCount" />
       <el-table-column label="提现次数" align="center" prop="withdrawCount" />
-      <el-table-column label="用户地址" align="center" prop="userAddress" />
-      <el-table-column label="用户私钥" align="center" prop="privateKey" />
-      <el-table-column label="用户公钥" align="center" prop="publicKey" />
+      <el-table-column label="用户地址" align="center" prop="userAddress">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="区块链账户"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.userAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看区块链地址</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户私钥" align="center" prop="privateKey">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="用户私钥"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.privateKey"
+          >
+            <template #reference>
+              <el-button class="m-2">查看私钥</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户公钥" align="center" prop="publicKey">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="用户公钥"
+              :width="600"
+              trigger="hover"
+              :content="scope.row.publicKey"
+          >
+            <template #reference>
+              <el-button class="m-2">查看公钥</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:charityuser:edit']">修改</el-button>
@@ -85,7 +127,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

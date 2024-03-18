@@ -185,6 +185,18 @@ system:
   hexPrivateKey: 4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f
   ### Optional. Please fill this address if you want to use related service
   contract:
-    charityControllerAddress: "0x6838730366711e822273f86f95f969e6b95496b4"
+    charityControllerAddress: "0x4e672b566d4ca881c66f9d97991ab15588a32de5"
 
-
+cos:
+  # 密钥id
+  secretId: "AKIDk6z64pcAk9JCH8p4GJ9k5yeBZCKFCiGY"
+  # 密钥key
+  secretKey: "CXdZIYfYKuEIZJf9U26vVorgHh8PSGn9"
+  # 所属区域
+  bucket: "ap-nanjing"
+  # 存储桶名称
+  bucketName: "blog-1304715799"
+  # COS存储文件夹
+  folder: "/imgs/"
+  # 访问地址
+  webUrl: "https://blog-1304715799.cos.ap-nanjing.myqcloud.com"

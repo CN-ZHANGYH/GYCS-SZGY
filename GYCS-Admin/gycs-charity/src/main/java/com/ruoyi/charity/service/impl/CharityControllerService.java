@@ -2,18 +2,23 @@ package com.ruoyi.charity.service.impl;
 
 import com.ruoyi.charity.domain.bo.CharityControllerAddLogisticsTraceInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerAddSignTraceInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerBankTransferIdsMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerBankTransferRecordMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerCharityActivitieMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerCharityRaiseFundMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerCharityTraceAddressMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedMaterialsInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerDonationByBankTransferInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerDonationTraceAddressMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetCertificateInfoDetailInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetDonationTaceByBankTransferInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingApplyStatusInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingInfoDetailInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetFundRaisingOtherInfoInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetLogisticInfoInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetOrgInfoInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerGetRaiseFundBankTransferRecordInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetUserInfoInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetVoteInfoInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerGetWelfareActivitieInfoDetailInputBO;
@@ -25,6 +30,7 @@ import com.ruoyi.charity.domain.bo.CharityControllerInitiateFundRaisingInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerInitiateWelfareActivitieInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerLogisticMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerOrgMapInputBO;
+import com.ruoyi.charity.domain.bo.CharityControllerRaiseFundBankTransferMapInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerScoringOfActiviteInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerScoringOfRaiseFundInputBO;
 import com.ruoyi.charity.domain.bo.CharityControllerSelectCharityTraceInfoInputBO;
@@ -54,6 +60,8 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @Data
 public class CharityControllerService {
+  public static final String SUCCESS = "Success";
+
   public static final String ABI = com.ruoyi.charity.utils.IOUtil.readResourceAsString("abi/CharityController.abi");
 
   public static final String BINARY = com.ruoyi.charity.utils.IOUtil.readResourceAsString("bin/ecc/CharityController.bin");
@@ -75,6 +83,10 @@ public class CharityControllerService {
 
   public TransactionResponse InitiateFundRaising(CharityControllerInitiateFundRaisingInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "InitiateFundRaising", input.toArgs());
+  }
+
+  public CallResponse bankTransferIndex() throws Exception {
+    return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "bankTransferIndex", Arrays.asList());
   }
 
   public CallResponse donationTraceAddressMap(CharityControllerDonationTraceAddressMapInputBO input) throws Exception {
@@ -113,6 +125,10 @@ public class CharityControllerService {
     return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "getLogisticInfo", input.toArgs());
   }
 
+  public CallResponse RaiseFundBankTransferMap(CharityControllerRaiseFundBankTransferMapInputBO input) throws Exception {
+    return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "RaiseFundBankTransferMap", input.toArgs());
+  }
+
   public CallResponse charityRaiseFundMap(CharityControllerCharityRaiseFundMapInputBO input) throws Exception {
     return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "charityRaiseFundMap", input.toArgs());
   }
@@ -137,6 +153,10 @@ public class CharityControllerService {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "voteOfRaiseFund", input.toArgs());
   }
 
+  public CallResponse BankTransferRecordMap(CharityControllerBankTransferRecordMapInputBO input) throws Exception {
+    return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "BankTransferRecordMap", input.toArgs());
+  }
+
   public TransactionResponse InitiateWelfareActivitie(CharityControllerInitiateWelfareActivitieInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "InitiateWelfareActivitie", input.toArgs());
   }
@@ -147,6 +167,10 @@ public class CharityControllerService {
 
   public TransactionResponse addLogisticsTrace(CharityControllerAddLogisticsTraceInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "addLogisticsTrace", input.toArgs());
+  }
+
+  public TransactionResponse donatedMaterials(CharityControllerDonatedMaterialsInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedMaterials", input.toArgs());
   }
 
   public CallResponse orgCount() throws Exception {
@@ -169,12 +193,24 @@ public class CharityControllerService {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "scoringOfRaiseFund", input.toArgs());
   }
 
+  public TransactionResponse getDonationTaceByBankTransfer(CharityControllerGetDonationTaceByBankTransferInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "getDonationTaceByBankTransfer", input.toArgs());
+  }
+
+  public CallResponse BankTransferIdsMap(CharityControllerBankTransferIdsMapInputBO input) throws Exception {
+    return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "BankTransferIdsMap", input.toArgs());
+  }
+
   public TransactionResponse selectDonationTraceInfo(CharityControllerSelectDonationTraceInfoInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "selectDonationTraceInfo", input.toArgs());
   }
 
-  public TransactionResponse donatedMaterials(CharityControllerDonatedMaterialsInputBO input) throws Exception {
-    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedMaterials", input.toArgs());
+  public TransactionResponse donatedFunds(CharityControllerDonatedFundsInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedFunds", input.toArgs());
+  }
+
+  public TransactionResponse getRaiseFundBankTransferRecord(CharityControllerGetRaiseFundBankTransferRecordInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "getRaiseFundBankTransferRecord", input.toArgs());
   }
 
   public CallResponse logisticCount() throws Exception {
@@ -199,6 +235,10 @@ public class CharityControllerService {
 
   public CallResponse selectCharityTraceInfo(CharityControllerSelectCharityTraceInfoInputBO input) throws Exception {
     return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "selectCharityTraceInfo", input.toArgs());
+  }
+
+  public TransactionResponse donationByBankTransfer(CharityControllerDonationByBankTransferInputBO input) throws Exception {
+    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donationByBankTransfer", input.toArgs());
   }
 
   public TransactionResponse getFundRaisingInfoDetail(CharityControllerGetFundRaisingInfoDetailInputBO input) throws Exception {
@@ -231,9 +271,5 @@ public class CharityControllerService {
 
   public TransactionResponse getUserInfo(CharityControllerGetUserInfoInputBO input) throws Exception {
     return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "getUserInfo", input.toArgs());
-  }
-
-  public TransactionResponse donatedFunds(CharityControllerDonatedFundsInputBO input) throws Exception {
-    return this.txProcessor.sendTransactionAndGetResponse(this.address, ABI, "donatedFunds", input.toArgs());
   }
 }

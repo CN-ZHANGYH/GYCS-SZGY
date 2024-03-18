@@ -1,9 +1,14 @@
 package com.ruoyi.charity.service;
 
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
+import com.ruoyi.charity.domain.vo.BankTransferRecordVo;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
+import com.ruoyi.charity.domain.vo.DonationTraceVo;
 import com.ruoyi.common.core.domain.AjaxResult;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface RaiseFundService {
     AjaxResult initiateRaiseFund(CharityRaiseFund charityRaiseFund);
@@ -21,6 +26,13 @@ public interface RaiseFundService {
     AjaxResult getRaiseFundDetail(Long raiseId);
 
 
-    AjaxResult donation(DonatedFundVo donatedFundVo);
+    AjaxResult donation(DonatedFundVo donatedFundVo,String username);
 
+    List<DonationTraceVo> getRaiseFundTrace(BigInteger raiseId);
+
+    AjaxResult donationBankTransfer(BankTransferRecordVo bankTransferRecordVo);
+
+    AjaxResult getDonationBankTransferInfo(String  cardId);
+
+    AjaxResult getDonationBankTransferRecordList(Integer pageNum, Integer pageSize,BigInteger raiseId);
 }

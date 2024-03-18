@@ -78,7 +78,7 @@
       <el-table-column label="交易类型" align="center" prop="transType" />
       <el-table-column label="交易状态" align="center" prop="isDonation" />
       <el-table-column label="捐款来源" align="center" prop="source" />
-      <el-table-column label="捐款描述" align="center" prop="desc" />
+      <el-table-column label="捐款描述" align="center" prop="description" />
       <el-table-column label="捐款接收方机构" align="center" prop="destAddress" />
       <el-table-column label="集资ID" align="center" prop="raiseId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

@@ -24,4 +24,5 @@ public class MessageResult {
     public String data;
 
     public Integer code;
+
 }

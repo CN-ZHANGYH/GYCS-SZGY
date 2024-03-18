@@ -62,4 +62,7 @@ public class CacheConstants
 
 
     public static final String DONATINA_FUND_KEY = "donatina_fund:";
+
+    public static final String USER_DONATION_BANK_TRANSFER_KEY = "user_donation_bank_transfer:";
+    public static final String ACTIVITY_LIST_KEY = "activity_list_key:";
 }
