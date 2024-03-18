@@ -189,14 +189,14 @@ system:
 
 cos:
   # 密钥id
-  secretId: "AKIDk6z64pcAk9JCH8p4GJ9k5yeBZCKFCiGY"
+  secretId: ""
   # 密钥key
-  secretKey: "CXdZIYfYKuEIZJf9U26vVorgHh8PSGn9"
+  secretKey: ""
   # 所属区域
-  bucket: "ap-nanjing"
+  bucket: ""
   # 存储桶名称
-  bucketName: "blog-1304715799"
+  bucketName: ""
   # COS存储文件夹
-  folder: "/imgs/"
+  folder: ""
   # 访问地址
-  webUrl: "https://blog-1304715799.cos.ap-nanjing.myqcloud.com"
+  webUrl: ""
