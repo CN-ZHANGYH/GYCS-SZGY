@@ -123,4 +123,10 @@ public class UserServiceImpl implements UserService {
         String orgAddress = mpOrgMapper.selectOne(Wrappers.lambdaQuery(Org.class).eq(Org::getOrgName, nickName)).getOrgAddress();
         return AjaxResult.success().put("localAddress",orgAddress);
     }
+
+    @Override
+    public AjaxResult getUserAddress(String username) {
+        String userAddress = MPUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username)).getUserAddress();
+        return AjaxResult.success().put("userAddress",userAddress);
+    }
 }

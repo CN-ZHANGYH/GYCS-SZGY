@@ -26,7 +26,7 @@
                 <p>{{item.description.substring(0,35) + "......" }} </p>
               </template>
               <template #interactions>
-                <vs-button color="danger" @click="donationHandle()">
+                <vs-button color="danger" @click="donationHandle(item)">
                   捐款
                 </vs-button>
                 <vs-button class="btn-chat" type="shadow">
@@ -193,11 +193,12 @@ import {
   EyeBold,
   SearchStatusBold
 } from '@vuesax-alpha/icons-vue'
-import router from "@/router/index.js";
 import {reactive, ref, toRefs} from "vue";
 import {getCertificateInfo, getRaiseFundList} from "@/api/charity/raiseFund.js";
 import {getPage, VsLoadingFn} from "vuesax-alpha";
+import { useRouter } from 'vue-router'
 
+const route = useRouter();
 const isDialogOpen = ref(false)
 const raiseFundList = ref([])
 const total = ref(0)
@@ -212,9 +213,13 @@ const data = reactive({
 });
 
 const { queryParams, form ,raiseInfo } = toRefs(data);
-function donationHandle(){
-  router.push({
-    name: 'online'
+function donationHandle(item){
+  console.log(item)
+  route.push({
+    name: 'online',
+    query: {
+      raiseId: item.id
+    }
   })
 }
 

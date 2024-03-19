@@ -32,5 +32,10 @@ public class UserController {
         return userService.getOrgAddress(SecurityUtils.getLoginUser().getUser().getNickName());
     }
 
+    @PostMapping("/user_address")
+    public AjaxResult getUserAddress() {
+        return userService.getUserAddress(SecurityUtils.getLoginUser().getUsername());
+    }
+
 
 }

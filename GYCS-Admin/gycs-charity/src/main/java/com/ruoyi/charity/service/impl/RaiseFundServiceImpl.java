@@ -480,6 +480,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         CharityControllerDonationByBankTransferInputBO transferInputBO = new CharityControllerDonationByBankTransferInputBO();
         transferInputBO.set_raiseId(bankTransferRecordVo.getRaiseId());
         transferInputBO.set_cardId(bankTransferRecordVo.getDonorCardId());
+        bankTransferRecordVo.setTransTime(BlockTimeUtil.convertToLocalTime(System.currentTimeMillis()));
         transferInputBO.set_transferRecordInfo(JSONObject.toJSONString(bankTransferRecordVo));
         try
         {
@@ -573,6 +574,38 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         }
 
         return AjaxResult.error().put("msg","查询失败");
+    }
+
+    @Override
+    public AjaxResult selectRaiseFundTotalData(BigInteger raiseId) {
+        // 查询投票状态
+        CharityControllerGetVoteInfoInputBO inputBO = new CharityControllerGetVoteInfoInputBO();
+        inputBO.set_raiseId(raiseId);
+        CallResponse callResponse = null;
+        BigInteger totalVoteIsYes = null;
+        try {
+            callResponse = charityControllerService.getVoteInfo(inputBO);
+
+            JSONArray result = JSONArray.parseArray(callResponse.getValues());
+            totalVoteIsYes = result.getBigInteger(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        CharityRaiseFund raiseFund = MPRaiseFundMapper.selectById(raiseId);
+        List<String> nameList = Arrays.asList("参与人数", "总需金额", "完成金额", "提现金额", "投票数量");
+        List<BigInteger> valueList = Arrays.asList(raiseFund.getTotalPeople(), raiseFund.getTotalAmount(), raiseFund.getOverAmount(), raiseFund.getWithdrawAmount(),totalVoteIsYes);
+
+        ArrayList<RaiseFundDataVo> raiseFundDataVos = new ArrayList<>();
+        for (int i = 0; i < nameList.size(); i++) {
+            RaiseFundDataVo raiseFundDataVo = new RaiseFundDataVo();
+            raiseFundDataVo.setId(i);
+            raiseFundDataVo.setName(nameList.get(i));
+            raiseFundDataVo.setValue(valueList.get(i));
+            raiseFundDataVos.add(raiseFundDataVo);
+        }
+        return AjaxResult.success().put("data",raiseFundDataVos);
     }
 
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {

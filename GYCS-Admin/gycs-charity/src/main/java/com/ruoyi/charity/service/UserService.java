@@ -11,4 +11,5 @@ public interface UserService {
 
     AjaxResult getOrgAddress(String nickName);
 
+    AjaxResult getUserAddress(String username);
 }

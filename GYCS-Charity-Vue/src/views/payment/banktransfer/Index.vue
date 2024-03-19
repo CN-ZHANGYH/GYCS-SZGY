@@ -1,45 +1,45 @@
 <template>
   <div class="transfer_container">
     <div class="modal">
-      <form class="form">
+      <div class="form">
         <div class="banner"></div>
         <label class="title">通过银行卡转账参与公益慈善活动</label>
         <p class="description">所有的转账记录都将实现数据加密进行存储在区块链链中，保证您的数据是真实可信可溯源的。</p>
         <div class="benefits">
           <div class="benefit-form">
-            <vs-input v-model="value2" state="primary" placeholder="捐款人姓名"  label-float style="width: 300px">
+            <vs-input v-model="form.donorName" state="primary" placeholder="捐款人姓名"  label-float style="width: 300px">
               <template #icon>
                 <vs-icon><UserBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款人身份证" label-float style="width: 300px">
+            <vs-input v-model="form.donorCardId" state="primary" placeholder="捐款人身份证" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><ShieldSearchBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款人开户银行" label-float style="width: 300px">
+            <vs-input v-model="form.donorBank" state="primary" placeholder="捐款人开户银行" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><BankBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款人开户账户" label-float style="width: 300px">
+            <vs-input v-model="form.donorAccount" state="primary" placeholder="捐款人开户账户" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><KeyBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="工作单位" label-float style="width: 300px">
+            <vs-input v-model="form.donorWorkUnit" state="primary" placeholder="工作单位" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><Buildings2Bold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款金额" label-float style="width: 300px">
+            <vs-input v-model="form.donorAmount" state="primary" placeholder="捐款金额" label-float style="width: 300px">
               <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-yen" viewBox="0 0 16 16">
                   <path d="M8.75 14v-2.629h2.446v-.967H8.75v-1.31h2.445v-.967H9.128L12.5 2h-1.699L8.047 7.327h-.086L5.207 2H3.5l3.363 6.127H4.778v.968H7.25v1.31H4.78v.966h2.47V14h1.502z"/>
                 </svg>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款金额大写(￥)" label-float style="width: 300px">
+            <vs-input v-model="form.donorAmountCN" state="primary" placeholder="捐款金额大写(￥)" label-float style="width: 300px">
               <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-yen" viewBox="0 0 16 16">
                   <path d="M8.75 14v-2.629h2.446v-.967H8.75v-1.31h2.445v-.967H9.128L12.5 2h-1.699L8.047 7.327h-.086L5.207 2H3.5l3.363 6.127H4.778v.968H7.25v1.31H4.78v.966h2.47V14h1.502z"/>
@@ -119,50 +119,48 @@
             </div>
           </div>
           <div class="benefit-form">
-            <vs-input v-model="value2" state="primary" placeholder="受助人姓名" label-float style="width: 300px">
+            <vs-input v-model="form.aidedName" state="primary" placeholder="受助人姓名" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><UserBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="受助人身份证号" label-float style="width: 300px">
+            <vs-input v-model="form.aideCardId" state="primary" placeholder="受助人身份证号" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><ShieldSearchBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="受助人开户银行" label-float style="width: 300px">
+            <vs-input v-model="form.aideBank" state="primary" placeholder="受助人开户银行" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><BankBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="受助人开户账户" label-float style="width: 300px">
+            <vs-input v-model="form.aideAccount" state="primary" placeholder="受助人开户账户" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><KeyBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="受助人工作单位" label-float style="width: 300px">
+            <vs-input v-model="form.aideWorkUnit" state="primary" placeholder="受助人工作单位" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><Buildings2Bold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款描述" label-float style="width: 300px">
+            <vs-input v-model="form.donorDescription" state="primary" placeholder="捐款描述" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><NotificationStatusBold /></vs-icon>
               </template>
             </vs-input>
-            <vs-input v-model="value2" state="primary" placeholder="捐款备注" label-float style="width: 300px">
+            <vs-input v-model="form.donorRemarks" state="primary" placeholder="捐款备注" label-float style="width: 300px">
               <template #icon>
                 <vs-icon><MessageEditBold /></vs-icon>
               </template>
             </vs-input>
           </div>
-
         </div>
-
         <div class="modal--footer">
           <vs-button type="relief" color="danger"> 取消 </vs-button>
-          <vs-button type="relief" color="success"> 确定 </vs-button>
+          <vs-button  color="success" @click="handleTransfer"> 确定 </vs-button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -177,10 +175,64 @@ import {
   NotificationStatusBold,
   MessageEditBold
 } from '@vuesax-alpha/icons-vue'
-import {ref} from "vue";
+import {onMounted, reactive, ref, toRefs} from "vue";
+import {useRouter} from "vue-router";
+import {bankToBankTransfer} from "@/api/charity/raiseFund.js";
+import {VsLoadingFn, VsNotification} from "vuesax-alpha";
 
+const route = useRouter()
+const raiseId = ref(0)
 
-const active = ref(0)
+const data = reactive({
+  form: {
+    "raiseId": 0,
+    "donorName": "张三",
+    "donorCardId": "441622200305132857",
+    "donorWorkUnit": "深圳",
+    "donorBank": "平安银行",
+    "donorAccount": "1111111111111111111111111111111",
+    "donorAmount": 2000,
+    "donorAmountCN": "贰仟元整",
+    "donorDescription": "个人捐款",
+    "donorRemarks": "捐款200元整",
+    "aidedName": "李四",
+    "aideCardId": "441622200305132859",
+    "aideWorkUnit": "北京",
+    "aideBank": "招商银行",
+    "aideAccount": "22222222222222222222222222222"
+  }
+});
+
+const {form} = toRefs(data)
+
+onMounted(() => {
+  raiseId.value = route.currentRoute.value.query.raiseId;
+  form.value.raiseId = raiseId.value
+
+  const loadingInstance = VsLoadingFn()
+  setTimeout(() => {
+    loadingInstance.close()
+  }, 1000)
+})
+
+function handleTransfer(){
+  bankToBankTransfer(form.value).then(res => {
+    if (res.code == 200) {
+      openNotification("success","转账通知","银行卡转账成功，记录已上链")
+      form.value = {}
+    }
+  })
+}
+
+const openNotification = (color,title,msg) => {
+  VsNotification({
+    color,
+    position: 'top-left',
+    title: title,
+    content: msg,
+
+  })
+}
 </script>
 
 

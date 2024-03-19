@@ -80,7 +80,6 @@ public class BankTransferRecordVo implements Serializable {
     /**
      *  交易时间
      */
-    @NotNull(message = "交易时间不能为空")
     private String transTime;
 
     /**
