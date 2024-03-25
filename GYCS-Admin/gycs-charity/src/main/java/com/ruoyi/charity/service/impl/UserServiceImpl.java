@@ -5,10 +5,11 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.Org;
+import com.ruoyi.charity.domain.dto.UserBankCard;
 import com.ruoyi.charity.domain.vo.UserVo;
-import com.ruoyi.charity.mapper.OrgMapper;
 import com.ruoyi.charity.mapper.join.SysUserJMapper;
 import com.ruoyi.charity.mapper.mp.MPOrgMapper;
+import com.ruoyi.charity.mapper.mp.MPUserBankMapper;
 import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Autowired
+    private MPUserBankMapper mpUserBankMapper;
+
+    @Autowired
     private CharityControllerService charityControllerService;
 
 
@@ -46,12 +50,11 @@ public class UserServiceImpl implements UserService {
     /**
      * 查询用户的详细信息
      *
-     * @param userService
      * @param username
      * @return 返回查询的详细信息
      */
     @Override
-    public AjaxResult getUserProfile(UserService userService, String username) {
+    public AjaxResult getUserProfile(String username) {
         MPJLambdaWrapper<SysUser> lambdaWrapper = new MPJLambdaWrapper<SysUser>()
                 .eq(SysUser::getUserName,username)
                 .select(
@@ -122,5 +125,30 @@ public class UserServiceImpl implements UserService {
     public AjaxResult getOrgAddress(String nickName) {
         String orgAddress = mpOrgMapper.selectOne(Wrappers.lambdaQuery(Org.class).eq(Org::getOrgName, nickName)).getOrgAddress();
         return AjaxResult.success().put("localAddress",orgAddress);
+    }
+
+    @Override
+    public AjaxResult userBindBankCard(UserBankCard userBankCard) {
+        // 检查是否已经绑定过
+        UserBankCard result = mpUserBankMapper.selectOne(
+                Wrappers.lambdaQuery(UserBankCard.class)
+                        .eq(UserBankCard::getUserId, userBankCard.getUserId()));
+
+        if (result != null) {
+            return AjaxResult.error().put("msg","无需重复绑定");
+        }
+        int insert = mpUserBankMapper.insert(userBankCard);
+        return insert > 0 ? AjaxResult.success().put("msg","绑定成功") : AjaxResult.error().put("msg","绑定失败");
+    }
+
+    @Override
+    public AjaxResult selectUserBindBankInfo(Long userId) {
+        UserBankCard result = mpUserBankMapper.selectOne(
+                Wrappers.lambdaQuery(UserBankCard.class)
+                        .eq(UserBankCard::getUserId, userId));
+        if (result != null) {
+            return AjaxResult.success().put("data",result);
+        }
+        return AjaxResult.error();
     }
 }

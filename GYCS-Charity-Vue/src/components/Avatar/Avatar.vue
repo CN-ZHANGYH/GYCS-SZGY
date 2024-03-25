@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="card">
     <div class="image">
@@ -11,11 +7,161 @@
       <span>George Johnson</span>
       <p>Support Specialist</p>
     </div>
-    <a href="#" class="button">Folow</a>
+    <a href="#" class="button" @click="active = true">更新</a>
   </div>
+
+  <vs-dialog v-model="active" overlay-blur>
+    <template #header>
+      <h4 class="not-margin">更新用户的信息</h4>
+    </template>
+    <div class="con-form">
+      <div class="content">
+        <div class="main" @click="handleAddImg">
+          <img v-if="imageUrl" src="@/assets/images/img.png" class="img" />
+          <div v-if="!imageUrl" >
+            <text class="title">点击更换头像</text>
+          </div>
+        </div>
+        <input
+            id="upload"
+            ref="fileInput"
+            class="img-input"
+            type="file"
+            :multiple="true"
+            @change="handleUploadFile"
+        />
+      </div>
+      <div style="padding: 20px 20px;margin-right: 20px">
+        <vs-input style="width: 400px" v-model="form.userName" color="primary" placeholder="请输入用户名称">
+          <template #icon>
+            <vs-icon><User /></vs-icon>
+          </template>
+        </vs-input>
+
+        <vs-input style="width: 400px" v-model="form.nickName" color="primary" placeholder="请输入用户昵称">
+          <template #icon>
+            <vs-icon><UserBold /></vs-icon>
+          </template>
+        </vs-input>
+
+        <vs-input style="width: 400px" v-model="form.cardId" color="primary" placeholder="请输入身份号码">
+          <template #icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
+              <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8Zm1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z"/>
+              <path fill-rule="evenodd" d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2ZM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96c.026-.163.04-.33.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1.006 1.006 0 0 1 1 12V4Z"/>
+            </svg>
+          </template>
+        </vs-input>
+
+        <vs-input style="width: 400px" v-model="form.phonenumber" color="primary" placeholder="请输入手机号">
+          <template #icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-phone" viewBox="0 0 16 16">
+              <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+              <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+            </svg>
+          </template>
+        </vs-input>
+
+        <vs-input style="width: 400px" v-model="form.email" color="primary" placeholder="请输入邮箱">
+          <template #icon>
+            <vs-icon><Sms /></vs-icon>
+          </template>
+        </vs-input>
+
+        <vs-input style="width: 400px" v-model="form.sex" color="primary" placeholder="请输入性别">
+          <template #icon>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+              <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+              <path fill-rule="evenodd" d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-1 0V11a.5.5 0 0 1 .5-.5Zm0 4a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Z"/>
+            </svg>
+          </template>
+        </vs-input>
+      </div>
+    </div>
+
+    <template #footer>
+      <div class="footer-dialog">
+        <vs-button block> 确定 </vs-button>
+
+        <div class="new">New Here? <a href="#">Create New Account</a></div>
+      </div>
+    </template>
+  </vs-dialog>
 </template>
 
-<style scoped>
+<script setup>
+import {onMounted, reactive, ref, toRefs} from "vue";
+import {
+  User,
+  UserBold,
+  Sms
+} from "@vuesax-alpha/icons-vue"
+const active = ref(false)
+const imageUrl = ref('');
+const data = reactive({
+  form: {}
+})
+const {form} = toRefs(data)
+
+const handleAddImg = () => {
+  const input = document.querySelector('#upload')
+  input.click()
+}
+
+const handleUploadFile = async (value) => {
+  const files = value.target.files
+  console.log('debug===>获取上传文件',files)
+  const formData = new FormData()
+  Array.from(files).forEach((item) => {
+    formData.append('files', item)
+  })
+  //TODO调用后端接口，传入文件参数
+}
+
+onMounted(() => {
+  const user = defineProps(['user'])
+  console.log(user)
+})
+</script>
+
+<style lang="scss" scoped>
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* 设置阴影效果 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  /* 设置边框样式 */
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 300px;
+  height: 300px;
+  margin-left: 25px;
+  margin-top: 35px;
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .img {
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+  }
+  .title {
+    font-size: 25px;
+  }
+  .img-input {
+    opacity: 0;
+  }
+}
+
+
+
+
 .card {
   width: 350px;
   height: 300px;
@@ -108,5 +254,66 @@
 .button:hover {
   background-color: #FF6844;
   transform: scale(1.1);
+}
+
+
+@function -color($color, $alpha: 1) {
+  @return unquote('rgba(var(--vs-#{$color}), #{$alpha})');
+}
+.not-margin {
+  margin: 0px;
+  font-weight: normal;
+  padding: 10px;
+}
+.con-form {
+  padding: 20px 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 800px;
+  .flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    a {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  .vs-checkbox__label {
+    font-size: 0.8rem;
+  }
+  .vs-input {
+    margin: 10px 0px;
+    width: calc(100%);
+    .vs-input__original {
+      width: 100%;
+    }
+  }
+}
+.footer-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: calc(100%);
+  .new {
+    margin: 0px;
+    margin-top: 20px;
+    padding: 0px;
+    font-size: 0.7rem;
+    a {
+      color: -color('primary') !important;
+      margin-left: 6px;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .vs-button {
+    margin: 0px;
+  }
 }
 </style>

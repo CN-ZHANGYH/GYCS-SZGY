@@ -42,3 +42,29 @@ export function delCharityuser(id) {
     method: 'delete'
   })
 }
+
+// 用户绑定银行卡信息
+export function bindBankCard(data) {
+  return request({
+    url: '/user/bind_bank',
+    method: 'post',
+    data: data
+  })
+}
+
+
+export function getUserBindBankInfo() {
+  return request({
+    url: '/user/get_bind_bank_info',
+    method: 'post'
+  })
+}
+
+
+// 查看用户的详细信息
+export function getUserProfileInfo() {
+  return request({
+    url: '/user/profile',
+    method: 'get'
+  })
+}
