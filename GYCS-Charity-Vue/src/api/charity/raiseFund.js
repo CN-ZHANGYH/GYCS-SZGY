@@ -28,6 +28,39 @@ export function getRaiseFundList(query) {
     })
 }
 
+export function getRaiseFundDataTotal(query) {
+    return request({
+        url: '/data/raise_fund/total',
+        method: 'get',
+        params: query
+    })
+}
 
 
 
+
+export function bankToBankTransfer(data) {
+    return request({
+        url: '/raise_fund/donation_bank_transfer',
+        method: 'post',
+        data: data
+    })
+}
+
+
+export function getRaiseFundTransactionTrace(query){
+    return request({
+        url: '/raise_fund/trace',
+        method: 'get',
+        params: query
+    })
+}
+
+
+export function donationRaiseFund(data){
+    return request({
+        url: '/raise_fund/donation',
+        method: 'post',
+        data: data
+    })
+}

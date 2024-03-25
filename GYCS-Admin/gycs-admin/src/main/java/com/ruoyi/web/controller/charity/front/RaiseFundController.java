@@ -130,12 +130,14 @@ public class RaiseFundController  extends BaseController {
      * @return AjaxResult
      */
    @GetMapping("/trace")
-    public TableDataInfo getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
+    public AjaxResult getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
         // Get the raiseId from the request parameter
-       startPage();
+       AjaxResult success = AjaxResult.success();
        List<DonationTraceVo> raiseFundTrace = fundService.getRaiseFundTrace(raiseId);
        // Return the trace information of the raiseId
-       return getDataTable(raiseFundTrace);
+       success.put("total",raiseFundTrace.size());
+       success.put("rows",raiseFundTrace);
+       return success;
     }
 
    @PostMapping("/donation_bank_transfer")
@@ -164,4 +166,5 @@ public class RaiseFundController  extends BaseController {
         //This line calls the fundService to get the bank transfer record list
         return fundService.getDonationBankTransferRecordList(pageNum, pageSize,raiseId);
     }
+
 }

@@ -35,4 +35,7 @@ public interface RaiseFundService {
     AjaxResult getDonationBankTransferInfo(String  cardId);
 
     AjaxResult getDonationBankTransferRecordList(Integer pageNum, Integer pageSize,BigInteger raiseId);
+
+    AjaxResult selectRaiseFundTotalData(BigInteger raiseId);
+
 }
