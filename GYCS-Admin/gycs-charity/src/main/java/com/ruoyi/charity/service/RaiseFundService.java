@@ -38,4 +38,6 @@ public interface RaiseFundService {
 
     AjaxResult selectRaiseFundTotalData(BigInteger raiseId);
 
+    AjaxResult selectRaiseFundVotesList();
+
 }

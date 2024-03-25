@@ -167,4 +167,9 @@ public class RaiseFundController  extends BaseController {
         return fundService.getDonationBankTransferRecordList(pageNum, pageSize,raiseId);
     }
 
+
+    @GetMapping("/vote_list")
+    public AjaxResult selectRaiseFundVotesList(){
+       return fundService.selectRaiseFundVotesList();
+    }
 }

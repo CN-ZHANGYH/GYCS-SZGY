@@ -608,6 +608,26 @@ public class RaiseFundServiceImpl implements RaiseFundService {
         return AjaxResult.success().put("data",raiseFundDataVos);
     }
 
+    @Override
+    public AjaxResult selectRaiseFundVotesList() {
+        List<CharityRaiseFund> charityRaiseFundList = null;
+        AjaxResult success = AjaxResult.success();
+        charityRaiseFundList = redisCache.getCacheObject(CacheConstants.RAISE_FUND_WAIT_VOTES);
+        if (charityRaiseFundList != null) {
+            success.put("total",charityRaiseFundList.size());
+            success.put("rows",charityRaiseFundList);
+            return success;
+        }
+        charityRaiseFundList = MPRaiseFundMapper
+                .selectList(Wrappers
+                        .lambdaQuery(CharityRaiseFund.class)
+                        .eq(CharityRaiseFund::getStatus, 2));
+        redisCache.setCacheObject(CacheConstants.RAISE_FUND_WAIT_VOTES,charityRaiseFundList);
+        success.put("total",charityRaiseFundList.size());
+        success.put("rows",charityRaiseFundList);
+        return success;
+    }
+
     private static CharityControllerInitiateFundRaisingInputBO getRaisingInputBO(CharityRaiseFund charityRaiseFund, long startTime, long endTime) {
         CharityControllerInitiateFundRaisingInputBO fundRaisingInputBO = new CharityControllerInitiateFundRaisingInputBO();
         fundRaisingInputBO.set_title(charityRaiseFund.getTitle());

@@ -74,17 +74,15 @@ public class CharityRaiseAuditServiceImpl implements ICharityRaiseAuditService
     @Override
     public int updateCharityRaiseAudit(CharityRaiseAudit charityRaiseAudit)
     {
-        // 如果审核不通过 需要使用rabbitmq进行消息通知 异步实现对当前的用户的链上活动关闭
-        if (charityRaiseAudit.getApplyStatus() == 1) {
-            MessageResult messageResult = new MessageResult();
-            messageResult.setCode(HttpStatus.SUCCESS);
-            messageResult.setMessage("审核不通过");
-            messageResult.setData(JSONObject.toJSONString(charityRaiseAudit));
+        MessageResult messageResult = new MessageResult();
+        messageResult.setCode(HttpStatus.SUCCESS);
+        messageResult.setMessage("审核完成");
+        messageResult.setData(JSONObject.toJSONString(charityRaiseAudit));
 
-            // 封装消费者的消息并发送
-            String message = JSONObject.toJSONString(messageResult);
-            rabbitTemplate.convertAndSend("direct_raise_audit_exchange", "RAISE_AUDIT_ROUTING_KEY", message);
-        }
+        // 封装消费者的消息并发送
+        String message = JSONObject.toJSONString(messageResult);
+        rabbitTemplate.convertAndSend("direct_raise_audit_exchange", "RAISE_AUDIT_ROUTING_KEY", message);
+
         return charityRaiseAuditMapper.updateCharityRaiseAudit(charityRaiseAudit);
     }
 

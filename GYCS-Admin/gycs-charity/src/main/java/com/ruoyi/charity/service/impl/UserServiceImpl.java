@@ -16,6 +16,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import lombok.SneakyThrows;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,9 +131,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public AjaxResult userBindBankCard(UserBankCard userBankCard) {
         // 检查是否已经绑定过
-        UserBankCard result = mpUserBankMapper.selectOne(
-                Wrappers.lambdaQuery(UserBankCard.class)
-                        .eq(UserBankCard::getUserId, userBankCard.getUserId()));
+        UserBankCard result = selectOneUserBankCardResult(userBankCard.getUserId());
 
         if (result != null) {
             return AjaxResult.error().put("msg","无需重复绑定");
@@ -141,14 +140,39 @@ public class UserServiceImpl implements UserService {
         return insert > 0 ? AjaxResult.success().put("msg","绑定成功") : AjaxResult.error().put("msg","绑定失败");
     }
 
-    @Override
-    public AjaxResult selectUserBindBankInfo(Long userId) {
+    private UserBankCard selectOneUserBankCardResult(Long userBankCard) {
         UserBankCard result = mpUserBankMapper.selectOne(
                 Wrappers.lambdaQuery(UserBankCard.class)
-                        .eq(UserBankCard::getUserId, userId));
+                        .eq(UserBankCard::getUserId, userBankCard));
+        return result;
+    }
+
+    @Override
+    public AjaxResult selectUserBindBankInfo(Long userId) {
+        UserBankCard result = selectOneUserBankCardResult(userId);
         if (result != null) {
             return AjaxResult.success().put("data",result);
         }
         return AjaxResult.error();
     }
+
+    @Override
+    public AjaxResult getUserAddress(Long userId) {
+        CharityUser charityUser = MPUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getId, userId));
+        return AjaxResult.success().put("userAddress",charityUser.getUserAddress());
+    }
+
+    @Override
+    public AjaxResult updateUserProfileByBlockChain(UserVo userVo) {
+        CharityUser charityUser = MPUserMapper.selectOne(Wrappers
+                .lambdaQuery(CharityUser.class)
+                .eq(CharityUser::getUsername, userVo.getUserName()));
+        // 更新用户的基本信息
+        charityUser.setCardId(userVo.getCardId());
+        charityUser.setDesignation(userVo.getNickName());
+
+        // 调用区块链更新区块链账户信息
+        return AjaxResult.success().put("msg","更新用户信息成功");
+    }
+
 }

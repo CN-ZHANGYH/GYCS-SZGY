@@ -264,11 +264,10 @@
 <script setup>
 
 
-import {onMounted, reactive, ref, toRefs} from "vue";
+import {onMounted, reactive, ref, toRefs,provide} from "vue";
 import {getPage, VsLoadingFn, VsNotification} from 'vuesax-alpha'
 import BankCard from "@/components/BankCard/BankCard.vue";
 import Avatar from "@/components/Avatar/Avatar.vue";
-import {getAllLogisticAddress} from "@/api/charity/logistic.js";
 import {bindBankCard, getUserBindBankInfo, getUserProfileInfo} from "@/api/charity/charityuser.js";
 const bindBankDialog = ref(false)
 
@@ -357,8 +356,8 @@ const data = reactive({
     address: "暂无绑定"
   }
 })
-
 const {form,bindInfo,user} = toRefs(data)
+provide('user', user)
 onMounted(() => {
   getUserBindBankInfo().then(res => {
     if (res.code == 200) {
@@ -367,7 +366,6 @@ onMounted(() => {
   })
   getUserProfileInfo().then(res => {
     user.value = res.userVo
-    console.log(user.value)
   })
 
   const loadingInstance = VsLoadingFn()

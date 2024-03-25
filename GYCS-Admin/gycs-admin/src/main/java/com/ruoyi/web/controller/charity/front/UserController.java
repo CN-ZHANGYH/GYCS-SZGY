@@ -1,11 +1,16 @@
 package com.ruoyi.web.controller.charity.front;
 
 
+import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.UserBankCard;
+import com.ruoyi.charity.domain.vo.UserVo;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +24,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ISysUserService sysUserService;
+
+
     @GetMapping("/profile")
     public AjaxResult getUserProfile() {
         String username = SecurityUtils.getLoginUser().getUsername();
@@ -31,9 +40,25 @@ public class UserController {
         return userService.updateBalance(username,amount);
     }
 
+    @PostMapping("/update_profile")
+    public AjaxResult updateUserProfile(@RequestBody UserVo userVo){
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(userVo,sysUser);
+        sysUserService.updateUserProfile(sysUser);
+        return userService.updateUserProfileByBlockChain(userVo);
+    }
+
+
+
     @PostMapping("/org_address")
     public AjaxResult getOrgAddress(){
         return userService.getOrgAddress(SecurityUtils.getLoginUser().getUser().getNickName());
+    }
+
+
+    @GetMapping("/user_address")
+    public AjaxResult getUserAddress(){
+        return userService.getUserAddress(SecurityUtils.getLoginUser().getUserId());
     }
 
     @PostMapping("/bind_bank")

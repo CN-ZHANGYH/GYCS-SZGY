@@ -64,3 +64,11 @@ export function donationRaiseFund(data){
         data: data
     })
 }
+
+
+export function getRaiseFundWaitVotesList() {
+    return request({
+        url: '/raise_fund/vote_list',
+        method: 'get'
+    })
+}

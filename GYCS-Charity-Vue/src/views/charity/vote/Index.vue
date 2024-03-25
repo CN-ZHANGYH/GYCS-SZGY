@@ -1,50 +1,66 @@
 <template>
-  <!-- 页面总布局 -->
-  <div style="display: flex;flex: 1">
-    <vs-row>
-      <vs-col :sm="4">
-        <!-- 左边的div   -->
-        <div v-for="(item,index) in raiseFunds" :key="index" style="padding: 10px 10px;">
-          <div class="card">
-            <h3 class="card__title">
-              {{ item.title }}
-            </h3>
-            <p class="card__content">{{ item.description }}</p>
-            <div class="card__date">
-              {{ item.date }}
-            </div>
-            <div class="card__arrow" @click="viewDetail()">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
-                <path fill="#fff" d="M13.4697 17.9697C13.1768 18.2626 13.1768 18.7374 13.4697 19.0303C13.7626 19.3232 14.2374 19.3232 14.5303 19.0303L20.3232 13.2374C21.0066 12.554 21.0066 11.446 20.3232 10.7626L14.5303 4.96967C14.2374 4.67678 13.7626 4.67678 13.4697 4.96967C13.1768 5.26256 13.1768 5.73744 13.4697 6.03033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L13.4697 17.9697Z"></path>
-              </svg>
+  <div style="display: flex;flex-direction: column">
+    <!-- 页面总布局 -->
+    <div style="display: flex;flex: 1">
+      <vs-row>
+        <vs-col :sm="4">
+          <!-- 左边的div   -->
+          <div v-for="(item,index) in getPage(votesList,queryParams.pageNum,queryParams.pageSize)" :key="index" style="padding: 10px 10px;">
+            <div class="card">
+              <h3 class="card__title">
+                {{ item.title }}
+              </h3>
+              <p class="card__content">{{ item.description.substring(0,50) + "......"}}</p>
+              <div class="card__date">
+                {{ item.createTime }}
+              </div>
+              <div class="card__arrow" @click="viewDetail()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="15" width="15">
+                  <path fill="#fff" d="M13.4697 17.9697C13.1768 18.2626 13.1768 18.7374 13.4697 19.0303C13.7626 19.3232 14.2374 19.3232 14.5303 19.0303L20.3232 13.2374C21.0066 12.554 21.0066 11.446 20.3232 10.7626L14.5303 4.96967C14.2374 4.67678 13.7626 4.67678 13.4697 4.96967C13.1768 5.26256 13.1768 5.73744 13.4697 6.03033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L13.4697 17.9697Z"></path>
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
-      </vs-col>
-    </vs-row>
-    <!-- 右边的div   -->
-    <div style="padding: 10px 10px;height: 800px">
-      <vs-alert type="shadow" style="height: 100%;border-radius: 10px">
-        <template #title> Vuesax Framework </template>
-        Vuesax (pronounced / vjusacks: /, as view sacks) is a
-        <b>UI components framework</b> created with
-        <a href="https://vuejs.org/">Vuejs</a> to make projects easily and with a
-        Unique and pleasant style, Vuesax is created from scratch and designed for
-        all types of developed from the frontend lover to the backend that wants
-        to easily create your visual approach to the end user
+        </vs-col>
+      </vs-row>
+      <!-- 右边的div   -->
+      <div style="padding: 10px 10px;height: 750px">
+        <vs-alert type="shadow" style="height: 100%;border-radius: 10px">
+          <template #title> Vuesax Framework </template>
+          Vuesax (pronounced / vjusacks: /, as view sacks) is a
+          <b>UI components framework</b> created with
+          <a href="https://vuejs.org/">Vuejs</a> to make projects easily and with a
+          Unique and pleasant style, Vuesax is created from scratch and designed for
+          all types of developed from the frontend lover to the backend that wants
+          to easily create your visual approach to the end user
 
-        <template #footer>
-          <vs-button type="default" color="danger"> Cancel </vs-button>
-          <vs-button> Accept </vs-button>
-        </template>
-      </vs-alert>
+          <template #footer>
+            <vs-button type="default" color="danger"> Cancel </vs-button>
+            <vs-button> Accept </vs-button>
+          </template>
+        </vs-alert>
+      </div>
+    </div>
+    <div style="display: flex;justify-content: center;margin-top: 10px">
+      <vs-pagination v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize" buttons-dotted :total="total" :page-sizes="[1,2,3,4]"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import {reactive} from "vue";
+import {onMounted, reactive, ref, toRefs} from "vue";
+import {getRaiseFundWaitVotesList} from "@/api/charity/raiseFund.js";
+import {getPage} from "vuesax-alpha";
 
+const votesList = ref([])
+const total = ref(0)
+const data = reactive({
+  queryParams: {
+    pageNum: 1,
+    pageSize: 4
+  },
+})
+const {queryParams}  = toRefs(data)
 const raiseFunds = reactive([
   {
     id: 1,
@@ -77,6 +93,14 @@ const raiseFunds = reactive([
 function viewDetail(){
   console.log('viewDetail')
 }
+
+onMounted(() => {
+  getRaiseFundWaitVotesList().then(res => {
+    total.value = res.total
+    votesList.value = res.rows
+    console.log(votesList.value)
+  })
+})
 </script>
 
 <style scoped>

@@ -51,22 +51,27 @@ public class RaiseAuditDirectListener {
         System.out.println("DirectReceiver消费者收到消息  : " + messageResult);
 
         CharityRaiseAudit raiseAudit = JSONObject.parseObject(messageResult.getData(), CharityRaiseAudit.class);
-        System.out.println(raiseAudit);
-
         // 更新同步RaiseFund的数据库中的状态
         CharityRaiseFund charityRaiseFund = charityRaiseFundService.selectCharityRaiseFundById(raiseAudit.getRaiseId());
-        charityRaiseFund.setStatus(BigInteger.valueOf(3));
-        charityRaiseFundService.updateCharityRaiseFund(charityRaiseFund);
 
         // 更新区块链上的RaiseFund活动的状态
         CharityControllerUpdateFundRaisingStatusInputBO statusInputBO = new CharityControllerUpdateFundRaisingStatusInputBO();
         statusInputBO.set_raiseId(BigInteger.valueOf(raiseAudit.getRaiseId()));
-        statusInputBO.set_status(BigInteger.valueOf(3));
+        if (raiseAudit.getApplyStatus() == 1) {
+            charityRaiseFund.setStatus(BigInteger.valueOf(3));
+            statusInputBO.set_status(BigInteger.valueOf(3));
+        }
 
+
+        if (raiseAudit.getApplyStatus() == 2) {
+            charityRaiseFund.setStatus(BigInteger.valueOf(2));
+            statusInputBO.set_status(BigInteger.valueOf(2));
+        }
         try
         {
             TransactionResponse transactionResponse = charityControllerService.updateFundRaisingStatus(statusInputBO);
             if (transactionResponse.getReturnMessage().equals(CharityControllerService.SUCCESS)) {
+                charityRaiseFundService.updateCharityRaiseFund(charityRaiseFund);
                 // 记录当前的区块链交易日志
                 log.info("当前的审核交易已经完成上链：{}",raiseAudit);
             }

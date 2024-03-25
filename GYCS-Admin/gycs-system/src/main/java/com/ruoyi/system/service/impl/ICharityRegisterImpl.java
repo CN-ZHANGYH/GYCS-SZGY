@@ -78,7 +78,6 @@ public class ICharityRegisterImpl implements ICharityRegister {
         // 注册为系统用户
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
-        sysUser.setNickName(username);
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
 
         // 手动添加普通用户的权限

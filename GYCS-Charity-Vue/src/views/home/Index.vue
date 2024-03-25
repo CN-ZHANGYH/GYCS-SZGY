@@ -84,7 +84,7 @@
             个人中心
           </vs-sidebar-item>
         </template>
-        <vs-sidebar-item id="profile">
+        <vs-sidebar-item id="user">
           <template #icon>
             <vs-icon><SecurityUserBold /></vs-icon>
           </template>

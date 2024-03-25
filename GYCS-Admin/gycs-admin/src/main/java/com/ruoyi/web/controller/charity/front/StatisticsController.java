@@ -28,4 +28,6 @@ public class StatisticsController extends BaseController {
     public AjaxResult selectRaiseFundTotalData(@RequestParam("raiseId")BigInteger raiseId) {
         return raiseFundService.selectRaiseFundTotalData(raiseId);
     }
+
+
 }

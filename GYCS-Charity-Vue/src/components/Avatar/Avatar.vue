@@ -1,11 +1,12 @@
 <template>
   <div class="card">
     <div class="image">
-      <img src="../../assets/images/img.png" alt="" style="border-radius: 50px;">
+      <img v-if="imageUrl" src="../../assets/images/img.png" alt="" style="border-radius: 50px;">
+      <img v-if="!imageUrl" :src="form.avatar" alt="">
     </div>
     <div class="card-info">
-      <span>George Johnson</span>
-      <p>Support Specialist</p>
+      <span>{{form.userName}}</span>
+      <p>这个人还没有描述信息</p>
     </div>
     <a href="#" class="button" @click="active = true">更新</a>
   </div>
@@ -17,7 +18,7 @@
     <div class="con-form">
       <div class="content">
         <div class="main" @click="handleAddImg">
-          <img v-if="imageUrl" src="@/assets/images/img.png" class="img" />
+          <img v-if="imageUrl" :src="form.avatar" class="img" />
           <div v-if="!imageUrl" >
             <text class="title">点击更换头像</text>
           </div>
@@ -32,7 +33,7 @@
         />
       </div>
       <div style="padding: 20px 20px;margin-right: 20px">
-        <vs-input style="width: 400px" v-model="form.userName" color="primary" placeholder="请输入用户名称">
+        <vs-input style="width: 400px" v-model="form.userName" color="primary" placeholder="请输入用户名称" disabled>
           <template #icon>
             <vs-icon><User /></vs-icon>
           </template>
@@ -68,21 +69,15 @@
           </template>
         </vs-input>
 
-        <vs-input style="width: 400px" v-model="form.sex" color="primary" placeholder="请输入性别">
-          <template #icon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
-              <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
-              <path fill-rule="evenodd" d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-1 0V11a.5.5 0 0 1 .5-.5Zm0 4a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Z"/>
-            </svg>
-          </template>
-        </vs-input>
+        <vs-select  v-model="form.sex" placeholder="请选择性别" >
+          <vs-option v-for="item in sexOptions" :label="item.label" :value="item.value" />
+        </vs-select>
       </div>
     </div>
 
     <template #footer>
       <div class="footer-dialog">
-        <vs-button block> 确定 </vs-button>
+        <vs-button block @click="handleUpdateProfile"> 确定 </vs-button>
 
         <div class="new">New Here? <a href="#">Create New Account</a></div>
       </div>
@@ -91,19 +86,32 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref, toRefs} from "vue";
+import {inject, onMounted, reactive, ref, toRefs} from "vue";
 import {
   User,
   UserBold,
   Sms
 } from "@vuesax-alpha/icons-vue"
+import {uploadImage} from "@/api/charity/upload.js";
+import {updateUserProfileInfo} from "@/api/charity/charityuser.js";
+import {VsNotification} from "vuesax-alpha";
 const active = ref(false)
 const imageUrl = ref('');
 const data = reactive({
   form: {}
 })
 const {form} = toRefs(data)
-
+const updateUserInfo = inject('user')
+const sexOptions = reactive([
+  {
+    label: '男',
+    value: 0 || '0',
+  },
+  {
+    label: '女',
+    value: 1
+  }
+])
 const handleAddImg = () => {
   const input = document.querySelector('#upload')
   input.click()
@@ -113,16 +121,36 @@ const handleUploadFile = async (value) => {
   const files = value.target.files
   console.log('debug===>获取上传文件',files)
   const formData = new FormData()
-  Array.from(files).forEach((item) => {
-    formData.append('files', item)
-  })
+  formData.append('file', files[0])
   //TODO调用后端接口，传入文件参数
+  uploadImage(formData).then(res => {
+    imageUrl.value = res.imgUrl
+    form.value.avatar = imageUrl.value
+  })
 }
 
+function handleUpdateProfile(){
+  updateUserProfileInfo(form.value).then(res => {
+    if (res.code == 200) {
+      openNotification('success','操作通知','更新用户信息成功')
+    }
+  })
+  active.value = false
+}
 onMounted(() => {
-  const user = defineProps(['user'])
-  console.log(user)
+  form.value = updateUserInfo
 })
+
+
+const openNotification = (color,title,msg) => {
+  VsNotification({
+    color,
+    position: 'top-left',
+    title: title,
+    content: msg,
+
+  })
+}
 </script>
 
 <style lang="scss" scoped>

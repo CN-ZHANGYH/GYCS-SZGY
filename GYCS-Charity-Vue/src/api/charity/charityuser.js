@@ -68,3 +68,19 @@ export function getUserProfileInfo() {
     method: 'get'
   })
 }
+
+
+export function getUserAddress() {
+  return request({
+    url: '/user/user_address',
+    method: 'get'
+  })
+}
+
+export function updateUserProfileInfo(data) {
+  return request({
+    url: '/user/update_profile',
+    method: 'post',
+    data: data
+  })
+}
