@@ -123,10 +123,10 @@
                   </div>
                 </div>
                 <div style="display: flex;justify-content: space-between;margin: 20px;padding: 10px 30%">
-                  <vs-button block>
+                  <vs-button block @click="handleAgreeVote">
                     同意
                   </vs-button>
-                  <vs-button block color="danger">
+                  <vs-button block color="danger" @click="handleDenyVote">
                     拒绝
                   </vs-button>
                 </div>
@@ -145,8 +145,8 @@
 
 <script setup>
 import {onMounted, reactive, ref, toRefs} from "vue";
-import {getRaiseFundInfo, getRaiseFundWaitVotesList} from "@/api/charity/raiseFund.js";
-import {getPage, VsLoadingFn} from "vuesax-alpha";
+import {getRaiseFundInfo, getRaiseFundWaitVotesList, voteOfRaiseFund} from "@/api/charity/raiseFund.js";
+import {getPage, VsLoadingFn, VsNotification} from "vuesax-alpha";
 const $content = ref()
 const votesList = ref([])
 const total = ref(0)
@@ -176,12 +176,44 @@ function viewDetail(item){
   }, 1000)
 }
 
+function handleAgreeVote(){
+  voteOfRaiseFund({
+    raiseId: raiseId.value,
+    status: true,
+  }).then(res => {
+    if (res.code == 200) {
+      openNotification('success','投票通知',res.msg)
+    }
+  })
+}
+
+function handleDenyVote(){
+  voteOfRaiseFund({
+    raiseId: raiseId.value,
+    status: false,
+  }).then(res => {
+    if (res.code == 200) {
+      openNotification('success','投票通知',res.msg)
+    }
+  })
+}
 onMounted(() => {
   getRaiseFundWaitVotesList().then(res => {
     total.value = res.total
     votesList.value = res.rows
   })
 })
+
+
+const openNotification = (color,title,msg) => {
+  VsNotification({
+    color,
+    position: 'top-left',
+    title: title,
+    content: msg,
+  })
+}
+
 </script>
 
 <style scoped>

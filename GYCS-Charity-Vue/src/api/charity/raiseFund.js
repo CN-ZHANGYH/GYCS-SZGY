@@ -81,3 +81,12 @@ export function getRaiseFundInfo(query){
         params: query
     })
 }
+
+
+export function voteOfRaiseFund(query){
+    return request({
+        url: '/raise_fund/vote',
+        method: 'post',
+        params: query
+    })
+}
