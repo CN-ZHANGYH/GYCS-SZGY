@@ -184,7 +184,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
     @Override
     public AjaxResult getRaiseFundInfo(Long raiseId, String username) {
         // 默认如果没有数据直接查询Redis读取缓存数据
-        String raise_fund_audit_value = redisCache.getCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + username);
+        String raise_fund_audit_value = redisCache.getCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + raiseId);
         HashMap result = JSONObject.parseObject(raise_fund_audit_value, HashMap.class);
         if (raise_fund_audit_value != null) {
             AjaxResult success = AjaxResult.success();
@@ -192,9 +192,8 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             return success;
         }
         // 多表联查当前的公益募资活动信息和审批信息
-        CharityUser charityUser = queryCharityUserByUsername(username);
         MPJLambdaWrapper<CharityRaiseFund> lambdaWrapper = new MPJLambdaWrapper<CharityRaiseFund>()
-                .eq(CharityRaiseFund::getPromoterAddress, charityUser.getUserAddress())
+                .eq(CharityRaiseFund::getId,raiseId)
                 .selectAll(CharityRaiseFund.class)
                 .select(
                         CharityRaiseAudit::getRaiseId,
@@ -219,7 +218,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             hashMap.put("certificate_info",certificateInfoVo);
 
             // 存储到redis缓存中 用户在第一次查询的时候是需要久一点获取数据，当用户第二次获取数据的时候可以直接从redis中读取缓存
-            redisCache.setCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + username,JSON.toJSONString(hashMap),5, TimeUnit.MINUTES);
+            redisCache.setCacheObject(CacheConstants.RAISE_FUND_AUDIT_KEY + raiseId,JSON.toJSONString(hashMap),5, TimeUnit.MINUTES);
             AjaxResult success = AjaxResult.success();
             success.put("data",hashMap);
             return success;

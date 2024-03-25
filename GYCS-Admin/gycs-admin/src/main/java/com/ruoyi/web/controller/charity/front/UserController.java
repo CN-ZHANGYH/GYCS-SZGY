@@ -48,8 +48,6 @@ public class UserController {
         return userService.updateUserProfileByBlockChain(userVo);
     }
 
-
-
     @PostMapping("/org_address")
     public AjaxResult getOrgAddress(){
         return userService.getOrgAddress(SecurityUtils.getLoginUser().getUser().getNickName());

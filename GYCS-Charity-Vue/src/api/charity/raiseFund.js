@@ -72,3 +72,12 @@ export function getRaiseFundWaitVotesList() {
         method: 'get'
     })
 }
+
+
+export function getRaiseFundInfo(query){
+    return request({
+        url: '/raise_fund/info',
+        method: 'get',
+        params: query
+    })
+}
