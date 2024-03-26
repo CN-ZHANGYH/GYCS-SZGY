@@ -2,10 +2,12 @@ package com.ruoyi.charity.service;
 
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.UserBankCard;
+import com.ruoyi.charity.domain.vo.RankUserVo;
 import com.ruoyi.charity.domain.vo.UserVo;
 import com.ruoyi.common.core.domain.AjaxResult;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public interface UserService {
     AjaxResult getUserProfile(String username);
@@ -21,5 +23,7 @@ public interface UserService {
     AjaxResult getUserAddress(Long userId);
 
     AjaxResult updateUserProfileByBlockChain(UserVo userVo);
+
+    List<RankUserVo> getRankByUserCredit();
 
 }

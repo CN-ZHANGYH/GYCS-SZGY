@@ -5,16 +5,16 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import org.aspectj.weaver.ast.Var;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.client.protocol.model.JsonTransactionResponse;
+import org.fisco.bcos.sdk.client.protocol.response.BcosTransaction;
+import org.fisco.bcos.sdk.client.protocol.response.BcosTransactionReceipt;
 import org.fisco.bcos.sdk.client.protocol.response.ConsensusStatus;
 import org.fisco.bcos.sdk.client.protocol.response.TotalTransactionCount;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author zyh
@@ -74,5 +74,17 @@ public class BlockChainServiceImpl implements BlockChainService {
             result.add(data);
         }
         return success.put("data",result);
+    }
+
+    @Override
+    public AjaxResult selectTransactionInfoByHash(String hash) {
+        BcosTransactionReceipt transactionReceipt = client.getTransactionReceipt(hash);
+        Optional<TransactionReceipt> receipt = transactionReceipt.getTransactionReceipt();
+        BcosTransaction transactionByHash = client.getTransactionByHash(hash);
+        Optional<JsonTransactionResponse> transaction = transactionByHash.getTransaction();
+        AjaxResult success = AjaxResult.success();
+        success.put("transactionReceipt",receipt);
+        success.put("transaction",transaction);
+        return success;
     }
 }

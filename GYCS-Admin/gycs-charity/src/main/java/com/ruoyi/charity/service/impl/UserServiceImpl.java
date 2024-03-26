@@ -6,6 +6,7 @@ import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.Org;
 import com.ruoyi.charity.domain.dto.UserBankCard;
+import com.ruoyi.charity.domain.vo.RankUserVo;
 import com.ruoyi.charity.domain.vo.UserVo;
 import com.ruoyi.charity.mapper.join.SysUserJMapper;
 import com.ruoyi.charity.mapper.mp.MPOrgMapper;
@@ -16,11 +17,10 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import lombok.SneakyThrows;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -173,6 +173,28 @@ public class UserServiceImpl implements UserService {
 
         // 调用区块链更新区块链账户信息
         return AjaxResult.success().put("msg","更新用户信息成功");
+    }
+
+    @Override
+    public List<RankUserVo> getRankByUserCredit() {
+        MPJLambdaWrapper<SysUser> lambdaWrapper = new MPJLambdaWrapper<SysUser>()
+                .isNotNull(CharityUser::getId)
+                .orderByDesc(CharityUser::getCredit)
+                .select(
+                        SysUser::getUserId,
+                        SysUser::getNickName,
+                        SysUser::getSex,
+                        SysUser::getAvatar
+                )
+                .select(
+                        CharityUser::getCredit,
+                        CharityUser::getVoteCount,
+                        CharityUser::getWithdrawCount,
+                        CharityUser::getUserAddress
+                )
+                .leftJoin(CharityUser.class,CharityUser::getId, SysUser::getUserId);
+        List<RankUserVo> rankUserVoList = sysUserJMapper.selectJoinList(RankUserVo.class, lambdaWrapper);
+        return rankUserVoList;
     }
 
 }

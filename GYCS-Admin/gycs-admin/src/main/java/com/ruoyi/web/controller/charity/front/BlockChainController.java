@@ -6,6 +6,7 @@ import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,5 +31,10 @@ public class BlockChainController {
     @GetMapping("/getNodeInfo")
     public AjaxResult getNodeInfo(){
         return blockChainService.getNodeInfo();
+    }
+
+    @GetMapping("/get_transaction_info")
+    public AjaxResult selectTransactionInfoByHash(@RequestParam("hash") String hash){
+        return blockChainService.selectTransactionInfoByHash(hash);
     }
 }

@@ -148,7 +148,7 @@
                 文章信息
               </div>
             </template>
-            {{form.content}}
+            {{form.content.substring(0,100) + "......"}}
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>

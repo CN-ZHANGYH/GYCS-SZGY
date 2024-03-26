@@ -12,5 +12,5 @@ public interface BlockChainService {
 
     AjaxResult getNodeInfo();
 
-
+    AjaxResult selectTransactionInfoByHash(String hash);
 }

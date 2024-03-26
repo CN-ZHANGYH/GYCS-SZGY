@@ -98,13 +98,14 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                             .get(0)
                             .toString());
             // 插入数据库中
+            System.out.println(result);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             charityRaiseFund.setId(result.getLongValue(0));
             charityRaiseFund.setCreateTime(sdf.parse(BlockTimeUtil.convertToDateTime(result.getLongValue(3))));
             charityRaiseFund.setStatus(result.getBigInteger(5));
             charityRaiseFund.setTotalPeople(BigInteger.valueOf(result.getLongValue(8)));
-            charityRaiseFund.setOverAmount(BigInteger.valueOf(result.getLongValue(9)));
-            charityRaiseFund.setWithdrawAmount(BigInteger.valueOf(result.getLongValue(10)));
+            charityRaiseFund.setOverAmount(BigInteger.valueOf(result.getLongValue(10)));
+            charityRaiseFund.setWithdrawAmount(BigInteger.valueOf(result.getLongValue(11)));
 
             // 判断当前是否插入数据库成功
             int status = MPRaiseFundMapper.insert(charityRaiseFund);
