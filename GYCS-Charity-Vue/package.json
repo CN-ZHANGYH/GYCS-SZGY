@@ -11,7 +11,6 @@
   "dependencies": {
     "@vicons/ionicons5": "^0.12.0",
     "@vuesax-alpha/icons-vue": "^0.0.2-beta.12",
-    "@vueuse/core": "^10.6.1",
     "axios": "^1.6.7",
     "bootstrap-icons": "^1.11.3",
     "echarts": "^5.5.0",

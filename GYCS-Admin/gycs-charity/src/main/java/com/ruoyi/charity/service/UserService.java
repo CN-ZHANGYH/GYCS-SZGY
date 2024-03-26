@@ -1,6 +1,5 @@
 package com.ruoyi.charity.service;
 
-import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.UserBankCard;
 import com.ruoyi.charity.domain.vo.RankUserVo;
 import com.ruoyi.charity.domain.vo.UserVo;
