@@ -54,7 +54,7 @@
       <h4 class="not-margin">填写捐赠物资订单信息</h4>
     </template>
     <div class="con-form">
-      <vs-input v-model="form._userAddress" placeholder="请输入用户地址" style="width: 500px">
+      <vs-input v-model="form._userAddress" placeholder="请输入用户地址" style="width: 500px" disabled>
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
@@ -78,7 +78,16 @@
         </template>
       </vs-input>
 
-      <vs-input v-model="form._destAddress" placeholder="请选择代理机构" style="width: 500px">
+      <vs-input v-model="form._logisticAddress" placeholder="请选择物流商" style="width: 500px" disabled>
+        <template #icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-airplane-fill" viewBox="0 0 16 16">
+            <path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849Z"/>
+          </svg>
+        </template>
+      </vs-input>
+
+
+      <vs-input v-model="form._destAddress" placeholder="请选择代理机构" style="width: 500px" disabled>
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bank2" viewBox="0 0 16 16">
             <path d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916l-7.5-5zM12.375 6v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1H.5z"/>
@@ -86,23 +95,14 @@
         </template>
       </vs-input>
 
-      <div style="display: flex;justify-content: space-between">
-        <div>
-          <vs-select v-model="form._materialType" placeholder="请选择物品分类" style="width: 500px">
-            <vs-option v-for="item in options" :label="item.label" :value="item.value">{{item.label}}</vs-option>
-          </vs-select>
-        </div>
-        <div>
-          <vs-select v-model="form._logisticAddress" placeholder="请选择物流商" style="width: 500px">
-            <vs-option v-for="item in logisticOptions" :label="item.label" :value="item.value">{{item.label}}</vs-option>
-          </vs-select>
-        </div>
-      </div>
+      <vs-select v-model="form._materialType" placeholder="请选择物品分类" style="width: 500px">
+        <vs-option v-for="item in options" :label="item.label" :value="item.value">{{item.label}}</vs-option>
+      </vs-select>
     </div>
 
     <template #footer>
       <div class="footer-dialog">
-        <vs-button block> 立即捐赠 </vs-button>
+        <vs-button block @click="handleDonationMaterial"> 立即捐赠 </vs-button>
       </div>
     </template>
   </vs-dialog>
@@ -110,9 +110,13 @@
 
 <script setup>
 import {onMounted, reactive, ref, toRefs} from "vue";
-import {VsLoadingFn} from "vuesax-alpha";
+import {VsLoadingFn, VsNotification} from "vuesax-alpha";
 import {getAllLogisticAddress} from "@/api/charity/logistic.js";
+import {donationMaterial} from "@/api/charity/material.js";
+import {useRouter} from "vue-router";
+import {getUserAddress} from "@/api/charity/charityuser.js";
 
+const route = useRouter()
 const data = reactive({
   form: {}
 })
@@ -145,16 +149,57 @@ const options = reactive([
   }
 ])
 const openDialogMaterial = ref(false)
+
+
+// 捐赠物资的接口
+function handleDonationMaterial(){
+  donationMaterial(form.value).then(res => {
+    if (res.code == 200) {
+      openNotification('success','操作通知',res.msg);
+    }else {
+      openNotification('danger','操作通知',res.msg);
+    }
+  })
+  form.value._materialType = 0
+  form.value._materialCount = 0
+  form.value._materialName = ""
+
+  openDialogMaterial.value = false
+}
+
 onMounted(() => {
   const loadingInstance = VsLoadingFn()
   setTimeout(() => {
     loadingInstance.close()
   }, 1000)
 
+  // 获取所有的物流商地址
   getAllLogisticAddress().then(res => {
     logisticOptions.value = res.data
   })
+
+  // 获取当前的用户地址
+  getUserAddress().then(res => {
+    form.value._userAddress = res.userAddress
+  })
+
+  form.value._activiteId = route.currentRoute.value.query.id
+  form.value._destAddress = route.currentRoute.value.query.lncomeAddress
+  form.value._logisticAddress = route.currentRoute.value.query.logisticAddress
+
+
+
 })
+
+const openNotification = (color,title,msg) => {
+  VsNotification({
+    color,
+    position: 'top-left',
+    title: title,
+    content: msg,
+
+  })
+}
 </script>
 
 <style lang="scss" scoped>

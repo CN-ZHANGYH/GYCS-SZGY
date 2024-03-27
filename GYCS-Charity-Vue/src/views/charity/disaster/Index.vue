@@ -25,7 +25,7 @@
               <template #text>
                 <p>{{item.content.substring(0,30) + "......"}}</p>
                 <div style="display: flex;justify-content: center;margin-top: 20px">
-                  <vs-button style="width: 200px" @click="donationMaterials()">
+                  <vs-button style="width: 200px" @click="donationMaterials(item)">
                     捐赠物资
                   </vs-button>
                 </div>
@@ -131,10 +131,11 @@ import {
   SearchStatusBold
 } from '@vuesax-alpha/icons-vue'
 import {reactive, ref, toRefs, watch} from "vue";
-import router from "@/router/index.js";
+
 import {getActivityList} from "@/api/charity/activite.js";
 import {getPage} from "vuesax-alpha";
-
+import {useRouter} from "vue-router";
+const route = useRouter()
 const isDialogOpen = ref(false)
 const activityList = ref([])
 const total = ref(0)
@@ -148,9 +149,14 @@ const data = reactive({
 
 const { queryParams, form } = toRefs(data);
 
-function donationMaterials(){
-  router.push({
-    name: "materials"
+function donationMaterials(item){
+  route.push({
+    name: "materials",
+    query: {
+      id: item.id,
+      lncomeAddress: item.lncomeAddress,
+      logisticAddress: item.logisticAddress
+    }
   })
 }
 

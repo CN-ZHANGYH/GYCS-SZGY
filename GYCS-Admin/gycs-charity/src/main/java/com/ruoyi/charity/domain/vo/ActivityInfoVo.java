@@ -14,6 +14,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class ActivityInfoVo
 {
+
+    /** 活动ID */
+    private Long id;
+
     @NotNull(message = "作者不能为空")
     private String author;
 

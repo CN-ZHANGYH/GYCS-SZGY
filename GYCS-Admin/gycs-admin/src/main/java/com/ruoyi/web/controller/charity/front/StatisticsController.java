@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.charity.front;
 
 
+import com.ruoyi.charity.domain.vo.TransWeekVo;
 import com.ruoyi.charity.service.RaiseFundService;
+import com.ruoyi.charity.service.StatisticsService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @RestController
 @RequestMapping("/data")
@@ -18,6 +21,11 @@ public class StatisticsController extends BaseController {
 
     @Autowired
     private RaiseFundService raiseFundService;
+
+
+    @Autowired
+    private StatisticsService statisticsService;
+
 
     /**
      * 根据ID查询公益募资的各个数据统计
@@ -29,5 +37,14 @@ public class StatisticsController extends BaseController {
         return raiseFundService.selectRaiseFundTotalData(raiseId);
     }
 
+    @GetMapping("/trans_type")
+    public AjaxResult selectTransactionTypeTotalData() {
+        return statisticsService.selectTransactionTypeTotalData();
+    }
+
+    @GetMapping("/trans_week")
+    public AjaxResult selectTransactionByWeek(){
+        return statisticsService.selectTransactionByWeek();
+    }
 
 }

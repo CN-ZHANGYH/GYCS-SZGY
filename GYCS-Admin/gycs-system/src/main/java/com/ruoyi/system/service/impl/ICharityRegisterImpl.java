@@ -78,6 +78,7 @@ public class ICharityRegisterImpl implements ICharityRegister {
         // 注册为系统用户
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
+        sysUser.setNickName(registerVo.getNickName());
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
 
         // 手动添加普通用户的权限
@@ -95,8 +96,9 @@ public class ICharityRegisterImpl implements ICharityRegister {
             UserKey blockChainUser = userKeyService.createBlockChainUser();
             CharityUser charityUser = new CharityUser();
             charityUser.setId(sysUser.getUserId());
-            charityUser.setCardId(sysUser.getUserName());
+            charityUser.setCardId(registerVo.getCardId());
             charityUser.setUsername(sysUser.getUserName());
+            charityUser.setDesignation(registerVo.getNickName());
             charityUser.setAmount(BigInteger.valueOf(0));
             charityUser.setCredit(0);
             charityUser.setVoteCount(0);

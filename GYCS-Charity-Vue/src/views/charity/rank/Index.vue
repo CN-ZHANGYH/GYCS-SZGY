@@ -198,7 +198,7 @@
     </div>
     <div>
       <div class="rank-table">
-        <vs-table v-model="tableInfo">
+        <vs-table striped>
           <template #thead>
             <vs-tr>
               <vs-th style="width: 80px"> 头像 </vs-th>
@@ -261,6 +261,7 @@ import * as echarts from "echarts";
 import {onMounted, reactive, ref, toRefs, watch} from "vue";
 import {getRankUserList} from "@/api/charity/rank.js";
 import {getPage, VsLoadingFn} from "vuesax-alpha";
+import {selectTransactionByWeek, selectTransactionTypeTotalData} from "@/api/charity/data.js";
 const main = ref() // 使用ref创建虚拟DOM引用，使用时用main.value
 const radar = ref()
 const total = ref(0)
@@ -271,7 +272,7 @@ const data = reactive({
   },
   user_one: {},
   user_two: {},
-  user_three: {}
+  user_three: {},
 })
 const {queryParams,user_one,user_two,user_three} = toRefs(data)
 const rankUserList = ref([])
@@ -304,7 +305,6 @@ const donationDataOptions = reactive({
         type: 'category',
         boundaryGap: false,
         axisLabel: {
-          formatter: '2020-{value}',
           textStyle: {
             color: '#333',
           },
@@ -314,13 +314,13 @@ const donationDataOptions = reactive({
             color: '#D9D9D9',
           },
         },
-        data: ['1', '2', '3', '4', '5', '6', '7', '8'],
+        data: [],
       },
     ],
     yAxis: [
       {
         type: 'value',
-        name: '单位（万/亿KWh）',
+        name: '单位（￥/笔）',
         axisLabel: {
           textStyle: {
             color: '#666',
@@ -348,8 +348,7 @@ const donationDataOptions = reactive({
     ],
     series: [
       {
-        // name: "2018",
-        name: '预测出电量',
+        name: '交易金额',
         type: 'line',
         smooth: true,
         symbolSize: 8,
@@ -416,10 +415,10 @@ const donationDataOptions = reactive({
             shadowBlur: 10,
           },
         },
-        data: [100, 138, 400, 173, 180, 150, 180, 230],
+        data: [],
       },
       {
-        name: '实际用电量',
+        name: '交易总数',
         type: 'line',
         smooth: true,
         symbolSize: 8,
@@ -505,23 +504,7 @@ const donationDataOptions = reactive({
 
         }
       },
-      indicator: [{
-        name: '微信支付',
-        max: 100
-      },
-        {
-          name: '支付宝支付',
-          max: 100
-        },
-        {
-          name: '银行卡支付',
-          max: 100
-        },
-        {
-          name: '其他支付',
-          max: 100
-        },
-      ]
+      indicator: []
     },
     series: [{
       name: '使用时段',
@@ -544,7 +527,7 @@ const donationDataOptions = reactive({
             color: '#0291FF',
           },
         },
-        value: [20, 33, 80, 50, 30, 40, 80]
+        value: []
       }]
     }]
   }
@@ -577,12 +560,23 @@ onMounted(() => {
     user_two.value = rankUserList.value[1]
     user_three.value = rankUserList.value[2]
   })
-
-  var myChart = echarts.init(main.value);
-  myChart.setOption(option.value)
-
-  var radarChart = echarts.init(radar.value)
-  radarChart.setOption(radarOption.value)
+  // 初始化支付方式的雷达图标信息
+  selectTransactionTypeTotalData().then(res => {
+    console.log(res)
+    radarOption.value.series[0].data[0].value = res.data.radarData
+    radarOption.value.radar.indicator = res.data.indicator
+    var radarChart = echarts.init(radar.value)
+    radarChart.setOption(radarOption.value)
+  })
+  // 初始化近一周的交易金额和交易数量
+  selectTransactionByWeek().then(res => {
+    console.log(res)
+    option.value.xAxis[0].data = res.data.week
+    option.value.series[0].data = res.data.trans_amount
+    option.value.series[1].data = res.data.trans_total
+    var myChart = echarts.init(main.value);
+    myChart.setOption(option.value)
+  })
 
   const loadingInstance = VsLoadingFn()
   setTimeout(() => {
@@ -757,10 +751,6 @@ onMounted(() => {
   margin-left: 60px;
   color: #ea9518;
   top: -5px;
-}
-
-.timeNum {
-  color: #6cabf6;
 }
 
 .slide-in-top {

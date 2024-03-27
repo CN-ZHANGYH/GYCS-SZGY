@@ -26,6 +26,12 @@ public class RegisterVo {
     @NotNull(message = "用户名不能为空")
     public String username;
 
+    @NotNull(message = "身份证不能为空")
+    public String cardId;
+
+    @NotNull(message = "用户昵称不能为空")
+    public String nickName;
+
     @NotNull(message = "密码不能为空")
     public String password;
 
