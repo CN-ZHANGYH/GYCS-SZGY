@@ -63,4 +63,6 @@ public class CacheConstants
     public static final String USER_DONATION_BANK_TRANSFER_KEY = "user_donation_bank_transfer:";
     public static final String ACTIVITY_LIST_KEY = "activity_list_key:";
     public static final String RAISE_FUND_WAIT_VOTES = "raise_fund_wait_votes:";
+    public static final String TRANSACTION_TYPE_TOTAL = "transaction_type_total:";
+    public static final String TRANSACTION_BY_WEEK = "transaction_by_week:";
 }
