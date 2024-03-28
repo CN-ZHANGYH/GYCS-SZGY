@@ -96,11 +96,11 @@
           </template>
           捐款记录
         </vs-sidebar-item>
-        <vs-sidebar-item id="feedback_record">
+        <vs-sidebar-item id="material_record">
           <template #icon>
             <vs-icon><SmsEditBold /></vs-icon>
           </template>
-          反馈记录
+          公益记录
         </vs-sidebar-item>
       </vs-sidebar-group>
       <vs-sidebar-group>
@@ -246,6 +246,10 @@ const menuOptions = reactive([
   {
     id: 13,
     name: "online"
+  },
+  {
+    id: 14,
+    name: 'material_record'
   }
 ])
 

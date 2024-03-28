@@ -25,4 +25,10 @@ public interface UserService {
 
     List<RankUserVo> getRankByUserCredit();
 
+    AjaxResult selectUserDonationRaiseFundRecord(Long userId);
+
+    AjaxResult selectUserDonationMaterialRecord(Long userId);
+
+    AjaxResult selectTransactionHashAndBlockNumber(Integer raiseId);
+
 }

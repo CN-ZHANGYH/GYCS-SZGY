@@ -3,18 +3,16 @@ package com.ruoyi.charity.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.ruoyi.charity.domain.bo.CharityControllerUpdateUserBalanceInputBO;
-import com.ruoyi.charity.domain.dto.CharityUser;
-import com.ruoyi.charity.domain.dto.Org;
-import com.ruoyi.charity.domain.dto.UserBankCard;
+import com.ruoyi.charity.domain.dto.*;
 import com.ruoyi.charity.domain.vo.RankUserVo;
 import com.ruoyi.charity.domain.vo.UserVo;
 import com.ruoyi.charity.mapper.join.SysUserJMapper;
-import com.ruoyi.charity.mapper.mp.MPOrgMapper;
-import com.ruoyi.charity.mapper.mp.MPUserBankMapper;
-import com.ruoyi.charity.mapper.mp.MPUserMapper;
+import com.ruoyi.charity.mapper.mp.*;
 import com.ruoyi.charity.service.UserService;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -39,9 +38,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MPOrgMapper mpOrgMapper;
 
+    @Autowired
+    private RedisCache redisCache;
+
 
     @Autowired
     private MPUserBankMapper mpUserBankMapper;
+
+    @Autowired
+    private MPDonationTraceMapper mpDonationTraceMapper;
+
+    @Autowired
+    private MPActivityTraceMapper mpActivityTraceMapper;
+
+    @Autowired
+    private MPDonationTransactionMapper mpDonationTransactionMapper;
+
+    @Autowired
+    private MPActiviteTransactionMapper mpActiviteTransactionMapper;
 
     @Autowired
     private CharityControllerService charityControllerService;
@@ -195,6 +209,70 @@ public class UserServiceImpl implements UserService {
                 .leftJoin(CharityUser.class,CharityUser::getId, SysUser::getUserId);
         List<RankUserVo> rankUserVoList = sysUserJMapper.selectJoinList(RankUserVo.class, lambdaWrapper);
         return rankUserVoList;
+    }
+
+    // 根据用户的ID查询当前的用户所有的交易记录信息
+    @Override
+    public AjaxResult selectUserDonationRaiseFundRecord(Long userId) {
+        // 默认先从redis中读取
+        List<DonationTrace> donationTraceList = redisCache.getCacheObject(CacheConstants.USER_DONATION_RAISE_FUND_RECORD + userId);
+        if (donationTraceList != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("total",donationTraceList.size());
+            success.put("rows",donationTraceList);
+            return success;
+        }
+
+        CharityUser charityUser = MPUserMapper.selectById(userId);
+        // 根据当前的用户地址查询该用户的所有交易记录
+        donationTraceList = mpDonationTraceMapper
+                .selectList(Wrappers
+                        .lambdaQuery(DonationTrace.class)
+                        .eq(DonationTrace::getDonorAddress, charityUser.getUserAddress()));
+
+        // 将所有的记录存储到redis缓存中
+        redisCache.setCacheObject(CacheConstants.USER_DONATION_RAISE_FUND_RECORD + userId,donationTraceList,1, TimeUnit.MINUTES);
+
+        AjaxResult success = AjaxResult.success();
+        success.put("total",donationTraceList.size());
+        success.put("rows",donationTraceList);
+        return success;
+    }
+
+    @Override
+    public AjaxResult selectUserDonationMaterialRecord(Long userId) {
+        // 默认先从redis中读取
+        List<ActiviteTrace> activiteTraceList = redisCache.getCacheObject(CacheConstants.USER_DONATION_MATERIAL_RECORD + userId);
+        if (activiteTraceList != null) {
+            AjaxResult success = AjaxResult.success();
+            success.put("total",activiteTraceList.size());
+            success.put("rows",activiteTraceList);
+            return success;
+        }
+
+        CharityUser charityUser = MPUserMapper.selectById(userId);
+        // 根据当前的用户地址查询该用户的所有交易记录
+        activiteTraceList = mpActivityTraceMapper
+                .selectList(Wrappers
+                        .lambdaQuery(ActiviteTrace.class)
+                        .eq(ActiviteTrace::getSourceAddress, charityUser.getUserAddress()));
+
+        // 将所有的记录存储到redis缓存中
+        redisCache.setCacheObject(CacheConstants.USER_DONATION_MATERIAL_RECORD + userId,activiteTraceList,1, TimeUnit.MINUTES);
+
+        AjaxResult success = AjaxResult.success();
+        success.put("total",activiteTraceList.size());
+        success.put("rows",activiteTraceList);
+        return success;
+    }
+
+    @Override
+    public AjaxResult selectTransactionHashAndBlockNumber(Integer raiseId) {
+        DonationTransaction donationTransaction = mpDonationTransactionMapper
+                .selectOne(Wrappers
+                        .lambdaQuery(DonationTransaction.class)
+                        .eq(DonationTransaction::getRaiseId, raiseId));
+        return AjaxResult.success().put("data",donationTransaction);
     }
 
 }

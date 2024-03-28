@@ -63,6 +63,16 @@ const router = createRouter({
           path: 'materials',
           name: 'materials',
           component: () => import('../views/charity/materials/Index.vue'),
+        },
+        {
+          path: 'donation_record',
+          name: 'donation_record',
+          component: () => import('../views/record/donation/Index.vue'),
+        },
+        {
+          path: 'material_record',
+          name: 'material_record',
+          component: () => import('../views/record/material/Index.vue'),
         }
       ]
     },

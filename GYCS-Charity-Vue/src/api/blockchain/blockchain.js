@@ -14,3 +14,11 @@ export function getNodeInfo() {
             method: 'get'
         })
 }
+
+export function getTransactionInfo(query) {
+    return request({
+        url: '/block_chain/get_transaction_info',
+        method: 'get',
+        params: query
+    })
+}
