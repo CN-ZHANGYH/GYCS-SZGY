@@ -1,10 +1,13 @@
 package com.ruoyi.web.controller.charity.front;
 
 
+import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
+import com.ruoyi.charity.service.ActivityTraceService;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.SecurityUtils;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,9 @@ public class RecordController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ActivityTraceService activityTraceService;
 
     @GetMapping("/raise_fund/list")
     public AjaxResult selectUserDonationRaiseFundRecord(){
@@ -36,4 +42,17 @@ public class RecordController extends BaseController {
         return userService.selectTransactionHashAndBlockNumber(raiseId);
     }
 
+
+
+    @GetMapping("/material/relationship")
+    public AjaxResult selectUserMaterialOfRelationship(@RequestParam("activityId") Integer activityId){
+        String nickName = SecurityUtils.getLoginUser().getUser().getNickName();
+        return activityTraceService.selectUserMaterialOfRelationship(activityId,nickName);
+    }
+
+
+    @GetMapping("/material/transaction_hash")
+    public AjaxResult selectTransactionHashAndBlockNumberByMaterialId(@RequestParam("activityId") Integer activityId){
+        return userService.selectTransactionHashAndBlockNumberByMaterialId(activityId);
+    }
 }

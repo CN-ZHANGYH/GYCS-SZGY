@@ -7,4 +7,5 @@ public interface ActivityTraceService {
     AjaxResult donation(MaterialInfoVo materialInfoVo,String username);
 
 
+    AjaxResult selectUserMaterialOfRelationship(Integer activityId,String nickName);
 }

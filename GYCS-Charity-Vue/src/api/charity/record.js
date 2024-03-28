@@ -12,7 +12,7 @@ export function selectUserDonationRaiseFundRecord() {
 export function selectUserDonationMaterialRecord() {
     return request({
         url: '/record/donation/material/list',
-        method: 'post',
+        method: 'get',
     })
 }
 
@@ -20,6 +20,26 @@ export function selectUserDonationMaterialRecord() {
 export function selectTransactionHashAndBlockNumber(query) {
     return request({
         url: '/record/donation/raise_fund/transaction_hash',
+        method: 'get',
+        params: query
+    })
+}
+
+
+export function selectTransactionHashAndBlockNumberByMaterialId(query) {
+    return request({
+        url: '/record/donation/material/transaction_hash',
+        method: 'get',
+        params: query
+    })
+}
+
+
+
+
+export function selectMaterialRelationship(query) {
+    return request({
+        url: '/record/donation/material/relationship',
         method: 'get',
         params: query
     })

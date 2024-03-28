@@ -31,4 +31,5 @@ public interface UserService {
 
     AjaxResult selectTransactionHashAndBlockNumber(Integer raiseId);
 
+    AjaxResult selectTransactionHashAndBlockNumberByMaterialId(Integer activityId);
 }

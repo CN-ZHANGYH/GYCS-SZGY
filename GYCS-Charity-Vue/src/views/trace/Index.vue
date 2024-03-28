@@ -2,14 +2,14 @@
   <div class="trace_container">
     <div style="display: flex;flex: 1;justify-content: center;align-items: center">
       <div>
-        <vs-input v-model="value1" placeholder="请输入身份证号码查询公益溯源信息" style="width: 600px;height: 50px">
+        <vs-input v-model="cardId" placeholder="请输入身份证号码查询公益溯源信息" style="width: 600px;height: 50px">
           <template #icon>
             <vs-icon><SearchFavorite1Bold /></vs-icon>
           </template>
         </vs-input>
       </div>
       <div>
-        <vs-button type="relief" color="success" style="width: 80px;height: 45px">搜索</vs-button>
+        <vs-button type="relief" color="success" style="width: 80px;height: 45px" @click="handleSearch">搜索</vs-button>
       </div>
     </div>
     <div class="trace_table">
@@ -24,27 +24,24 @@
           </template>
           <template #tbody>
             <vs-tr
-                v-for="(tr, i) in getPage(totalUser, page, pageSize)"
+                v-for="(item, i) in getPage(activiteTrace, queryParams.pageNum, queryParams.pageSize)"
                 :key="i"
-                :data="tr"
+                :data="item"
             >
               <vs-td>
-                {{ tr.name }}
               </vs-td>
               <vs-td>
-                {{ tr.email }}
               </vs-td>
               <vs-td>
-                {{ tr.id }}
               </vs-td>
             </vs-tr>
           </template>
           <template #footer>
             <vs-pagination
-                v-model:current-page="page"
-                v-model:page-size="pageSize"
+                v-model:current-page="queryParams.pageNum"
+                v-model:page-size="queryParams.pageSize"
                 :page-sizes="[3, 5, 7]"
-                :total="totalUser.length"
+                :total="activiteTotal"
             />
           </template>
         </vs-table>
@@ -60,27 +57,27 @@
           </template>
           <template #tbody>
             <vs-tr
-                v-for="(tr, i) in getPage(totalUser, page, pageSize)"
+                v-for="(item, i) in getPage(donationTrace, queryParams.pageNum, queryParams.pageSize)"
                 :key="i"
-                :data="tr"
+                :data="item"
             >
               <vs-td>
-                {{ tr.name }}
+                {{ item.donorAddress }}
               </vs-td>
               <vs-td>
-                {{ tr.email }}
+                {{ item.amount }} ￥
               </vs-td>
               <vs-td>
-                {{ tr.id }}
+                {{ item.transTime }}
               </vs-td>
             </vs-tr>
           </template>
           <template #footer>
             <vs-pagination
-                v-model:current-page="page"
-                v-model:page-size="pageSize"
+                v-model:current-page="queryParams.pageNum"
+                v-model:page-size="queryParams.pageSize"
                 :page-sizes="[3, 5, 7]"
-                :total="totalUser.length"
+                :total="donationTotal"
             />
           </template>
         </vs-table>
@@ -93,82 +90,47 @@
 import {
   SearchFavorite1Bold
 } from '@vuesax-alpha/icons-vue'
-import {reactive, ref} from "vue";
-import { getPage } from 'vuesax-alpha'
+import {onMounted, reactive, ref, toRefs} from "vue";
+import {getPage, VsLoadingFn} from 'vuesax-alpha'
+import {selectTraceByCardId} from "@/api/charity/trace.js";
 const page = ref(1)
-const pageSize = ref(3)
-const totalUser = reactive([
-  {
-    id: 1,
-    name: 'Leanne Graham',
-    username: 'Bret',
-    email: 'Sincere@april.biz',
-    website: 'hildegard.org',
+const cardId = ref("")
+const activiteTotal = ref(0)
+const donationTotal = ref(0)
+
+const data = reactive({
+  queryParams: {
+    pageNum: 1,
+    pageSize: 5
   },
-  {
-    id: 2,
-    name: 'Ervin Howell',
-    username: 'Antonette',
-    email: 'Shanna@melissa.tv',
-    website: 'anastasia.net',
-  },
-  {
-    id: 3,
-    name: 'Clementine Bauch',
-    username: 'Samantha',
-    email: 'Nathan@yesenia.net',
-    website: 'ramiro.info',
-  },
-  {
-    id: 4,
-    name: 'Patricia Lebsack',
-    username: 'Karianne',
-    email: 'Julianne.OConner@kory.org',
-    website: 'kale.biz',
-  },
-  {
-    id: 5,
-    name: 'Chelsey Dietrich',
-    username: 'Kamren',
-    email: 'Lucio_Hettinger@annie.ca',
-    website: 'demarco.info',
-  },
-  {
-    id: 6,
-    name: 'Mrs. Dennis Schulist',
-    username: 'Leopoldo_Corkery',
-    email: 'Karley_Dach@jasper.info',
-    website: 'ola.org',
-  },
-  {
-    id: 7,
-    name: 'Kurtis Weissnat',
-    username: 'Elwyn.Skiles',
-    email: 'Telly.Hoeger@billy.biz',
-    website: 'elvis.io',
-  },
-  {
-    id: 8,
-    name: 'Nicholas Runolfsdottir V',
-    username: 'Maxime_Nienow',
-    email: 'Sherwood@rosamond.me',
-    website: 'jacynthe.com',
-  },
-  {
-    id: 9,
-    name: 'Glenna Reichert',
-    username: 'Delphine',
-    email: 'Chaim_McDermott@dana.io',
-    website: 'conrad.com',
-  },
-  {
-    id: 10,
-    name: 'Clementina DuBuque',
-    username: 'Moriah.Stanton',
-    email: 'Rey.Padberg@karina.biz',
-    website: 'ambrose.net',
-  },
-])
+  activiteTrace: [],
+  donationTrace: []
+})
+
+const {activiteTrace,donationTrace,queryParams} = toRefs(data)
+
+
+
+function handleSearch(){
+  selectTraceByCardId({cardId: cardId.value}).then(res => {
+    if (res.code == 200) {
+      console.log(res)
+      activiteTrace.value = res.activiteTrace.rows
+      donationTrace.value = res.donationTrace.rows
+      activiteTotal.value = res.activiteTrace.total
+      donationTotal.value = res.donationTrace.total
+
+      const loadingInstance = VsLoadingFn()
+      setTimeout(() => {
+        loadingInstance.close()
+      }, 1000)
+    }
+  })
+
+}
+onMounted(() => {
+
+})
 </script>
 
 <style scoped>

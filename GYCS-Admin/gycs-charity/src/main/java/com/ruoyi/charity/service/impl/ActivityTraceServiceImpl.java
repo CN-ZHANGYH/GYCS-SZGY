@@ -4,21 +4,26 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedMaterialsInputBO;
+import com.ruoyi.charity.domain.dto.ActiviteTrace;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.MaterialInfoVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
+import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
+import com.ruoyi.charity.mapper.mp.MPLogisticMapper;
+import com.ruoyi.charity.mapper.mp.MPOrgMapper;
 import com.ruoyi.charity.mapper.mp.MPUserMapper;
 import com.ruoyi.charity.service.ActivityTraceService;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.bean.BeanUtils;
+import org.aspectj.weaver.loadtime.Aj;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 
 
 @Service
@@ -33,6 +38,15 @@ public class ActivityTraceServiceImpl implements ActivityTraceService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private MPOrgMapper mpOrgMapper;
+
+    @Autowired
+    private MPLogisticMapper mpLogisticMapper;
+
+    @Autowired
+    private MPActivityTraceMapper mpActivityTraceMapper;
 
     @Override
     public AjaxResult donation(MaterialInfoVo materialInfoVo, String username) {
@@ -76,5 +90,19 @@ public class ActivityTraceServiceImpl implements ActivityTraceService {
             throw new RuntimeException(e);
         }
         return AjaxResult.error().put("msg","用户捐赠物资失败");
+    }
+
+    @Override
+    public AjaxResult selectUserMaterialOfRelationship(Integer activityId, String nickName) {
+        // 查询当前的交易记录溯源的信息
+        ActiviteTrace activiteTrace = mpActivityTraceMapper.selectOne(Wrappers.lambdaQuery(ActiviteTrace.class).eq(ActiviteTrace::getCharityId,activityId));
+
+        String destAddress = activiteTrace.getDestAddress();
+        String logisticAddress = activiteTrace.getLogisticAddress();
+        List<String> orgAndLogisticName = mpOrgMapper.selectOrgNameAndLogisticName(destAddress, logisticAddress);
+        orgAndLogisticName.add(nickName);
+
+        return AjaxResult.success().put("data",orgAndLogisticName);
+
     }
 }

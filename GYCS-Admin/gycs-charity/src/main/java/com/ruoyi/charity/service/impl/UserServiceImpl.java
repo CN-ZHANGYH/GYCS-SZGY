@@ -275,4 +275,13 @@ public class UserServiceImpl implements UserService {
         return AjaxResult.success().put("data",donationTransaction);
     }
 
+    @Override
+    public AjaxResult selectTransactionHashAndBlockNumberByMaterialId(Integer activityId) {
+        ActiviteTransaction activiteTransaction = mpActiviteTransactionMapper
+                .selectOne(Wrappers
+                        .lambdaQuery(ActiviteTransaction.class)
+                        .eq(ActiviteTransaction::getActiviteId, activityId));
+        return AjaxResult.success().put("data",activiteTransaction);
+    }
+
 }
