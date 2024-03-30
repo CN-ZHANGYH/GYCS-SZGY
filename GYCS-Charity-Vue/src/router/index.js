@@ -73,6 +73,16 @@ const router = createRouter({
           path: 'material_record',
           name: 'material_record',
           component: () => import('../views/record/material/Index.vue'),
+        },
+        {
+          path: 'donation_detail',
+          name: 'donation_detail',
+          component: () => import('../views/trace/donation/Index.vue'),
+        },
+        {
+          path: 'material_detail',
+          name: 'material_detail',
+          component: () => import('../views/trace/material/Index.vue'),
         }
       ]
     },

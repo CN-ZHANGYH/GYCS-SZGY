@@ -69,8 +69,8 @@
                 <vs-td>
                   {{ item.transTime }}
                 </vs-td>
-                <template #expand>
-                  <div style="height: 60px">
+                <template #expand ref="$hash">
+                  <div style="height: 60px" >
                     <h2 class="expand__p">区块高度: <span class="expand__span">{{transaction.blockNumber}}</span></h2>
                     <h2 class="expand__p">交易哈希: <span class="expand__span">{{transaction.transactionHash}}</span></h2>
                   </div>
@@ -156,6 +156,7 @@ import {getPage, VsLoadingFn} from "vuesax-alpha";
 import {selectTransactionHashAndBlockNumber, selectUserDonationRaiseFundRecord} from "@/api/charity/record.js";
 import {getTransactionInfo} from "@/api/blockchain/blockchain.js";
 
+const $hash = ref()
 const $content = ref()
 const transactionActive = ref(0)
 const recordValue = ref()
@@ -182,6 +183,13 @@ watch(record,(val,old) => {
   selectTransactionHashAndBlockNumber({raiseId: title.value.raiseId}).then(res => {
     transaction.value = res.data
   })
+  const loadingInstance = VsLoadingFn({
+    target: $hash,
+  })
+
+  setTimeout(() => {
+    loadingInstance.close()
+  }, 1000)
 })
 
 function handleSearchTransactionByHash(){

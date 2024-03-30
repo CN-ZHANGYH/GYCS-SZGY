@@ -9,4 +9,18 @@ export function selectTraceByCardId(query) {
     })
 }
 
+export function selectMaterialDetailByActivityId(query) {
+    return request({
+        url: '/trace/material_detail',
+        method: 'post',
+        params: query
+    })
+}
 
+export function selectRaiseFundDetailByRaiseId(query) {
+    return request({
+        url: '/trace/raise_fund_detail',
+        method: 'post',
+        params: query
+    })
+}
