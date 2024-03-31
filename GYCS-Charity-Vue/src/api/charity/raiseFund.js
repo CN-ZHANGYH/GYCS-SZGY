@@ -90,3 +90,12 @@ export function voteOfRaiseFund(query){
         params: query
     })
 }
+
+
+export function selectBankTransferInfo(query){
+    return request({
+        url: '/raise_fund/donation_bank_transfer_info',
+        method: 'post',
+        params: query
+    })
+}

@@ -47,6 +47,8 @@ public class StatisticsController extends BaseController {
         return statisticsService.selectTransactionByWeek();
     }
 
-
-
+    @GetMapping("/bank_transfer_week")
+    public AjaxResult selectBankTransferByWeek(@RequestParam("raiseId") Integer raiseId){
+        return statisticsService.selectBankTransferByWeek(raiseId);
+    }
 }

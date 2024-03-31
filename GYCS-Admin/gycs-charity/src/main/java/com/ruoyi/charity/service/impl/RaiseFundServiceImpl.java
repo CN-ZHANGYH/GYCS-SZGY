@@ -11,6 +11,7 @@ import com.ruoyi.charity.domain.vo.*;
 import com.ruoyi.charity.mapper.join.CharityUserJMapper;
 import com.ruoyi.charity.mapper.join.DonationTraceJMapper;
 import com.ruoyi.charity.mapper.join.RaiseFundJMapper;
+import com.ruoyi.charity.mapper.mp.MPBankTransferRecordMapper;
 import com.ruoyi.charity.mapper.mp.MPRaiseAuditMapper;
 import com.ruoyi.charity.mapper.mp.MPRaiseFundMapper;
 import com.ruoyi.charity.service.ICharityRaiseAuditService;
@@ -30,6 +31,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -67,6 +72,9 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private MPBankTransferRecordMapper mpBankTransferRecordMapper;
 
     /**
      * 用户发起公益募资业务
@@ -494,6 +502,12 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                 if (!deleteBankTransferFlag){
                     log.info("当前的缓存已经删除,redis的key为：{}",CacheConstants.USER_DONATION_BANK_TRANSFER_KEY + bankTransferRecordVo.getDonorCardId());
                 }
+                // 更新当前的数据库
+                BankTransferRecord bankTransferRecord = new BankTransferRecord();
+                bankTransferRecord.setAmount(bankTransferRecordVo.getDonorAmount());
+                bankTransferRecord.setRaiseId(bankTransferRecordVo.getRaiseId());
+                mpBankTransferRecordMapper.insert(bankTransferRecord);
+
                 return AjaxResult.success().put("msg","转账成功");
             }
         } catch (Exception e) {
@@ -527,6 +541,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                     BankTransferRecordVo bankTransferRecordVo = JSONObject.parseObject(jsonArray.get(i).toString(), BankTransferRecordVo.class);
                     transferRecordVos.add(bankTransferRecordVo);
                 }
+
                 AjaxResult success = AjaxResult.success();
                 success.put("msg","查询成功");
                 success.put("data",transferRecordVos);
@@ -542,6 +557,7 @@ public class RaiseFundServiceImpl implements RaiseFundService {
 
         return AjaxResult.error().put("msg","查询失败");
     }
+
 
     @SneakyThrows
     @Override

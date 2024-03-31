@@ -83,6 +83,11 @@ const router = createRouter({
           path: 'material_detail',
           name: 'material_detail',
           component: () => import('../views/trace/material/Index.vue'),
+        },
+        {
+          path: 'transfer_trace',
+          name: 'transfer_trace',
+          component: () => import('../views/trace/bank_transfer/Index.vue'),
         }
       ]
     },

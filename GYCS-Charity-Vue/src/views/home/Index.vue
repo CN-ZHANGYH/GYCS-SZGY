@@ -137,12 +137,28 @@
           公益排行
         </vs-sidebar-item>
       </vs-sidebar-group>
-      <vs-sidebar-item id="trace">
-        <template #icon>
-          <vs-icon><HierarchySquareBold /></vs-icon>
+      <vs-sidebar-group>
+        <template #header>
+          <vs-sidebar-item arrow>
+            <template #icon>
+              <vs-icon><Send2Bold /></vs-icon>
+            </template>
+            溯源中心
+          </vs-sidebar-item>
         </template>
-        溯源中心
-      </vs-sidebar-item>
+        <vs-sidebar-item id="trace">
+          <template #icon>
+            <vs-icon><HierarchySquareBold /></vs-icon>
+          </template>
+          公益溯源
+        </vs-sidebar-item>
+        <vs-sidebar-item id="transfer_trace">
+          <template #icon>
+            <vs-icon><HierarchySquareBold /></vs-icon>
+          </template>
+          转账记录
+        </vs-sidebar-item>
+      </vs-sidebar-group>
       <template #footer>
         <vs-row justify="space-between">
           <vs-avatar>
@@ -164,7 +180,7 @@
         </div>
       </div>
       <!--页脚内容-->
-      <Footer>
+      <Footer style="margin-top: 7%">
       </Footer>
     </div>
   </div>
@@ -250,6 +266,10 @@ const menuOptions = reactive([
   {
     id: 14,
     name: 'material_record'
+  },
+  {
+    id: 15,
+    name: 'transfer_trace'
   }
 ])
 
@@ -307,9 +327,8 @@ function handleLogout() {
 
 .main-card {
   width: 100%;
-  height: 88%;
-  margin-top: 5%;
-  padding: 20px;
+  height: 100%;
+  margin-top: 13%;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

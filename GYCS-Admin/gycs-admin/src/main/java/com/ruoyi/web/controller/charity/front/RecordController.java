@@ -55,4 +55,7 @@ public class RecordController extends BaseController {
     public AjaxResult selectTransactionHashAndBlockNumberByMaterialId(@RequestParam("activityId") Integer activityId){
         return userService.selectTransactionHashAndBlockNumberByMaterialId(activityId);
     }
+
+
+
 }

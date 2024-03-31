@@ -14,4 +14,7 @@ public interface StatisticsService {
     AjaxResult selectTransactionTypeTotalData();
 
     AjaxResult selectTransactionByWeek();
+
+    AjaxResult selectBankTransferByWeek(Integer raiseId);
+
 }

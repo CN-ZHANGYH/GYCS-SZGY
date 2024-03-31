@@ -18,3 +18,10 @@ export function selectTransactionByWeek() {
 }
 
 
+export function selectBankTransferByWeek(query) {
+    return request({
+        url: '/data/bank_transfer_week',
+        method: 'get',
+        params: query
+    })
+}

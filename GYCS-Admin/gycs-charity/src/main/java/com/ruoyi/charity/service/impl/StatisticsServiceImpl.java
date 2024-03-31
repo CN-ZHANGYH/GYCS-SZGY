@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.charity.domain.dto.DonationTrace;
+import com.ruoyi.charity.domain.vo.BankTransferDataView;
 import com.ruoyi.charity.domain.vo.TransWeekVo;
+import com.ruoyi.charity.mapper.mp.MPBankTransferRecordMapper;
 import com.ruoyi.charity.mapper.mp.MPDonationTraceMapper;
 import com.ruoyi.charity.service.StatisticsService;
 import com.ruoyi.common.constant.CacheConstants;
@@ -13,6 +15,7 @@ import com.ruoyi.common.core.redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Autowired
     private MPDonationTraceMapper mpDonationTraceMapper;
+
+    @Autowired
+    private MPBankTransferRecordMapper mpBankTransferRecordMapper;
 
     @Override
     public AjaxResult selectTransactionTypeTotalData() {
@@ -93,5 +99,23 @@ public class StatisticsServiceImpl implements StatisticsService {
 
             return AjaxResult.success().put("data",result);
         }
+    }
+
+    @Override
+    public AjaxResult selectBankTransferByWeek(Integer raiseId) {
+        List<BankTransferDataView> bankTransferDataViews = mpBankTransferRecordMapper.selectBankTransferRecordByWeek(raiseId);
+        System.out.println(bankTransferDataViews.toString());
+        ArrayList<Integer> transaction_count = new ArrayList<>();
+        ArrayList<BigInteger> transaction_amount = new ArrayList<>();
+
+        for (BankTransferDataView bankTransferDataView : bankTransferDataViews) {
+            transaction_count.add(bankTransferDataView.getTransactionCount());
+            transaction_amount.add(bankTransferDataView.getTransactionAmount());
+        }
+
+        AjaxResult success = AjaxResult.success();
+        success.put("transaction_count",transaction_count);
+        success.put("transaction_amount",transaction_amount);
+        return success;
     }
 }
