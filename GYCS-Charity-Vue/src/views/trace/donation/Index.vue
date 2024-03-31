@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-<div style="display: flex;justify-content: center;">
+<div style="display: flex;justify-content: center;padding: 20px 20px">
   <div style="flex-direction: column">
     <div>
       <vs-alert color="success">

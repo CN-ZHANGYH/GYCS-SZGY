@@ -307,7 +307,7 @@ const openNotification = (color,title,msg) => {
 .online_container {
   display: flex;
   justify-content: space-evenly;
-  padding: 10px 20px;
+  padding: 20px 20px;
   margin-right: 50px;
 
 

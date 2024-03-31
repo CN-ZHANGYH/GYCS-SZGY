@@ -248,6 +248,7 @@ onMounted(() => {
 .trace_container {
   display: flex;
   flex-direction: column;
+  padding: 20px 20px;
 }
 
 .trace_table {

@@ -40,7 +40,7 @@ const data = reactive({
       }
     },
     legend: {
-      data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
+      data: ['转账数量', '转账金额']
     },
     toolbox: {
       feature: {
@@ -182,7 +182,7 @@ function handleSearch(){
     <div class="con-form">
       <div style="display: flex;justify-content: space-evenly">
         <div style="width: 40%">
-          <div>
+          <div style="display: flex;justify-content: center;align-content: center;margin-bottom: 20px">
             <div id="main" ref="main" style="width: 100%;height: 200px"></div>
           </div>
           <vs-table v-model="selected" Striped>
@@ -223,7 +223,7 @@ function handleSearch(){
               <vs-pagination
                   v-model:current-page="queryParams.pageNum"
                   v-model:page-size="queryParams.pageSize"
-                  :page-sizes="[10,15,20]"
+                  :page-sizes="[5,10,13]"
                   :total="total"
                   progress
                   infinite
@@ -344,6 +344,7 @@ function handleSearch(){
   height: 100%; /* 使用视口高度，使背景铺满整个页面 */
   display: flex;
   justify-content: center;
+  padding: 20px 20px;
 }
 
 .InputContainer {

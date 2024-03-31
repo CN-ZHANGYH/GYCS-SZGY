@@ -241,7 +241,7 @@ const openNotification = (color,title,msg) => {
 .transfer_container {
   display: flex;
   justify-content: center;
-  padding: 30px 20px;
+  padding: 20px 20px;
 }
 .modal {
   width: 70%;

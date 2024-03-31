@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;flex-direction: column">
+  <div style="display: flex;flex-direction: column;padding: 20px 20px">
     <!--  搜索框  -->
     <div style="font-size: 20px;font-weight: bold;flex: 1;display: flex;margin-bottom: 20px;justify-content: center">
       <vs-input v-model="value1" placeholder="根据关键词搜索你想要捐款的公益活动" style="width: 600px;height: 50px">

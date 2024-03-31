@@ -222,7 +222,7 @@ onMounted(() => {
 .donation__record__container {
   display: flex;
   flex: 1;
-  padding-left: 5px;
+  padding: 20px 20px;
 }
 .card {
   width: 100%;

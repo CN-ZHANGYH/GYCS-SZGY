@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;justify-content: space-evenly">
+  <div style="display: flex;justify-content: space-evenly;padding: 20px 20px">
     <div class="material__record__container">
       <div>
         <div style="display: flex;justify-content: center;width: 100%;align-items: center;margin-bottom: 5px;margin-top: 5px;">
