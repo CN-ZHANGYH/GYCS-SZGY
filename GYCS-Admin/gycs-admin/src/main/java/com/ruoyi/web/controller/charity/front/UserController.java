@@ -72,4 +72,11 @@ public class UserController {
         return userService.selectUserBindBankInfo(SecurityUtils.getLoginUser().getUserId());
     }
 
+
+    @GetMapping("/donation_count")
+    public AjaxResult selectUserDonationCount(){
+        String username = SecurityUtils.getLoginUser().getUsername();
+        return userService.selectUserDonationCount(username);
+    }
+
 }

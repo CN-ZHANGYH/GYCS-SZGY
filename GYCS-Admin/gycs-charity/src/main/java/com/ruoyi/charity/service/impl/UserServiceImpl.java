@@ -284,4 +284,11 @@ public class UserServiceImpl implements UserService {
         return AjaxResult.success().put("data",activiteTransaction);
     }
 
+    @Override
+    public AjaxResult selectUserDonationCount(String username) {
+        CharityUser charityUser = MPUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
+        Integer count = mpDonationTraceMapper.selectDonationCount(charityUser.getUserAddress());
+        return AjaxResult.success().put("count",count);
+    }
+
 }

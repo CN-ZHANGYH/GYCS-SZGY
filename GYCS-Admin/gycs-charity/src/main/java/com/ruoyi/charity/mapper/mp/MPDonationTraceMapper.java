@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.charity.domain.dto.DonationTrace;
 import com.ruoyi.charity.domain.vo.TransWeekVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -43,4 +44,14 @@ public interface MPDonationTraceMapper extends BaseMapper<DonationTrace> {
             "GROUP BY\n" +
             "    WEEK(days.date), week;")
     List<TransWeekVo> selectTransactionByWeek();
+
+
+    @Select("SELECT COUNT(*) AS count\n" +
+            "FROM charity_donation\n" +
+            "WHERE charity_donation.donor_address = #{address}\n" +
+            "UNION\n" +
+            "SELECT COUNT(*) AS count\n" +
+            "FROM charity_activite\n" +
+            "WHERE charity_activite.source_address = #{address};")
+    public Integer selectDonationCount(@Param("address") String address);
 }
