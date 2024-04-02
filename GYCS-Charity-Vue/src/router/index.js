@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    // { path: '/', redirect: '/home' },
     {
       path: '/login',
       name: 'login',
@@ -22,7 +21,7 @@ const router = createRouter({
         {
           path: 'user',
           name: 'user',
-          component: () => import('../views/user/Index.vue')
+          component: () => import('../views/profile/Index.vue')
         },
         {
           path: 'rank',

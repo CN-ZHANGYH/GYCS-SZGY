@@ -205,6 +205,7 @@ import {
 import Footer from "@/components/Layout/Footer.vue";
 import router from '../../router/index.js';
 import useUserStore from "@/stores/modules/user.js";
+import TimeLine from "@/components/TimeLine/TimeLine.vue";
 
 const userStore = useUserStore()
 const active = ref('home')
@@ -324,7 +325,6 @@ function handleLogout() {
     max-height: 22px;
   }
 }
-
 .main-card {
   width: 100%;
   height: 100%;
@@ -334,10 +334,10 @@ function handleLogout() {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .main-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 </style>
 
