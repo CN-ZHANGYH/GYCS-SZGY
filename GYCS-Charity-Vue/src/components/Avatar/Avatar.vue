@@ -16,11 +16,11 @@
       <h4 class="not-margin">更新用户的信息</h4>
     </template>
     <div class="con-form">
-      <div class="content">
+      <div class="content-image">
         <div class="main" @click="handleAddImg">
-          <img v-if="imageUrl" :src="form.avatar" class="img" />
+          <img v-if="imageUrl" :src="form.avatar" class="content-image-img" />
           <div v-if="!imageUrl" >
-            <text class="title">点击更换头像</text>
+            <text class="content-image-title">点击更换头像</text>
           </div>
         </div>
         <input
@@ -154,7 +154,7 @@ const openNotification = (color,title,msg) => {
 </script>
 
 <style lang="scss" scoped>
-.content {
+.content-image {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -168,18 +168,18 @@ const openNotification = (color,title,msg) => {
   height: 300px;
   margin-left: 25px;
   margin-top: 35px;
-  .main {
+  .content-image-main {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
-  .img {
+  .content-image-img {
     width: 300px;
     height: 300px;
     border-radius: 20px;
   }
-  .title {
+  .content-image-title {
     font-size: 25px;
   }
   .img-input {

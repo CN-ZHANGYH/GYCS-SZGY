@@ -270,7 +270,6 @@ import BankCard from "@/components/BankCard/BankCard.vue";
 import Avatar from "@/components/Avatar/Avatar.vue";
 import {bindBankCard, getUserBindBankInfo, getUserProfileInfo} from "@/api/charity/charityuser.js";
 const bindBankDialog = ref(false)
-
 const page = ref(1)
 const pageSize = ref(3)
 const totalUser = reactive([

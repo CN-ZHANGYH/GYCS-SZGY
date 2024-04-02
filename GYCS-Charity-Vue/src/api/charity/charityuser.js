@@ -84,3 +84,14 @@ export function updateUserProfileInfo(data) {
     data: data
   })
 }
+
+
+
+
+
+export function getUserDonationCount() {
+  return request({
+    url: '/user/donation_count',
+    method: 'get'
+  })
+}

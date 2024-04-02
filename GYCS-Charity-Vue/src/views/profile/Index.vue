@@ -1,12 +1,18 @@
 <script setup>
 import {VsLoadingFn, VsNotification} from 'vuesax-alpha'
-import {bindBankCard, getUserBindBankInfo, getUserProfileInfo} from "@/api/charity/charityuser.js";
-import {inject, onMounted, reactive, ref, toRefs} from "vue";
+import {
+  bindBankCard,
+  getUserBindBankInfo,
+  getUserDonationCount,
+  getUserProfileInfo
+} from "@/api/charity/charityuser.js";
+import {onMounted, reactive, ref, toRefs} from "vue";
 import {
   User,
   UserBold,
   Sms
 } from "@vuesax-alpha/icons-vue"
+import * as echarts from "echarts"
 import {uploadImage} from "@/api/charity/upload.js";
 import {updateUserProfileInfo} from "@/api/charity/charityuser.js";
 const active = ref(false)
@@ -37,15 +43,90 @@ const data = reactive({
     username: "暂无绑定",
     cardId: "暂无绑定",
     address: "暂无绑定"
+  },
+  transactionOption: {
+    tooltip: {
+      trigger: 'axis'
+    },
+    xAxis: [{
+      show: false,
+      type: 'category',
+      data: ['2019-01','2019-02','2019-03','2019-04','2019-05','2019-06'],
+      axisLine: {
+        lineStyle: {
+          color: "#999"
+        }
+      }
+    }],
+    yAxis: [{
+      show: false,
+      type: 'value',
+      splitNumber: 4,
+      splitLine: {
+        lineStyle: {
+          type: 'dashed',
+          color: '#DDD'
+        }
+      },
+      axisLine: {
+        show: false,
+        lineStyle: {
+          color: "#333"
+        },
+      },
+      nameTextStyle: {
+        color: "#999"
+      },
+      splitArea: {
+        show: false
+      }
+    }],
+    series: [{
+      type: 'line',
+      data: [23,60,20,36,23,85],
+      lineStyle: {
+        normal: {
+          width: 8,
+          color: {
+            type: 'linear',
+
+            colorStops: [{
+              offset: 0,
+              color: '#A9F387' // 0% 处的颜色
+            }, {
+              offset: 1,
+              color: '#48D8BF' // 100% 处的颜色
+            }],
+            globalCoord: false // 缺省为 false
+          },
+          shadowColor: 'rgba(72,216,191, 0.3)',
+          shadowBlur: 10,
+          shadowOffsetY: 20
+        }
+      },
+      itemStyle: {
+        normal: {
+          color: '#fff',
+          borderWidth: 10,
+          /*shadowColor: 'rgba(72,216,191, 0.3)',
+          shadowBlur: 100,*/
+          borderColor: "#A9F387"
+        }
+      },
+      smooth: true
+    }]
   }
 })
-const {form,bindInfo,user} = toRefs(data)
-
+const points = ref(0);
+const donations = ref(0);
+const votes = ref(0);
+const withdrawals = ref(0);
+const transaction = ref()
+const {form,bindInfo,user,transactionOption} = toRefs(data)
 const handleAddImg = () => {
   const input = document.querySelector('#upload')
   input.click()
 }
-
 const handleUploadFile = async (value) => {
   const files = value.target.files
   console.log('debug===>获取上传文件',files)
@@ -57,7 +138,6 @@ const handleUploadFile = async (value) => {
     form.value.avatar = imageUrl.value
   })
 }
-
 function handleUpdateProfile(){
   updateUserProfileInfo(form.value).then(res => {
     if (res.code == 200) {
@@ -66,7 +146,6 @@ function handleUpdateProfile(){
   })
   active.value = false
 }
-
 onMounted(() => {
   getUserBindBankInfo().then(res => {
     if (res.code == 200) {
@@ -74,9 +153,18 @@ onMounted(() => {
     }
   })
   getUserProfileInfo().then(res => {
-    console.log(res)
     user.value = res.userVo
+    points.value = user.value.credit
+    votes.value = user.value.voteCount
+    withdrawals.value = user.value.withdrawCount
   })
+
+  getUserDonationCount().then(res => {
+    donations.value = res.count
+  })
+
+  var transactionEcharts = echarts.init(transaction.value);
+  transactionEcharts.setOption(transactionOption.value)
 
   const loadingInstance = VsLoadingFn()
   setTimeout(() => {
@@ -120,17 +208,86 @@ setInterval(() => {
 }, 42);
 
 
-const points = ref(1000);
-const donations = ref(20);
-const votes = ref(50);
-const withdrawals = ref(5);
-
 const statistics = [
   { label: '积分', value: points },
   { label: '捐款次数', value: donations },
   { label: '投票次数', value: votes },
   { label: '提现次数', value: withdrawals }
 ];
+
+
+const users = [
+  {
+    id: 1,
+    name: 'Leanne Graham',
+    username: 'Bret',
+    email: 'Sincere@april.biz',
+    website: 'hildegard.org',
+  },
+  {
+    id: 2,
+    name: 'Ervin Howell',
+    username: 'Antonette',
+    email: 'Shanna@melissa.tv',
+    website: 'anastasia.net',
+  },
+  {
+    id: 3,
+    name: 'Clementine Bauch',
+    username: 'Samantha',
+    email: 'Nathan@yesenia.net',
+    website: 'ramiro.info',
+  },
+  {
+    id: 4,
+    name: 'Patricia Lebsack',
+    username: 'Karianne',
+    email: 'Julianne.OConner@kory.org',
+    website: 'kale.biz',
+  },
+  {
+    id: 5,
+    name: 'Chelsey Dietrich',
+    username: 'Kamren',
+    email: 'Lucio_Hettinger@annie.ca',
+    website: 'demarco.info',
+  },
+  {
+    id: 6,
+    name: 'Mrs. Dennis Schulist',
+    username: 'Leopoldo_Corkery',
+    email: 'Karley_Dach@jasper.info',
+    website: 'ola.org',
+  },
+  {
+    id: 7,
+    name: 'Kurtis Weissnat',
+    username: 'Elwyn.Skiles',
+    email: 'Telly.Hoeger@billy.biz',
+    website: 'elvis.io',
+  },
+  {
+    id: 8,
+    name: 'Nicholas Runolfsdottir V',
+    username: 'Maxime_Nienow',
+    email: 'Sherwood@rosamond.me',
+    website: 'jacynthe.com',
+  },
+  {
+    id: 9,
+    name: 'Glenna Reichert',
+    username: 'Delphine',
+    email: 'Chaim_McDermott@dana.io',
+    website: 'conrad.com',
+  },
+  {
+    id: 10,
+    name: 'Clementina DuBuque',
+    username: 'Moriah.Stanton',
+    email: 'Rey.Padberg@karina.biz',
+    website: 'ambrose.net',
+  },
+]
 </script>
 
 <template>
@@ -168,7 +325,7 @@ const statistics = [
             <div class="plan-card">
               <h2>余额<span>FISCO BCOS区块链数字账户</span></h2>
               <div class="etiquet-price">
-                <p>254.99</p>
+                <p>{{user.amount}}</p>
                 <div></div>
               </div>
             </div>
@@ -333,140 +490,33 @@ const statistics = [
       <div class="user-box second-box">
         <div class="cards-wrapper" style="--delay: 1s">
           <div class="cards card">
-            <table class="table">
-              <thead>
-              <tr>
-                <th>T</th>
-                <th>Name</th>
-                <th>From</th>
-                <th>To</th>
-                <th>V</th>
-                <th>B</th>
-                <th>C</th>
-                <th>A</th>
-                <th>W</th>
-                <th>Status</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>
-                  <input type="checkbox" id="row1" class="table-row">
-                  <span class="time">17.00</span>
-                </td>
-                <td>John D</td>
-                <td>Sudbury Station</td>
-                <td>Center Plaza</td>
-                <td>N</td>
-                <td></td>
-                <td>€</td>
-                <td></td>
-                <td><svg viewBox="-22 0 134 134.06032" fill="currentColor">
-                  <path d="M23.347656 134.058594C8.445312 84.953125 39.933594 67.023438 39.933594 67.023438c-2.203125 26.203124 12.6875 46.617187 12.6875 46.617187 5.476562-1.652344 15.929687-9.375 15.929687-9.375 0 9.375-5.515625 29.78125-5.515625 29.78125s19.308594-14.929687 25.386719-39.726563c6.070313-24.796874-11.5625-49.691406-11.5625-49.691406 1.0625 17.550782-4.875 34.8125-16.507813 48 .582032-.671875 1.070313-1.417968 1.445313-2.226562 2.089844-4.179688 5.445313-15.042969 3.480469-40.199219C62.511719 14.890625 30.515625 0 30.515625 0c2.757813 21.515625-5.511719 26.472656-24.882813 67.3125-19.371093 40.832031 17.714844 66.746094 17.714844 66.746094zm0 0" />
-                </svg></td>
-                <td>
-                  <div class="status is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                    Active
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" id="row2" class="table-row">
-                  <span class="time">17.00</span>
-                </td>
-                <td>Rufi</td>
-                <td>One Beacon</td>
-                <td>Los Angeles</td>
-                <td>N</td>
-                <td></td>
-                <td>€</td>
-                <td></td>
-                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg></td>
-                <td>
-                  <div class="status is-red">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                    Rejected
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" id="row3" class="table-row">
-                  <span class="time is-wait">17.00</span>
-                </td>
-                <td>Alfred</td>
-                <td>5 Main High</td>
-                <td>Center Plaza</td>
-                <td>N</td>
-                <td></td>
-                <td>€</td>
-                <td></td>
-                <td><svg viewBox="-22 0 134 134.06032" fill="currentColor">
-                  <path d="M23.347656 134.058594C8.445312 84.953125 39.933594 67.023438 39.933594 67.023438c-2.203125 26.203124 12.6875 46.617187 12.6875 46.617187 5.476562-1.652344 15.929687-9.375 15.929687-9.375 0 9.375-5.515625 29.78125-5.515625 29.78125s19.308594-14.929687 25.386719-39.726563c6.070313-24.796874-11.5625-49.691406-11.5625-49.691406 1.0625 17.550782-4.875 34.8125-16.507813 48 .582032-.671875 1.070313-1.417968 1.445313-2.226562 2.089844-4.179688 5.445313-15.042969 3.480469-40.199219C62.511719 14.890625 30.515625 0 30.515625 0c2.757813 21.515625-5.511719 26.472656-24.882813 67.3125-19.371093 40.832031 17.714844 66.746094 17.714844 66.746094zm0 0" />
-                </svg></td>
-                <td>
-                  <div class="status is-wait"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader">
-                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                  </svg>
-                    Waiting
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" id="row4" class="table-row">
-                  <span class="time is-wait">17.00</span>
-                </td>
-                <td>Mike J.</td>
-                <td>Brooklyn 99</td>
-                <td>Park, NY</td>
-                <td>N</td>
-                <td></td>
-                <td>€</td>
-                <td></td>
-                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg></td>
-                <td>
-                  <div class="status is-wait"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader">
-                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                  </svg>
-                    Waiting
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" id="row5" class="table-row">
-                  <span class="time">17.00</span>
-                </td>
-                <td>Hermann B.</td>
-                <td>Janburg Station</td>
-                <td>Center Park</td>
-                <td>N</td>
-                <td></td>
-                <td>€</td>
-                <td></td>
-                <td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg></td>
-                <td>
-                  <div class="status is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                    Active
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+            <vs-table>
+              <template #thead>
+                <vs-tr>
+                  <vs-th> Name </vs-th>
+                  <vs-th> Email </vs-th>
+                  <vs-th> Id </vs-th>
+                  <vs-th> 交易 </vs-th>
+                </vs-tr>
+              </template>
+              <template #tbody>
+                <vs-tr v-for="(tr, i) in users" :key="i" :data="tr">
+                  <vs-td>
+                    {{ tr.name }}
+                  </vs-td>
+                  <vs-td>
+                    {{ tr.email }}
+                  </vs-td>
+                  <vs-td>
+                    {{ tr.id }}
+                  </vs-td>
+                  <vs-td>
+                    <div id="transaction" ref="transaction" style="width: 300px;height: 400px">
+                    </div>
+                  </vs-td>
+                </vs-tr>
+              </template>
+            </vs-table>
           </div>
         </div>
 
@@ -636,8 +686,6 @@ const statistics = [
 </template>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
-
 $font-family: "Inter", sans-serif;
 $bg-color: #252954;
 $body-color: #9b9ca7;
@@ -1393,58 +1441,6 @@ body {
 @keyframes turn {
   100% {
     transform: rotate(1turn);
-  }
-}
-
-.table {
-  text-align: left;
-  padding: 0;
-
-  th {
-    font-size: 14px;
-    font-weight: normal;
-    padding-bottom: 16px;
-    &:nth-child(n + 5) {
-      padding: 0 10px 16px;
-    }
-    &:first-child {
-      padding-left: 36px;
-    }
-  }
-
-  td {
-    font-size: 15px;
-    vertical-align: middle;
-    padding: 8px 0;
-    &:last-of-type {
-      width: 100px;
-    }
-    &:nth-child(n + 5) {
-      padding: 0 10px;
-    }
-    &:nth-last-of-type(2) svg {
-      width: 16px;
-    }
-  }
-  input {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid $body-color;
-    vertical-align: middle;
-    background-color: transparent;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 16px;
-    transition: 0.25s;
-    background-size: 0;
-    background-position: center;
-    &:checked {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-      background-color: $bg-color;
-      background-size: 12px;
-      background-repeat: no-repeat;
-    }
   }
 }
 
