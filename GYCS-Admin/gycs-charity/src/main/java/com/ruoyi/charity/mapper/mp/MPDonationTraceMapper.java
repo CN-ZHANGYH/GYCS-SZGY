@@ -53,5 +53,5 @@ public interface MPDonationTraceMapper extends BaseMapper<DonationTrace> {
             "SELECT COUNT(*) AS count\n" +
             "FROM charity_activite\n" +
             "WHERE charity_activite.source_address = #{address};")
-    public Integer selectDonationCount(@Param("address") String address);
+    public List<Integer> selectDonationCount(@Param("address") String address);
 }

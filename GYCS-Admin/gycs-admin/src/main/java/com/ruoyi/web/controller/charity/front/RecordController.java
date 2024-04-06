@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
 import com.ruoyi.charity.service.ActivityTraceService;
+import com.ruoyi.charity.service.RaiseFundService;
+import com.ruoyi.charity.service.TraceService;
 import com.ruoyi.charity.service.UserService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -23,6 +25,9 @@ public class RecordController extends BaseController {
 
     @Autowired
     private ActivityTraceService activityTraceService;
+
+    @Autowired
+    private TraceService traceService;
 
     @GetMapping("/raise_fund/list")
     public AjaxResult selectUserDonationRaiseFundRecord(){
@@ -57,5 +62,9 @@ public class RecordController extends BaseController {
     }
 
 
-
+        @GetMapping("/raise_fund/latest_trans")
+    public AjaxResult selectUserLatestDonationTransaction(){
+        String username = SecurityUtils.getLoginUser().getUsername();
+        return traceService.selectUserLatestDonationTransaction(username);
+    }
 }

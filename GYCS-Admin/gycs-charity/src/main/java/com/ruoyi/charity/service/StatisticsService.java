@@ -17,4 +17,7 @@ public interface StatisticsService {
 
     AjaxResult selectBankTransferByWeek(Integer raiseId);
 
+    AjaxResult selectUserOrderStatusByMonth(String username);
+
+    AjaxResult selectOrderProcessByLogistic(Long userId);
 }

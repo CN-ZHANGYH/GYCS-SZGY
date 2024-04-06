@@ -25,3 +25,11 @@ export function selectBankTransferByWeek(query) {
         params: query
     })
 }
+
+
+export function selectUserOrderStatusByMonth() {
+    return request({
+        url: '/data/order_status',
+        method: 'get',
+    })
+}

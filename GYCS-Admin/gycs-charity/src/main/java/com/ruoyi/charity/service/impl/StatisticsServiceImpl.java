@@ -3,15 +3,20 @@ package com.ruoyi.charity.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.DonationTrace;
+import com.ruoyi.charity.domain.dto.Logistic;
 import com.ruoyi.charity.domain.vo.BankTransferDataView;
+import com.ruoyi.charity.domain.vo.OrderDataVo;
+import com.ruoyi.charity.domain.vo.OrderStatusVo;
 import com.ruoyi.charity.domain.vo.TransWeekVo;
-import com.ruoyi.charity.mapper.mp.MPBankTransferRecordMapper;
-import com.ruoyi.charity.mapper.mp.MPDonationTraceMapper;
+import com.ruoyi.charity.mapper.mp.*;
 import com.ruoyi.charity.service.StatisticsService;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +37,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private MPUserMapper mpUserMapper;
+
+
+    @Autowired
+    private MPOrgMapper mpOrgMapper;
+
+    @Autowired
+    private MPLogisticMapper mpLogisticMapper;
+
+    @Autowired
+    private MPActivityOrderMapper mpActivityOrderMapper;
 
     @Autowired
     private MPDonationTraceMapper mpDonationTraceMapper;
@@ -117,5 +135,42 @@ public class StatisticsServiceImpl implements StatisticsService {
         success.put("transaction_count",transaction_count);
         success.put("transaction_amount",transaction_amount);
         return success;
+    }
+
+    @Override
+    public AjaxResult selectUserOrderStatusByMonth(String username) {
+        CharityUser charityUser = mpUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
+        List<OrderDataVo> orderDataVoList = mpOrgMapper.selectUserOrderStatusByMonth(charityUser.getUserAddress());
+
+
+        ArrayList<String> dayList = new ArrayList<>();
+        ArrayList<Integer> deliveryList = new ArrayList<>();
+        ArrayList<Integer> signList = new ArrayList<>();
+        ArrayList<Integer> rateList = new ArrayList<>();
+
+        // 查询当前的所有数据
+        for (int i = 0; i < orderDataVoList.size(); i++) {
+            dayList.add(orderDataVoList.get(i).getCountDay());
+            deliveryList.add(orderDataVoList.get(i).getCountDelivery());
+            signList.add(orderDataVoList.get(i).getCountSign());
+            rateList.add(orderDataVoList.get(i).getCountRate());
+        }
+        AjaxResult success = AjaxResult.success();
+        success.put("day",dayList);
+        success.put("delivery",deliveryList);
+        success.put("sign",signList);
+        success.put("rate",rateList);
+        return success;
+    }
+
+    @Override
+    public AjaxResult selectOrderProcessByLogistic(Long userId) {
+
+        Logistic logistic = mpLogisticMapper
+                .selectOne(Wrappers.lambdaQuery(Logistic.class).eq(Logistic::getId, userId));
+
+        OrderStatusVo orderStatusVo = mpActivityOrderMapper.selectOrderProcessByLogistic(logistic.getLogAddress());
+
+        return AjaxResult.success().put("data",orderStatusVo);
     }
 }

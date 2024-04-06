@@ -44,3 +44,12 @@ export function selectMaterialRelationship(query) {
         params: query
     })
 }
+
+
+export function selectUserDonationLatestTransactionList(query) {
+    return request({
+        url: '/record/donation/raise_fund/latest_trans',
+        method: 'get',
+    })
+}
+

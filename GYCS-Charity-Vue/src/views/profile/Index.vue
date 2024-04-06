@@ -12,12 +12,15 @@ import {
   UserBold,
   Sms
 } from "@vuesax-alpha/icons-vue"
-import * as echarts from "echarts"
 import {uploadImage} from "@/api/charity/upload.js";
 import {updateUserProfileInfo} from "@/api/charity/charityuser.js";
+import {selectUserDonationLatestTransactionList} from "@/api/charity/record.js";
+import ProfileDataView from "@/components/ProfileDataView/ProfileDataView.vue";
+import {selectUserOrderStatusByMonth} from "@/api/charity/data.js";
 const active = ref(false)
 const imageUrl = ref('');
 const bindBank = ref({})
+const transactionList = ref([])
 const sexOptions = reactive([
   {
     label: '男',
@@ -44,85 +47,12 @@ const data = reactive({
     cardId: "暂无绑定",
     address: "暂无绑定"
   },
-  transactionOption: {
-    tooltip: {
-      trigger: 'axis'
-    },
-    xAxis: [{
-      show: false,
-      type: 'category',
-      data: ['2019-01','2019-02','2019-03','2019-04','2019-05','2019-06'],
-      axisLine: {
-        lineStyle: {
-          color: "#999"
-        }
-      }
-    }],
-    yAxis: [{
-      show: false,
-      type: 'value',
-      splitNumber: 4,
-      splitLine: {
-        lineStyle: {
-          type: 'dashed',
-          color: '#DDD'
-        }
-      },
-      axisLine: {
-        show: false,
-        lineStyle: {
-          color: "#333"
-        },
-      },
-      nameTextStyle: {
-        color: "#999"
-      },
-      splitArea: {
-        show: false
-      }
-    }],
-    series: [{
-      type: 'line',
-      data: [23,60,20,36,23,85],
-      lineStyle: {
-        normal: {
-          width: 8,
-          color: {
-            type: 'linear',
-
-            colorStops: [{
-              offset: 0,
-              color: '#A9F387' // 0% 处的颜色
-            }, {
-              offset: 1,
-              color: '#48D8BF' // 100% 处的颜色
-            }],
-            globalCoord: false // 缺省为 false
-          },
-          shadowColor: 'rgba(72,216,191, 0.3)',
-          shadowBlur: 10,
-          shadowOffsetY: 20
-        }
-      },
-      itemStyle: {
-        normal: {
-          color: '#fff',
-          borderWidth: 10,
-          /*shadowColor: 'rgba(72,216,191, 0.3)',
-          shadowBlur: 100,*/
-          borderColor: "#A9F387"
-        }
-      },
-      smooth: true
-    }]
-  }
 })
 const points = ref(0);
 const donations = ref(0);
 const votes = ref(0);
 const withdrawals = ref(0);
-const transaction = ref()
-const {form,bindInfo,user,transactionOption} = toRefs(data)
+const {form,bindInfo,user} = toRefs(data)
 const handleAddImg = () => {
   const input = document.querySelector('#upload')
   input.click()
@@ -163,8 +93,13 @@ onMounted(() => {
     donations.value = res.count
   })
 
-  var transactionEcharts = echarts.init(transaction.value);
-  transactionEcharts.setOption(transactionOption.value)
+
+  selectUserDonationLatestTransactionList().then(res => {
+    transactionList.value = res.data
+    console.log(res)
+  })
+
+
 
   const loadingInstance = VsLoadingFn()
   setTimeout(() => {
@@ -196,16 +131,16 @@ const openNotification = (color,title,msg) => {
 }
 
 
-const counter = document.querySelector(".counter");
-let count = 0;
-setInterval(() => {
-  if (count == 92) {
-    clearInterval(count);
-  } else {
-    count += 1;
-    counter.textContent = count + "%";
-  }
-}, 42);
+// const counter = document.querySelector(".counter");
+// let count = 0;
+// setInterval(() => {
+//   if (count == 92) {
+//     clearInterval(count);
+//   } else {
+//     count += 1;
+//     counter.textContent = count + "%";
+//   }
+// }, 42);
 
 
 const statistics = [
@@ -295,7 +230,7 @@ const users = [
     <div class="main-container">
       <div class="user-box first-box">
         <div class="activity card" style="--delay: .2s">
-          <div class="title">User Activities</div>
+          <div class="title">用户公益统计</div>
           <div class="subtitle">
             <div class="statistics">
               <div v-for="(stat, index) in statistics" :key="index" class="statistic">
@@ -306,18 +241,17 @@ const users = [
                   </div>
                 </div>
                 <div class="divider" v-if="index !== statistics.length - 1">
-
                 </div>
               </div>
             </div>
 
           </div>
           <div class="activity-links">
-            <div class="activity-link active">Current User</div>
+            <div class="activity-link active">订单数据</div>
             <div class="activity-link notify">User Request</div>
           </div>
           <div class="destination">
-
+            <ProfileDataView/>
           </div>
         </div>
         <div class="discount card" style="--delay: .4s">
@@ -493,30 +427,45 @@ const users = [
             <vs-table>
               <template #thead>
                 <vs-tr>
-                  <vs-th> Name </vs-th>
-                  <vs-th> Email </vs-th>
-                  <vs-th> Id </vs-th>
-                  <vs-th> 交易 </vs-th>
+                  <vs-th style="width: 100px"> 区块高度 </vs-th>
+                  <vs-th style="width: 300px"> 交易哈希 </vs-th>
+                  <vs-th style="width: 120px"> 交易金额 </vs-th>
+                  <vs-th> 交易账户 </vs-th>
+                  <vs-th style="width: 120px"> 支付方式 </vs-th>
+                  <vs-th> 交易时间 </vs-th>
                 </vs-tr>
               </template>
               <template #tbody>
-                <vs-tr v-for="(tr, i) in users" :key="i" :data="tr">
+                <vs-tr v-for="(item, i) in transactionList" :key="i" :data="item">
                   <vs-td>
-                    {{ tr.name }}
+                    {{ item.blockNumber }}
                   </vs-td>
                   <vs-td>
-                    {{ tr.email }}
+                    <button class="hash__button">
+                      <span class="span-mother">
+                        <span>{{item.transactionHash}}</span>
+                      </span>
+                      <span class="span-mother2" >
+                        <span v-for="i in item.transactionHash.length">{{item.transactionHash[i]}}</span>
+                      </span>
+                    </button>
                   </vs-td>
                   <vs-td>
-                    {{ tr.id }}
+                    {{ item.amount}} ￥
                   </vs-td>
                   <vs-td>
-                    <div id="transaction" ref="transaction" style="width: 300px;height: 400px">
-                    </div>
+                    {{item.donorAddress}}
+                  </vs-td>
+                  <vs-td>
+                    {{item.transType}}
+                  </vs-td>
+                  <vs-td>
+                    {{item.transTime}}
                   </vs-td>
                 </vs-tr>
               </template>
             </vs-table>
+
           </div>
         </div>
 
@@ -772,15 +721,6 @@ body {
   }
 }
 
-.main-container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 25px;
-  overflow: auto;
-  padding-left: 0;
-}
-
 .header {
   background: rgb(20, 24, 52);
   background: radial-gradient(
@@ -966,7 +906,6 @@ body {
 }
 
 .activity {
-  max-width: 800px;
   .title {
     margin-bottom: 20px;
   }
@@ -1026,7 +965,7 @@ body {
 .destination {
   display: flex;
   align-items: center;
-  margin-top: auto;
+  margin-top: 20px;
   &-card {
     background: rgb(26, 29, 58);
     background: linear-gradient(
@@ -1988,5 +1927,85 @@ body {
   border-right: 13px solid transparent;
   z-index: -6;
 }
+
+
+
+.hash__button {
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  border-radius: 20px;
+  width: 100%;
+  height: 42.66px;
+  border: none;
+  background-color: #3653f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.span-mother {
+  display: flex;
+  overflow: hidden;
+}
+
+.hash__button:hover .span-mother {
+  position: absolute;
+}
+
+.hash__button:hover .span-mother span {
+  transform: translateY(1.3em);
+}
+
+.hash__button .span-mother span:nth-child(1) {
+  transition: 0.2s;
+}
+
+.hash__button .span-mother span:nth-child(2) {
+  transition: 0.3s;
+}
+
+.hash__button .span-mother span:nth-child(3) {
+  transition: 0.4s;
+}
+
+.hash__button .span-mother span:nth-child(4) {
+  transition: 0.5s;
+}
+
+.hash__button .span-mother span:nth-child(5) {
+  transition: 0.6s;
+}
+
+.hash__button .span-mother span:nth-child(6) {
+  transition: 0.7s;
+}
+
+.hash__button .span-mother2 {
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+}
+
+.hash__button .span-mother2 span {
+  transform: translateY(-1.2em);
+}
+
+.hash__button:hover .span-mother2 span {
+  transform: translateY(0);
+}
+
+.hash__button .span-mother2 span {
+  transition: 0.2s;
+}
+
+.hash__button .span-mother2 span {
+  @for $i from 2 through 65 {
+    &:nth-child(#{$i}) {
+      transition: 0.3s + 0.01s * ($i - 2);
+    }
+  }
+}
+
 
 </style>

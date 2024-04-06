@@ -6,6 +6,7 @@ import com.ruoyi.charity.service.RaiseFundService;
 import com.ruoyi.charity.service.StatisticsService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,5 +51,16 @@ public class StatisticsController extends BaseController {
     @GetMapping("/bank_transfer_week")
     public AjaxResult selectBankTransferByWeek(@RequestParam("raiseId") Integer raiseId){
         return statisticsService.selectBankTransferByWeek(raiseId);
+    }
+
+    @GetMapping("/order_status")
+    public AjaxResult selectUserOrderStatusByMonth(){
+        String username = SecurityUtils.getLoginUser().getUsername();
+        return statisticsService.selectUserOrderStatusByMonth(username);
+    }
+
+    @GetMapping("/order_process")
+    public AjaxResult selectOrderProcessByLogistic() {
+        return statisticsService.selectOrderProcessByLogistic(SecurityUtils.getLoginUser().getUserId());
     }
 }

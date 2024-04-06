@@ -106,4 +106,21 @@ public class TraceServiceImpl implements TraceService {
         DonationTraceVo donationTraceVo = donationTraceJMapper.selectJoinOne(DonationTraceVo.class, lambdaWrapper);
         return AjaxResult.success().put("data",donationTraceVo);
     }
+
+    @Override
+    public AjaxResult selectUserLatestDonationTransaction(String username) {
+
+        CharityUser charityUser = mpUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
+
+        MPJLambdaWrapper<DonationTrace> lambdaWrapper = new MPJLambdaWrapper<DonationTrace>()
+                .eq(DonationTrace::getDonorAddress, charityUser.getUserAddress())
+                .selectAll(DonationTrace.class)
+                .select(DonationTransaction::getTransactionHash, DonationTransaction::getBlockNumber, DonationTransaction::getStatus)
+                .leftJoin(DonationTransaction.class, DonationTransaction::getRaiseId, DonationTrace::getDonationId)
+                .orderByDesc(DonationTrace::getTransTime)
+                .last("LIMIT " + 5);
+
+        List<DonationTraceVo> donationTraceVoList = donationTraceJMapper.selectJoinList(DonationTraceVo.class, lambdaWrapper);
+        return AjaxResult.success().put("data",donationTraceVoList);
+    }
 }

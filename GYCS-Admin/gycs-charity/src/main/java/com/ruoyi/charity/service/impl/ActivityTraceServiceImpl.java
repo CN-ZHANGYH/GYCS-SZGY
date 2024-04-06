@@ -5,13 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedMaterialsInputBO;
 import com.ruoyi.charity.domain.dto.ActiviteTrace;
+import com.ruoyi.charity.domain.dto.CharityOrder;
 import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.MaterialInfoVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
-import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
-import com.ruoyi.charity.mapper.mp.MPLogisticMapper;
-import com.ruoyi.charity.mapper.mp.MPOrgMapper;
-import com.ruoyi.charity.mapper.mp.MPUserMapper;
+import com.ruoyi.charity.mapper.mp.*;
 import com.ruoyi.charity.service.ActivityTraceService;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -22,8 +20,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -48,6 +48,9 @@ public class ActivityTraceServiceImpl implements ActivityTraceService {
     @Autowired
     private MPActivityTraceMapper mpActivityTraceMapper;
 
+    @Autowired
+    private MPActivityOrderMapper mpActivityOrderMapper;
+
     @Override
     public AjaxResult donation(MaterialInfoVo materialInfoVo, String username) {
 
@@ -69,6 +72,20 @@ public class ActivityTraceServiceImpl implements ActivityTraceService {
                 Integer oldCredit = charityUser.getCredit();
                 charityUser.setCredit(oldCredit + 100);
                 mpUserMapper.updateById(charityUser);
+
+                // 添加当前的物流为订单
+                CharityOrder charityOrder = new CharityOrder();
+                charityOrder.setActivityId(materialInfoVo.get_activiteId());
+                charityOrder.setTraceId(BigInteger.valueOf(traceId));
+                charityOrder.setLogisticAddress(materialInfoVo.get_logisticAddress());
+                charityOrder.setDestAddress(materialInfoVo.get_destAddress());
+                charityOrder.setSourceAddress(materialInfoVo.get_userAddress());
+                charityOrder.setIsSign(false);
+                charityOrder.setOrderUuid(UUID.randomUUID().toString());
+                charityOrder.setAmount(BigInteger.valueOf(0));
+                charityOrder.setItemName(materialInfoVo.get_materialName());
+                mpActivityOrderMapper.insert(charityOrder);
+
 
                 HashMap<String, Object> dataMap = new HashMap<>();
                 dataMap.put("transactionHash",transactionHash);

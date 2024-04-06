@@ -8,4 +8,7 @@ public interface TraceService {
     AjaxResult selectMaterialDetailByActivityId(Integer activityId);
 
     AjaxResult selectRaiseFundDetailByRaiseId(Integer raiseId);
+
+    AjaxResult selectUserLatestDonationTransaction(String username);
+
 }

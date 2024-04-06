@@ -219,6 +219,8 @@ onMounted(() => {
 
 
 <style scoped>
+
+
 .donation__record__container {
   display: flex;
   flex: 1;

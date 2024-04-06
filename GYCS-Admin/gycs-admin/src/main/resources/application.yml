@@ -72,6 +72,9 @@ spring:
     port: 5672
     virtual-host: /
     host: 106.52.203.212
+    publisher-returns: true
+    template:
+      mandatory: true
   # redis 配置
   redis:
     # 地址

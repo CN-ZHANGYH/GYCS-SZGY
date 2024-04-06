@@ -287,8 +287,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public AjaxResult selectUserDonationCount(String username) {
         CharityUser charityUser = MPUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
-        Integer count = mpDonationTraceMapper.selectDonationCount(charityUser.getUserAddress());
-        return AjaxResult.success().put("count",count);
+        List<Integer> count = mpDonationTraceMapper.selectDonationCount(charityUser.getUserAddress());
+        return AjaxResult.success().put("count",count.get(0) + count.get(1));
     }
 
 }
