@@ -17,7 +17,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.charity.domain.dto.CharityRaiseAudit;
-import com.ruoyi.charity.service.ICharityRaiseAuditService;
+import com.ruoyi.charity.service.raise.ICharityRaiseAuditService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 

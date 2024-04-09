@@ -1,10 +1,9 @@
 package com.ruoyi.web.controller.charity.front;
 
 
-import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.dto.UserBankCard;
 import com.ruoyi.charity.domain.vo.UserVo;
-import com.ruoyi.charity.service.UserService;
+import com.ruoyi.charity.service.account.UserService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;

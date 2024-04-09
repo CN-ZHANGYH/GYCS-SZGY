@@ -67,21 +67,27 @@
 
     <el-table v-loading="loading" :data="donationList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公益溯源ID" align="center" prop="donationId" />
-      <el-table-column label="捐款人地址" align="center" prop="donorAddress" />
+      <el-table-column label="溯源ID" align="center" prop="donationId" />
+      <el-table-column label="捐款人地址" align="center" prop="donorAddress" width="350px"/>
       <el-table-column label="捐款金额" align="center" prop="amount" />
       <el-table-column label="交易时间" align="center" prop="transTime" width="180">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.transTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.transTime, '{y}-{m}-{d} {hh}:{mm}:{ss}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="交易类型" align="center" prop="transType" />
-      <el-table-column label="交易状态" align="center" prop="isDonation" />
-      <el-table-column label="捐款来源" align="center" prop="source" />
-      <el-table-column label="捐款描述" align="center" prop="description" />
-      <el-table-column label="捐款接收方机构" align="center" prop="destAddress" />
+      <el-table-column label="交易类型" align="center" prop="transType" width="150px"/>
+      <el-table-column label="交易状态" align="center" prop="isDonation" width="150px">
+        <template #default="scope">
+          <el-check-tag type="scope.row.isDonation == false ? 'danger' : 'success'" checked>
+            {{scope.row.isDonation == false ? "交易失败" : "交易成功"}}
+          </el-check-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="捐款来源" align="center" prop="source" width="200px"/>
+      <el-table-column label="捐款描述" align="center" prop="description" width="200px"/>
+      <el-table-column label="捐款接收方机构" align="center" prop="destAddress" width="350px"/>
       <el-table-column label="集资ID" align="center" prop="raiseId" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:donation:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['charity:donation:remove']">删除</el-button>
@@ -142,6 +148,7 @@
 
 <script setup name="Donation">
 import { listDonation, getDonation, delDonation, addDonation, updateDonation } from "@/api/charity/donation";
+import {parseTime} from "../../../utils/ruoyi.js";
 
 const { proxy } = getCurrentInstance();
 

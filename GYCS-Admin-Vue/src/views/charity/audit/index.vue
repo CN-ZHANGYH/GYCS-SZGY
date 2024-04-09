@@ -352,7 +352,7 @@ getList();
 .card {
   cursor: pointer;
   width: 600px;
-  height: 500px;
+  height: auto;
   background: rgb(255, 255, 255);
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 255, .2);

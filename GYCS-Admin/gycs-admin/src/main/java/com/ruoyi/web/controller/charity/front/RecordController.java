@@ -1,15 +1,12 @@
 package com.ruoyi.web.controller.charity.front;
 
 
-import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
-import com.ruoyi.charity.service.ActivityTraceService;
-import com.ruoyi.charity.service.RaiseFundService;
-import com.ruoyi.charity.service.TraceService;
-import com.ruoyi.charity.service.UserService;
+import com.ruoyi.charity.service.trace.ActivityTraceService;
+import com.ruoyi.charity.service.trace.TraceService;
+import com.ruoyi.charity.service.account.UserService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.SecurityUtils;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

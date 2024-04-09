@@ -97,6 +97,29 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: 10000
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com # 网站发送邮件邮箱服务 host    port: 465
+    username: givtech@163.com # 邮箱
+    password: EWUTXBAJXYTNNYHB # 授权码
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: 'true'
+          socketFactory:
+            class: com.ruoyi.charity.utils.MailSSLSocketFactory
+            #            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+          stattls:
+            required: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
 
 # token配置
 token:
@@ -203,3 +226,5 @@ cos:
   folder: "/imgs/"
   # 访问地址
   webUrl: "https://blog-1304715799.cos.ap-nanjing.myqcloud.com"
+
+

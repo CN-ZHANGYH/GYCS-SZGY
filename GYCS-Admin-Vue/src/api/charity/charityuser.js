@@ -42,3 +42,11 @@ export function delCharityuser(id) {
     method: 'delete'
   })
 }
+
+
+export function getUserAddress() {
+  return request({
+    url: '/user/user_address/',
+    method: 'get'
+  })
+}

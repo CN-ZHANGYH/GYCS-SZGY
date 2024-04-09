@@ -2,11 +2,9 @@ package com.ruoyi.charity.listener;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.charity.domain.bo.CharityControllerInit_userInputBO;
-import com.ruoyi.charity.domain.dto.CharityUser;
 import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.domain.vo.UserKey;
-import com.ruoyi.charity.service.ICharityUserService;
-import com.ruoyi.charity.service.UserKeyService;
+import com.ruoyi.charity.service.account.UserKeyService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import lombok.extern.slf4j.Slf4j;
