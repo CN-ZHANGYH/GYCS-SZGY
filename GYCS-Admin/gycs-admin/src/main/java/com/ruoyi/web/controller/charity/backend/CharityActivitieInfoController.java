@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.charity.backend;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.charity.domain.dto.CharityActivitieInfo;
-import com.ruoyi.charity.service.ICharityActivitieInfoService;
+import com.ruoyi.charity.service.activity.ICharityActivitieInfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -41,8 +43,9 @@ public class CharityActivitieInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(CharityActivitieInfo charityActivitieInfo)
     {
+        Long userId = SecurityUtils.getLoginUser().getUserId();
         startPage();
-        List<CharityActivitieInfo> list = charityActivitieInfoService.selectCharityActivitieInfoList(charityActivitieInfo);
+        List<CharityActivitieInfo> list = charityActivitieInfoService.selectCharityActivitieInfoList(charityActivitieInfo,userId);
         return getDataTable(list);
     }
 
@@ -54,7 +57,8 @@ public class CharityActivitieInfoController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, CharityActivitieInfo charityActivitieInfo)
     {
-        List<CharityActivitieInfo> list = charityActivitieInfoService.selectCharityActivitieInfoList(charityActivitieInfo);
+        Long userId = SecurityUtils.getLoginUser().getUserId();
+        List<CharityActivitieInfo> list = charityActivitieInfoService.selectCharityActivitieInfoList(charityActivitieInfo,userId);
         ExcelUtil<CharityActivitieInfo> util = new ExcelUtil<CharityActivitieInfo>(CharityActivitieInfo.class);
         util.exportExcel(response, list, "公益灾区捐赠活动数据");
     }

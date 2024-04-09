@@ -3,13 +3,11 @@ package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.domain.vo.ActiviteTraceVo;
 import com.ruoyi.charity.domain.vo.ActivityInfoVo;
-import com.ruoyi.charity.service.ActivityService;
-import com.ruoyi.charity.service.ActivityTraceService;
+import com.ruoyi.charity.service.activity.ActivityService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
-import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +51,7 @@ public class ActivityController extends BaseController {
 
     @GetMapping("/list")
     public AjaxResult selectActivityList() {
-        List<ActivityInfoVo> activityInfoVos = activityService.selectActivityList();
+        List<ActivityInfoVo> activityInfoVos = activityService.selectActivityList(SecurityUtils.getUserId());
         AjaxResult success = AjaxResult.success();
         success.put("total",activityInfoVos.size());
         success.put("rows",activityInfoVos);

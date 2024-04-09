@@ -1,12 +1,14 @@
 <template>
   <div class="active-container">
     <div class="flex-container">
-      <div>
+      <div style="height: 100%">
         <div class="card-left">
           <div class="card-content">
-            <p class="card-title">hover effect
-            </p><p class="card-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p class="card-title">公益灾区活动信息
+            </p><p class="card-para">为每一个灾区贡献一份爱心，让爱变得更加温暖。</p>
           </div>
+        </div>
+        <div style="height: 200px">
         </div>
       </div>
       <div class="right-container" style="width: 80%;height: 600px" v-loading="loading">
@@ -274,6 +276,7 @@ onMounted(() => {
 .card-left .card-para {
   font-size: 16px;
   opacity: 0.8;
+  margin-bottom: 10px;
 }
 
 .card-content {

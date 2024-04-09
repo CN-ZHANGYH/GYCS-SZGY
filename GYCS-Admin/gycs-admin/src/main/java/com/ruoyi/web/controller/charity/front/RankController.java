@@ -1,7 +1,7 @@
 package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.domain.vo.RankUserVo;
-import com.ruoyi.charity.service.UserService;
+import com.ruoyi.charity.service.account.UserService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
