@@ -2,17 +2,24 @@ package com.ruoyi.charity.listener;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.rabbitmq.client.Channel;
 import com.ruoyi.charity.domain.bo.CharityControllerDonatedFundsInputBO;
 import com.ruoyi.charity.domain.dto.ActiviteTrace;
 import com.ruoyi.charity.domain.dto.ActiviteTransaction;
+import com.ruoyi.charity.domain.dto.CharityOrder;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MaterialInfoVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.mapper.mp.MPActiviteTransactionMapper;
+import com.ruoyi.charity.mapper.mp.MPActivityOrderMapper;
 import com.ruoyi.charity.mapper.mp.MPActivityTraceMapper;
 import com.ruoyi.charity.utils.BlockTimeUtil;
+import com.ruoyi.common.constant.CacheConstants;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Case;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +27,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -38,8 +46,24 @@ public class DonationMaterialDirectListener {
     @Autowired
     private MPActivityTraceMapper mpActivityTraceMapper;
 
+
+    @Autowired
+    private MPActivityOrderMapper mpActivityOrderMapper;
+
+    @SneakyThrows
     @RabbitHandler
-    public void process(String message) {
+    public void process(String message, Channel channel, Message msg) {
+
+        long deliveryTag = msg.getMessageProperties().getDeliveryTag();
+        try {
+            System.out.println("处理消息：" + msg);
+            // 处理完毕 手动ack
+            channel.basicAck(deliveryTag, false);
+        } catch (Exception e) {
+            // 出现异常 拒绝
+            channel.basicNack(deliveryTag, false, true);
+            //channel.basicReject(deliveryTag, true);
+        }
         // 接收key为register的订阅模式交换机发来的消息进行消费
         MessageResult messageResult = JSONObject.parseObject(message, MessageResult.class);
         log.info("DirectReceiver消费者收到消息  : {}" + messageResult.getMessage());
@@ -82,5 +106,6 @@ public class DonationMaterialDirectListener {
         activiteTrace.setTraceAddress(JSONObject.toJSONString(traceAddress));
         activiteTrace.setTraceTime(JSONObject.toJSONString(traceTime));
         mpActivityTraceMapper.insert(activiteTrace);
+
     }
 }

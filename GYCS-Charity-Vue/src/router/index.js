@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/home' },
     {
       path: '/login',
       name: 'login',
@@ -22,7 +21,7 @@ const router = createRouter({
         {
           path: 'user',
           name: 'user',
-          component: () => import('../views/user/Index.vue')
+          component: () => import('../views/profile/Index.vue')
         },
         {
           path: 'rank',
@@ -63,6 +62,31 @@ const router = createRouter({
           path: 'materials',
           name: 'materials',
           component: () => import('../views/charity/materials/Index.vue'),
+        },
+        {
+          path: 'donation_record',
+          name: 'donation_record',
+          component: () => import('../views/record/donation/Index.vue'),
+        },
+        {
+          path: 'material_record',
+          name: 'material_record',
+          component: () => import('../views/record/material/Index.vue'),
+        },
+        {
+          path: 'donation_detail',
+          name: 'donation_detail',
+          component: () => import('../views/trace/donation/Index.vue'),
+        },
+        {
+          path: 'material_detail',
+          name: 'material_detail',
+          component: () => import('../views/trace/material/Index.vue'),
+        },
+        {
+          path: 'transfer_trace',
+          name: 'transfer_trace',
+          component: () => import('../views/trace/bank_transfer/Index.vue'),
         }
       ]
     },

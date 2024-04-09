@@ -23,8 +23,7 @@
         关于
       </vs-navbar-item>
       <template #right>
-        <vs-button type="flat">Login</vs-button>
-        <vs-button>Get Started</vs-button>
+        <vs-button @click="handleLogout" >退出登录</vs-button>
       </template>
     </vs-navbar>
     <vs-sidebar v-model="active" v-model:open="activeSidebar" absolute>
@@ -85,7 +84,7 @@
             个人中心
           </vs-sidebar-item>
         </template>
-        <vs-sidebar-item id="profile">
+        <vs-sidebar-item id="user">
           <template #icon>
             <vs-icon><SecurityUserBold /></vs-icon>
           </template>
@@ -97,11 +96,11 @@
           </template>
           捐款记录
         </vs-sidebar-item>
-        <vs-sidebar-item id="feedback_record">
+        <vs-sidebar-item id="material_record">
           <template #icon>
             <vs-icon><SmsEditBold /></vs-icon>
           </template>
-          反馈记录
+          公益记录
         </vs-sidebar-item>
       </vs-sidebar-group>
       <vs-sidebar-group>
@@ -138,12 +137,28 @@
           公益排行
         </vs-sidebar-item>
       </vs-sidebar-group>
-      <vs-sidebar-item id="trace">
-        <template #icon>
-          <vs-icon><HierarchySquareBold /></vs-icon>
+      <vs-sidebar-group>
+        <template #header>
+          <vs-sidebar-item arrow>
+            <template #icon>
+              <vs-icon><Send2Bold /></vs-icon>
+            </template>
+            溯源中心
+          </vs-sidebar-item>
         </template>
-        溯源中心
-      </vs-sidebar-item>
+        <vs-sidebar-item id="trace">
+          <template #icon>
+            <vs-icon><HierarchySquareBold /></vs-icon>
+          </template>
+          公益溯源
+        </vs-sidebar-item>
+        <vs-sidebar-item id="transfer_trace">
+          <template #icon>
+            <vs-icon><HierarchySquareBold /></vs-icon>
+          </template>
+          转账记录
+        </vs-sidebar-item>
+      </vs-sidebar-group>
       <template #footer>
         <vs-row justify="space-between">
           <vs-avatar>
@@ -165,7 +180,7 @@
         </div>
       </div>
       <!--页脚内容-->
-      <Footer>
+      <Footer style="margin-top: 7%">
       </Footer>
     </div>
   </div>
@@ -186,10 +201,13 @@ import {
   HeartBold,
   HierarchySquareBold,
   TrashBold
-} from '@vuesax-alpha/icons-vue'
+} from "@vuesax-alpha/icons-vue";
 import Footer from "@/components/Layout/Footer.vue";
-import router from '../../router/index.js'
-import menuRoteToView from '../../utils/routerUtil'
+import router from '../../router/index.js';
+import useUserStore from "@/stores/modules/user.js";
+import TimeLine from "@/components/TimeLine/TimeLine.vue";
+
+const userStore = useUserStore()
 const active = ref('home')
 const activeSidebar = ref(false)
 
@@ -245,15 +263,20 @@ const menuOptions = reactive([
   {
     id: 13,
     name: "online"
+  },
+  {
+    id: 14,
+    name: 'material_record'
+  },
+  {
+    id: 15,
+    name: 'transfer_trace'
   }
 ])
 
 // 使用路由
 // 监听当前的菜单栏的值
 watch(active,(val,old) => {
-
-
-
   menuOptions.forEach((item) =>{
     if (val == item.name) {
       router.push({
@@ -263,6 +286,12 @@ watch(active,(val,old) => {
   })
 })
 
+// 退出登录
+function handleLogout() {
+  userStore.logOut().then(() => {
+    location.href = '/login';
+  })
+}
 </script>
 
 
@@ -296,21 +325,19 @@ watch(active,(val,old) => {
     max-height: 22px;
   }
 }
-
 .main-card {
   width: 100%;
-  height: 88%;
-  margin-top: 5%;
-  padding: 20px;
+  height: 100%;
+  margin-top: 13%;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .main-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 </style>
 

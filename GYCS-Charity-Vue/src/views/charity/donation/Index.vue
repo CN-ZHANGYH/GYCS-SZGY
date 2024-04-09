@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex;flex-direction: column">
+  <div style="display: flex;flex-direction: column;padding: 20px 20px">
     <!--  搜索框  -->
     <div style="font-size: 20px;font-weight: bold;flex: 1;display: flex;margin-bottom: 20px;justify-content: center">
       <vs-input v-model="value1" placeholder="根据关键词搜索你想要捐款的公益活动" style="width: 600px;height: 50px">
@@ -13,25 +13,25 @@
     </div>
     <div style="margin-left: 5%">
       <vs-row style="padding: 20px 10%;">
-        <vs-col v-for="_ in 6" :key="_" :sm="4" style="margin-bottom: 10px">
+        <vs-col v-for="(item,index) in getPage(raiseFundList, queryParams.pageNum, queryParams.pageSize)" :key="index" :sm="4" style="margin-bottom: 10px">
           <div class="donation-container">
             <vs-card type="3">
               <template #title>
-                <h3>Live a life of madness</h3>
+                <h3>{{item.title}}</h3>
               </template>
               <template #img>
                 <img src="../../../assets/matter/two.png" alt="" style="width: 500px;height: 155px"/>
               </template>
               <template #text>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+                <p>{{item.description.substring(0,35) + "......" }} </p>
               </template>
               <template #interactions>
-                <vs-button color="danger" @click="donationHandle()">
+                <vs-button color="danger" @click="donationHandle(item)">
                   捐款
                 </vs-button>
                 <vs-button class="btn-chat" type="shadow">
                   <vs-icon><EyeBold /></vs-icon>
-                  <span class="span" @click="isDialogOpen = true"> 查看 </span>
+                  <span class="span" @click="viewRaiseFund(item)"> 查看 </span>
                 </vs-button>
               </template>
             </vs-card>
@@ -41,86 +41,151 @@
     </div>
     <div class="con-pagination">
       <vs-pagination
-          v-model:current-page="page"
+          v-model:current-page="queryParams.pageNum"
+          v-model:page-size="queryParams.pageSize"
           :layout="['total', 'prev', 'pager', 'next', 'jumper', 'sizes']"
-          :total="50"
+          :total="total"
+          :page-sizes="[1,3,5,6]"
       />
     </div>
   </div>
-  <vs-dialog v-model="isDialogOpen" scroll lock-scroll not-close auto-width>
+  <vs-dialog v-model="isDialogOpen" scroll lock-scroll auto-width>
     <template #header>
-      <h3>Introduction</h3>
+      <h3>关于{{raiseInfo.title}}募资活动的详细信息</h3>
     </template>
     <div class="con-content-scroll">
-      <h4>Whats is Vuesax?</h4>
-      <p>
-        Vuesax (pronounced / vjusacksː /, as view sacks) is a framework of UI
-        components created with Vuejs to make projects easily and with a
-        unique and pleasant style, vuesax is created from scratch and designed
-        for all types of developers from the frontend lover to the backend who
-        wants to easily create their visual approach to the end-user We are
-        focused on streamlining the work of the programmer by giving
-        components created in their entirety and with independent
-        customization and very easy to implement, so creativity is in our
-        hands but we do not neglect that each project is different both
-        visually and in its ecosystem Vuesax does not have a design line such
-        as other component frameworks based on Material Design, we believe
-        that there are already emaciated frameworks that look visually and in
-        UI / UX and we don't want to be one more of the bunch, apart from that
-        we love to create and design new experiences and surprise you with new
-        elements or details that we can only do by being visually free.
-      </p>
+      <vs-alert type="shadow" color="dark">
+        <template #title> 募资标题：{{raiseInfo.title}} </template>
+        {{raiseInfo.description}}
+        <template #footer> 发布时间：{{raiseInfo.createTime}} </template>
+      </vs-alert>
+      <vs-alert type="shadow" color="primary" style="margin-top: 10px">
+        <template #title> 证明信息 </template>
+        <div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              真实姓名：
+            </div>
+            <div>
+              <vs-input v-model="form.name" state="primary" placeholder="Primary" disabled style="height: 35px;width: 400px;color: black;font-weight: bold"/>
+            </div>
+          </div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              电话号码：
+            </div>
+            <div>
+              <vs-input v-model="form.phone" state="primary" placeholder="Primary" disabled style="height: 35px;width: 400px;color: black;font-weight: bold"/>
+            </div>
+          </div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              身份证号：
+            </div>
+            <div>
+              <vs-input v-model="form.cardId" state="primary" placeholder="Primary" disabled style="height: 35px;width: 400px;color: black;font-weight: bold"/>
+            </div>
+          </div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              家庭住址：
+            </div>
+            <div>
+              <vs-input v-model="form.address" state="primary" placeholder="Primary" disabled style="height: 35px;width: 400px;color: black;font-weight: bold"/>
+            </div>
+          </div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              募资证明：
+            </div>
+            <div>
+              <img :src="form.raiseImage" alt="募资证明图片" style="width: 400px;height: 250px;border-radius: 10px;margin-top: 10px">
+            </div>
+          </div>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 6px">
+              机构证明：
+            </div>
+            <div>
+              <img :src="form.orgImage" alt="募资证明图片" style="width: 400px;height: 250px;border-radius: 10px;margin-top: 10px">
+            </div>
+          </div>
+        </div>
+      </vs-alert>
+      <vs-alert v-model:page="page" style="margin-top: 10px">
+        <template #title> 活动进度 </template>
 
-      <h4>Why Vuesax?</h4>
+        <template #page-1>
+          <div style="display: flex;justify-content: space-between">
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                开始时间：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.startTime"  placeholder="Name" disabled state="success"/>
+              </div>
+            </div>
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                结束时间：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.endTime"  placeholder="Name" disabled state="success"/>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template #page-2>
+          <div style="display: flex;flex: 1;margin-bottom: 10px">
+            <div style="font-weight: bold;margin-top: 7px">
+              发起人地址：
+            </div>
+            <div>
+              <vs-input v-model="raiseInfo.promoterAddress"  placeholder="Name" disabled style="width: 400px" state="success"/>
+            </div>
+          </div>
+        </template>
 
-      <p>
-        Vuesax is a relatively new framework with a refreshing design and in
-        the latest trends, vuesax based on vuejs which means that we go hand
-        in hand with one of the most popular javascript frameworks in the
-        world and with a huge community with which you will have all the help
-        and documentation to create and make your project
-        <br />
-        <br />
-        - Vuesax, unlike many frameworks, is designed from scratch and we are
-        not anchored to any design line, this is something great since your
-        project is going to be unique and very different from the others
-
-        <br />
-        <br />
-        - We are focused on the quick and easy creation of projects giving a
-        beautiful visual line but without forgetting the personalization and
-        independence of the developer
-
-        <br />
-        <br />
-        - Vuesax uses native css variables for better customization and
-        production changes such as changing to dark theme or changing the main
-        color of the entire application with few javascript lines
-        <br />
-        <br />
-
-        - Vuesax is a frame designed to have a great visual impact and that is
-        always in trend with respect to design.
-        <br />
-        <br />
-
-        - An open-source community to create, improve and correct any
-        component or function.
-        <br />
-        <br />
-
-        - Independent components to avoid importing unnecessary code.
-        <br />
-        <br />
-
-        - Markdown documents for better sustainability.
-        <br />
-        <br />
-
-        - and much more.
-      </p>
+        <template #page-3>
+          <div style="display: flex;justify-content: space-between">
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                参与人数：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.totalPeople"  placeholder="Name" disabled state="success" style="width: 60px"/>
+              </div>
+            </div>
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                总需金额：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.totalAmount"  placeholder="Name" disabled state="success" style="width: 80px"/>
+              </div>
+            </div>
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                完成捐款：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.overAmount"  placeholder="Name" disabled state="success" style="width: 80px"/>
+              </div>
+            </div>
+            <div style="display: flex;flex: 1;margin-bottom: 10px">
+              <div style="font-weight: bold;margin-top: 7px">
+                提现金额：
+              </div>
+              <div>
+                <vs-input v-model="raiseInfo.withdrawAmount"  placeholder="Name" disabled state="success" style="width: 80px"/>
+              </div>
+            </div>
+          </div>
+        </template>
+      </vs-alert>
     </div>
   </vs-dialog>
+
 </template>
 
 <script setup>
@@ -128,16 +193,57 @@ import {
   EyeBold,
   SearchStatusBold
 } from '@vuesax-alpha/icons-vue'
-import router from "@/router/index.js";
-import {ref} from "vue";
+import {reactive, ref, toRefs} from "vue";
+import {getCertificateInfo, getRaiseFundList} from "@/api/charity/raiseFund.js";
+import {getPage, VsLoadingFn} from "vuesax-alpha";
+import { useRouter } from 'vue-router'
 
+const route = useRouter();
 const isDialogOpen = ref(false)
+const raiseFundList = ref([])
+const total = ref(0)
+const page = ref(1)
+const data = reactive({
+  form: {},
+  raiseInfo: {},
+  queryParams: {
+    pageNum: 1,
+    pageSize: 6
+  },
+});
 
-function donationHandle(){
-  router.push({
-    name: 'online'
+const { queryParams, form ,raiseInfo } = toRefs(data);
+function donationHandle(item){
+  console.log(item)
+  route.push({
+    name: 'online',
+    query: {
+      raiseId: item.id
+    }
   })
 }
+
+function selectRaiseFundList() {
+  getRaiseFundList().then(res => {
+    raiseFundList.value = res.rows
+    total.value = res.total
+  })
+}
+
+
+
+function viewRaiseFund(item){
+  const loadingInstance = VsLoadingFn()
+  isDialogOpen.value = true
+  setTimeout(() => {
+    loadingInstance.close()
+  }, 1000)
+  getCertificateInfo({raiseId: item.id}).then(res => {
+    form.value = res.data
+    raiseInfo.value = item
+  })
+}
+selectRaiseFundList()
 </script>
 
 <style  lang="scss" scoped>

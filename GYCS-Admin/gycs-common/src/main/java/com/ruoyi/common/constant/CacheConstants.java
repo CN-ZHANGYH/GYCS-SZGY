@@ -59,10 +59,12 @@ public class CacheConstants
      */
     public static final String VOTE_INFO = "vote_info:";
 
-
-
     public static final String DONATINA_FUND_KEY = "donatina_fund:";
-
     public static final String USER_DONATION_BANK_TRANSFER_KEY = "user_donation_bank_transfer:";
     public static final String ACTIVITY_LIST_KEY = "activity_list_key:";
+    public static final String RAISE_FUND_WAIT_VOTES = "raise_fund_wait_votes:";
+    public static final String TRANSACTION_TYPE_TOTAL = "transaction_type_total:";
+    public static final String TRANSACTION_BY_WEEK = "transaction_by_week:";
+    public static final String USER_DONATION_RAISE_FUND_RECORD = "user_donation_raise_fund_record:";
+    public static final String USER_DONATION_MATERIAL_RECORD = "user_donation_material_record:";
 }

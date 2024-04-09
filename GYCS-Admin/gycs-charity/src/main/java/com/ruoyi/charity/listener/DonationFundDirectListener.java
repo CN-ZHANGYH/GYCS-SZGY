@@ -9,9 +9,10 @@ import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.mapper.mp.MPDonationTransactionMapper;
 import com.ruoyi.charity.mapper.mp.MPUserMapper;
-import com.ruoyi.charity.service.ICharityRaiseFundService;
-import com.ruoyi.charity.service.IDonationTraceService;
+import com.ruoyi.charity.service.raise.ICharityRaiseFundService;
+import com.ruoyi.charity.service.trace.IDonationTraceService;
 import com.ruoyi.charity.service.impl.CharityControllerService;
+import com.ruoyi.charity.utils.BlockTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 /**
  * @author zyh
@@ -77,7 +77,7 @@ public class DonationFundDirectListener {
                 donationTrace.setIsDonation(true);
                 donationTrace.setDonorAddress(donatedFundVo.get_donorAddress());
                 donationTrace.setDestAddress(donatedFundVo.get_destAddress());
-                donationTrace.setTransTime(new Date());
+                donationTrace.setTransTime(BlockTimeUtil.convertToDateTime(System.currentTimeMillis()));
                 donationTrace.setTransType(donatedFundVo.get_transType());
                 donationTrace.setSource(donatedFundVo.get_source());
                 donationTrace.setRaiseId(donatedFundVo.get_raiseId());

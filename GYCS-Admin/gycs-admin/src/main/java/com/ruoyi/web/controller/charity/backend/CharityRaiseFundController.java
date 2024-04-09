@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.charity.backend;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
-import com.ruoyi.charity.service.ICharityRaiseFundService;
+import com.ruoyi.charity.service.raise.ICharityRaiseFundService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -41,8 +43,9 @@ public class CharityRaiseFundController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(CharityRaiseFund charityRaiseFund)
     {
+        Long userId = SecurityUtils.getLoginUser().getUserId();
         startPage();
-        List<CharityRaiseFund> list = charityRaiseFundService.selectCharityRaiseFundList(charityRaiseFund);
+        List<CharityRaiseFund> list = charityRaiseFundService.selectCharityRaiseFundList(charityRaiseFund,userId);
         return getDataTable(list);
     }
 
@@ -54,7 +57,8 @@ public class CharityRaiseFundController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, CharityRaiseFund charityRaiseFund)
     {
-        List<CharityRaiseFund> list = charityRaiseFundService.selectCharityRaiseFundList(charityRaiseFund);
+        Long userId = SecurityUtils.getLoginUser().getUserId();
+        List<CharityRaiseFund> list = charityRaiseFundService.selectCharityRaiseFundList(charityRaiseFund, userId);
         ExcelUtil<CharityRaiseFund> util = new ExcelUtil<CharityRaiseFund>(CharityRaiseFund.class);
         util.exportExcel(response, list, "公益募资活动数据");
     }

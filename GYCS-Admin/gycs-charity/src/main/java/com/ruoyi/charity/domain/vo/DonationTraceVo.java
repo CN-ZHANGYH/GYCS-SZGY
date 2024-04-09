@@ -27,7 +27,7 @@ public class DonationTraceVo {
 
     private BigInteger amount;
 
-    private Date transTime;
+    private String transTime;
 
     private String transType;
 

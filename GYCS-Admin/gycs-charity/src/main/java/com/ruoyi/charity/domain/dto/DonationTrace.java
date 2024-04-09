@@ -44,7 +44,7 @@ public class DonationTrace
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "交易时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     @TableField(value = "trans_time")
-    private Date transTime;
+    private String transTime;
 
     /** 交易类型 */
     @Excel(name = "交易类型")

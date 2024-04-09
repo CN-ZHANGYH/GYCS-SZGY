@@ -6,8 +6,8 @@ import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.domain.vo.RegisterVo;
 
 import com.ruoyi.charity.domain.vo.UserKey;
-import com.ruoyi.charity.service.ICharityUserService;
-import com.ruoyi.charity.service.UserKeyService;
+import com.ruoyi.charity.service.account.ICharityUserService;
+import com.ruoyi.charity.service.account.UserKeyService;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -18,9 +18,7 @@ import com.ruoyi.common.exception.user.CaptchaExpireException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ICharityRegister;
-import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
-import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,7 +76,7 @@ public class ICharityRegisterImpl implements ICharityRegister {
         // 注册为系统用户
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
-        sysUser.setNickName(username);
+        sysUser.setNickName(registerVo.getNickName());
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
 
         // 手动添加普通用户的权限
@@ -96,8 +94,9 @@ public class ICharityRegisterImpl implements ICharityRegister {
             UserKey blockChainUser = userKeyService.createBlockChainUser();
             CharityUser charityUser = new CharityUser();
             charityUser.setId(sysUser.getUserId());
-            charityUser.setCardId(sysUser.getUserName());
+            charityUser.setCardId(registerVo.getCardId());
             charityUser.setUsername(sysUser.getUserName());
+            charityUser.setDesignation(registerVo.getNickName());
             charityUser.setAmount(BigInteger.valueOf(0));
             charityUser.setCredit(0);
             charityUser.setVoteCount(0);

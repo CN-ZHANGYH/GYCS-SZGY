@@ -2,7 +2,7 @@ package com.ruoyi.web.controller.charity.backend;
 
 
 import com.ruoyi.charity.domain.dto.Org;
-import com.ruoyi.charity.service.IOrgService;
+import com.ruoyi.charity.service.account.IOrgService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;

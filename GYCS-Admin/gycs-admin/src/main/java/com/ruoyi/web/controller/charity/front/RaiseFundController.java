@@ -1,19 +1,16 @@
 package com.ruoyi.web.controller.charity.front;
 
 
-import com.alibaba.fastjson2.util.Fnv;
 import com.ruoyi.charity.domain.dto.CharityRaiseFund;
 import com.ruoyi.charity.domain.vo.BankTransferRecordVo;
 import com.ruoyi.charity.domain.vo.CertificateInfoVo;
 import com.ruoyi.charity.domain.vo.DonatedFundVo;
 import com.ruoyi.charity.domain.vo.DonationTraceVo;
-import com.ruoyi.charity.service.RaiseFundService;
+import com.ruoyi.charity.service.raise.RaiseFundService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.SecurityUtils;
-import org.bouncycastle.jcajce.provider.symmetric.util.PBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,7 +79,7 @@ public class RaiseFundController  extends BaseController {
      * @return AjaxResult
      */
     @GetMapping("/getCertificateInfo")
-    public AjaxResult getCertificateInfo(@RequestParam("raiseId") Long raiseId) {
+    public AjaxResult getCertificateInfo(@RequestParam("raiseId") BigInteger raiseId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         return fundService.getCertificateInfo(raiseId,loginUser.getUsername());
     }
@@ -131,12 +128,14 @@ public class RaiseFundController  extends BaseController {
      * @return AjaxResult
      */
    @GetMapping("/trace")
-    public TableDataInfo getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
+    public AjaxResult getRaiseFundTrace(@RequestParam("raiseId") BigInteger raiseId) {
         // Get the raiseId from the request parameter
-       startPage();
+       AjaxResult success = AjaxResult.success();
        List<DonationTraceVo> raiseFundTrace = fundService.getRaiseFundTrace(raiseId);
        // Return the trace information of the raiseId
-       return getDataTable(raiseFundTrace);
+       success.put("total",raiseFundTrace.size());
+       success.put("rows",raiseFundTrace);
+       return success;
     }
 
    @PostMapping("/donation_bank_transfer")
@@ -164,5 +163,11 @@ public class RaiseFundController  extends BaseController {
             @RequestParam("raiseId") BigInteger raiseId) {
         //This line calls the fundService to get the bank transfer record list
         return fundService.getDonationBankTransferRecordList(pageNum, pageSize,raiseId);
+    }
+
+
+    @GetMapping("/vote_list")
+    public AjaxResult selectRaiseFundVotesList(){
+       return fundService.selectRaiseFundVotesList();
     }
 }

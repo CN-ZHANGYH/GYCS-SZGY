@@ -67,15 +67,33 @@
 
     <el-table v-loading="loading" :data="fundList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公益慈善ID" align="center" prop="id" />
-      <el-table-column label="活动名称" align="center" prop="title" />
-      <el-table-column label="活动描述" align="center" prop="description" />
+      <el-table-column label="公益ID" align="center" prop="id" />
+      <el-table-column label="活动名称" align="center" prop="title"  width="200px"/>
+      <el-table-column label="活动描述" align="center" prop="description" width="300px">
+        <template #default="scope">
+          <span>{{ scope.row.description.substring(0,30) + "......" }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="活动组织者" align="center" prop="promoterAddress" />
+      <el-table-column label="活动组织者" align="center" prop="promoterAddress" width="150px">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="活动组织者"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.promoterAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看发起者</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>>
       <el-table-column label="活动状态" align="center" prop="status" />
       <el-table-column label="开始时间" align="center" prop="startTime" width="180">
         <template #default="scope">
@@ -87,11 +105,11 @@
           <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="总参与人数" align="center" prop="totalPeople" />
-      <el-table-column label="总需金额" align="center" prop="totalAmount" />
-      <el-table-column label="已完成金额" align="center" prop="overAmount" />
-      <el-table-column label="已取出金额" align="center" prop="withdrawAmount" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="总参与人数" align="center" prop="totalPeople" width="100px"/>
+      <el-table-column label="总需金额" align="center" prop="totalAmount"  width="100px"/>
+      <el-table-column label="已完成金额" align="center" prop="overAmount" width="100px"/>
+      <el-table-column label="已取出金额" align="center" prop="withdrawAmount" width="100px"/>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:fund:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['charity:fund:remove']">删除</el-button>
@@ -160,6 +178,7 @@
 
 <script setup name="Fund">
 import { listFund, getFund, delFund, addFund, updateFund } from "@/api/charity/fund";
+import {parseTime} from "../../../utils/ruoyi.js";
 
 const { proxy } = getCurrentInstance();
 

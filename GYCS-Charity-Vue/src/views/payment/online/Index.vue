@@ -1,39 +1,83 @@
 <template>
   <div class="online_container">
-    <div style="display: flex;flex-direction: column">
+    <div style="display: flex;flex-direction: column;width: 60%">
       <div>
-        <PayMentDataSource/>
+        <div>
+          <vs-row style="display: flex;margin-bottom: 10px;justify-content: space-between">
+            <vs-col v-for="(item,index) in raiseFundDataTotal" :key="index" :sm="2">
+              <div class="data-card">
+                <div class="title">
+                  <span>
+                      <svg width="20" fill="currentColor" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1362 1185q0 153-99.5 263.5t-258.5 136.5v175q0 14-9 23t-23 9h-135q-13 0-22.5-9.5t-9.5-22.5v-175q-66-9-127.5-31t-101.5-44.5-74-48-46.5-37.5-17.5-18q-17-21-2-41l103-135q7-10 23-12 15-2 24 9l2 2q113 99 243 125 37 8 74 8 81 0 142.5-43t61.5-122q0-28-15-53t-33.5-42-58.5-37.5-66-32-80-32.5q-39-16-61.5-25t-61.5-26.5-62.5-31-56.5-35.5-53.5-42.5-43.5-49-35.5-58-21-66.5-8.5-78q0-138 98-242t255-134v-180q0-13 9.5-22.5t22.5-9.5h135q14 0 23 9t9 23v176q57 6 110.5 23t87 33.5 63.5 37.5 39 29 15 14q17 18 5 38l-81 146q-8 15-23 16-14 3-27-7-3-3-14.5-12t-39-26.5-58.5-32-74.5-26-85.5-11.5q-95 0-155 43t-60 111q0 26 8.5 48t29.5 41.5 39.5 33 56 31 60.5 27 70 27.5q53 20 81 31.5t76 35 75.5 42.5 62 50 53 63.5 31.5 76.5 13 94z">
+                          </path>
+                      </svg>
+                  </span>
+                  <p class="title-text">
+                    {{item.name}}
+                  </p>
+                </div>
+                <div class="data">
+                  <p>
+                    {{item.value}}
+                  </p>
+
+                  <div class="range">
+                    <div class="fill">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </vs-col>
+          </vs-row>
+        </div>
       </div>
       <div>
-        <div style="width: 1150px">
+        <div style="width: 100%;height: auto">
           <vs-table striped>
             <template #thead>
               <vs-tr>
-                <vs-th> Name </vs-th>
-                <vs-th> Email </vs-th>
-                <vs-th> Id </vs-th>
+                <vs-th> 交易哈希 </vs-th>
+                <vs-th> 交易区块 </vs-th>
+                <vs-th> 交易状态 </vs-th>
+                <vs-th> 交易金额 </vs-th>
+                <vs-th style="width: 220px"> 交易时间 </vs-th>
               </vs-tr>
             </template>
             <template #tbody>
-              <vs-tr v-for="(tr, i) in users" :key="i" :data="tr">
+              <vs-tr v-for="(item, index) in getPage(transactionList,page,pageSize)" :key="index" :data="item">
                 <vs-td>
-                  {{ tr.name }}
+                  {{ item.transactionHash }}
                 </vs-td>
                 <vs-td>
-                  {{ tr.email }}
+                  {{ item.blockNumber }}
                 </vs-td>
                 <vs-td>
-                  {{ tr.id }}
+                  完成
+                </vs-td>
+                <vs-td>
+                  {{ item.amount }} ￥
+                </vs-td>
+                <vs-td>
+                  {{ item.transTime }}
                 </vs-td>
               </vs-tr>
+            </template>
+            <template #footer>
+              <vs-pagination
+                  v-model:current-page="page"
+                  v-model:page-size="pageSize"
+                  :page-sizes="[7,10, 14]"
+                  :total="total"
+              />
             </template>
           </vs-table>
         </div>
       </div>
     </div>
-    <div>
+    <div style="width: 30%">
       <div class="modal">
-        <form class="form">
+        <div class="form">
           <div class="payment--options">
             <div class="radio-inputs">
               <label>
@@ -52,6 +96,13 @@
                         <svg style="width: 30px" xmlns="http://www.w3.org/2000/svg"  fill="none" version="1.1" width="14.0010986328125" height="14.120025634765625" viewBox="0 0 14.0010986328125 14.120025634765625"><g><g><path d="M11.7592,0C11.7592,0,2.24312,0,2.24312,0C1.00385,0,0,1.01311,0,2.26164C0,2.26164,0,11.8584,0,11.8584C0,13.1069,1.00385,14.12,2.24312,14.12C2.24312,14.12,11.7592,14.12,11.7592,14.12C12.9985,14.12,14.001,13.1069,14.001,11.8584C14.001,11.8584,14.001,2.26164,14.001,2.26164C14.0023,1.01179,12.9985,0,11.7592,0C11.7592,0,11.7592,0,11.7592,0Z" fill="#1677FF" fill-opacity="1"/></g><g><path d="M11.527900520324707,8.86667818637848C10.968410520324706,8.677548186378479,10.215850520324707,8.387898186378479,9.378650520324706,8.08237818637848C9.881230520324706,7.200208186378479,10.283300520324707,6.196358186378479,10.547820520324708,5.10521818637848C10.547820520324708,5.10521818637848,7.787560520324707,5.10521818637848,7.787560520324707,5.10521818637848C7.787560520324707,5.10521818637848,7.787560520324707,4.102688186378479,7.787560520324707,4.102688186378479C7.787560520324707,4.102688186378479,11.168100520324707,4.102688186378479,11.168100520324707,4.102688186378479C11.168100520324707,4.102688186378479,11.168100520324707,3.543228186378479,11.168100520324707,3.543228186378479C11.168100520324707,3.543228186378479,7.787560520324707,3.543228186378479,7.787560520324707,3.543228186378479C7.787560520324707,3.543228186378479,7.787560520324707,1.871468186378479,7.787560520324707,1.871468186378479C7.787560520324707,1.871468186378479,6.408100520324707,1.871468186378479,6.408100520324707,1.871468186378479C6.166060520324707,1.871468186378479,6.166060520324707,2.112181186378479,6.166060520324707,2.112181186378479C6.166060520324707,2.112181186378479,6.166060520324707,3.541908186378479,6.166060520324707,3.541908186378479C6.166060520324707,3.541908186378479,2.7471505203247073,3.541908186378479,2.7471505203247073,3.541908186378479C2.7471505203247073,3.541908186378479,2.7471505203247073,4.10136818637848,2.7471505203247073,4.10136818637848C2.7471505203247073,4.10136818637848,6.166060520324707,4.10136818637848,6.166060520324707,4.10136818637848C6.166060520324707,4.10136818637848,6.166060520324707,5.103888186378478,6.166060520324707,5.103888186378478C6.166060520324707,5.103888186378478,3.342320520324707,5.103888186378478,3.342320520324707,5.103888186378478C3.342320520324707,5.103888186378478,3.342320520324707,5.663348186378479,3.342320520324707,5.663348186378479C3.342320520324707,5.663348186378479,8.817870520324707,5.663348186378479,8.817870520324707,5.663348186378479C8.618150520324708,6.359038186378479,8.348340520324708,7.013718186378479,8.029600520324706,7.607568186378479C6.253350520324707,7.016368186378479,4.356750520324708,6.537588186378479,3.166420520324707,6.832528186378479C2.404600520324707,7.021658186378479,1.913919520324707,7.358918186378479,1.6255935203247072,7.713368186378479C0.302998520324707,9.336198186378478,1.2512985203247071,11.801518186378479,4.044620520324707,11.801518186378479C5.696540520324707,11.801518186378479,7.287620520324707,10.87304818637848,8.520280520324707,9.342808186378479C10.360010520324707,10.234238186378478,14.001100520324707,11.765798186378479,14.001100520324707,11.765798186378479C14.001100520324707,11.765798186378479,14.001100520324707,9.583518186378479,14.001100520324707,9.583518186378479C14.002400520324708,9.583518186378479,13.544800520324706,9.546488186378479,11.527900520324707,8.86667818637848C11.527900520324707,8.86667818637848,11.527900520324707,8.86667818637848,11.527900520324707,8.86667818637848ZM3.784070520324707,10.85849818637848C1.605754520324707,10.85849818637848,0.9616508203247071,9.12854818637848,2.038240520324707,8.18156818637848C2.397990520324707,7.861508186378479,3.054000520324707,7.705438186378479,3.403160520324707,7.671048186378479C4.696660520324707,7.542758186378479,5.894930520324707,8.040058186378479,7.308790520324707,8.73573818637848C6.315520520324707,10.042468186378478,5.049790520324707,10.85849818637848,3.784070520324707,10.85849818637848C3.784070520324707,10.85849818637848,3.784070520324707,10.85849818637848,3.784070520324707,10.85849818637848Z" fill="#FFFFFF" fill-opacity="1"/></g></g></svg>
                   </span>
                   <span class="radio-label">支付宝支付</span>
+                </span>
+              </label>
+              <label>
+                <input checked="" class="radio-input" type="radio" value="Apple支付" name="engine" v-model="payType">
+                <span class="radio-tile">
+                        <svg style="width: 25px" xmlns="http://www.w3.org/2000/svg" fill="none" version="1.1" width="25.794300079345703" height="31.705875396728516" viewBox="0 0 25.794300079345703 31.705875396728516"><g><path d="M19.1721,7.66249C16.5646,7.51221,14.3338,9.14385,13.0964,9.14385C11.859,9.14385,9.94628,7.73861,7.8833,7.77764C5.15088,7.8479,2.66047,9.36049,1.33915,11.7533C-1.4733,16.5917,0.607252,23.7545,3.32601,27.6911C4.65709,29.6429,6.25361,31.78,8.35172,31.7039C10.3386,31.6297,11.1271,30.4099,13.5277,30.4099C15.9283,30.4099,16.6407,31.7039,18.7408,31.6649C20.915,31.6278,22.2851,29.7131,23.6201,27.7614C24.5608,26.3796,25.2927,24.867,25.7943,23.2724C23.2317,22.1521,21.5708,19.6285,21.5571,16.8317C21.5962,14.3647,22.8882,12.089,24.9883,10.795C23.6494,8.89403,21.5005,7.7269,19.176,7.64492C19.176,7.64492,19.1721,7.66249,19.1721,7.66249C19.1721,7.66249,19.1721,7.66249,19.1721,7.66249ZM17.5444,5.08035C16.4026,6.51878,14.6558,7.34436,12.8192,7.31118C12.7021,5.51949,13.3111,3.75708,14.5075,2.41819C15.698,1.03637,17.3765,0.1698,19.1916,0C19.3204,1.84243,18.7291,3.66144,17.5405,5.0745" fill="#111111" fill-opacity="1"/></g></svg>
+                  <span class="radio-label">Apple支付</span>
                 </span>
               </label>
               <label>
@@ -79,6 +130,7 @@
                 input-style="transparent"
                 icon-after
                 style="width: 600px"
+                disabled
             >
               <template #icon>
                 <vs-icon><KeySquareBold /></vs-icon>
@@ -92,6 +144,7 @@
                 input-style="transparent"
                 icon-after
                 style="width: 600px"
+                disabled
             >
               <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-incognito" viewBox="0 0 16 16">
@@ -139,129 +192,128 @@
               </template>
             </vs-input>
           </div>
-          <button class="purchase--btn">Checkout</button>
-        </form>
+          <button class="purchase--btn" @click="HandleDonation">捐款</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {reactive, ref, toRefs, watch} from "vue";
+import {onMounted, reactive, ref, toRefs, watch} from "vue";
+import {useRouter} from "vue-router";
 import {
   KeySquareBold,
   Hierarchy3Bold,
   MessageEditBold
 } from '@vuesax-alpha/icons-vue'
-import router from "@/router/index.js";
-import PayMentDataSource from "@/components/PayMentDataSource/PayMentDataSource.vue";
+import {getPage, VsLoadingFn, VsNotification} from 'vuesax-alpha'
+import {
+  donationRaiseFund,
+  getRaiseFundDataTotal,
+  getRaiseFundDetail,
+  getRaiseFundTransactionTrace
+} from "@/api/charity/raiseFund.js";
+import {getUserAddress} from "@/api/charity/charityuser.js";
+const route = useRouter();
+const raiseId = ref(0)
 const data = reactive({
   form: {},
 });
-
+const transactionList = ref([])
+const raiseFundDataTotal = ref([])
 const {form} = toRefs(data);
-
-const users = reactive([
-  {
-    id: 1,
-    name: 'Leanne Graham',
-    username: 'Bret',
-    email: 'Sincere@april.biz',
-    website: 'hildegard.org',
-  },
-  {
-    id: 2,
-    name: 'Ervin Howell',
-    username: 'Antonette',
-    email: 'Shanna@melissa.tv',
-    website: 'anastasia.net',
-  },
-  {
-    id: 3,
-    name: 'Clementine Bauch',
-    username: 'Samantha',
-    email: 'Nathan@yesenia.net',
-    website: 'ramiro.info',
-  },
-  {
-    id: 4,
-    name: 'Patricia Lebsack',
-    username: 'Karianne',
-    email: 'Julianne.OConner@kory.org',
-    website: 'kale.biz',
-  },
-  {
-    id: 5,
-    name: 'Chelsey Dietrich',
-    username: 'Kamren',
-    email: 'Lucio_Hettinger@annie.ca',
-    website: 'demarco.info',
-  },
-  {
-    id: 6,
-    name: 'Mrs. Dennis Schulist',
-    username: 'Leopoldo_Corkery',
-    email: 'Karley_Dach@jasper.info',
-    website: 'ola.org',
-  },
-  {
-    id: 7,
-    name: 'Kurtis Weissnat',
-    username: 'Elwyn.Skiles',
-    email: 'Telly.Hoeger@billy.biz',
-    website: 'elvis.io',
-  },
-  {
-    id: 8,
-    name: 'Nicholas Runolfsdottir V',
-    username: 'Maxime_Nienow',
-    email: 'Sherwood@rosamond.me',
-    website: 'jacynthe.com',
-  },
-  {
-    id: 9,
-    name: 'Glenna Reichert',
-    username: 'Delphine',
-    email: 'Chaim_McDermott@dana.io',
-    website: 'conrad.com',
-  },
-  {
-    id: 10,
-    name: 'Clementina DuBuque',
-    username: 'Moriah.Stanton',
-    email: 'Rey.Padberg@karina.biz',
-    website: 'ambrose.net',
-  },
-])
+const total = ref(0)
+const page = ref(1)
+const pageSize = ref(10)
 
 
-
-const payType = ref("")
+const payType = ref("支付宝支付")
 watch(payType, (newValue, oldValue) => {
-  console.log(`Selected payType changed. New value: ${newValue}`);
   // 进行支付方式判断 如果类为银行卡支付则直接路由跳转
   if (newValue == "银行卡支付") {
-    router.push({
-      name: "bank_transfer"
+    route.push({
+      name: "bank_transfer",
+      query: {
+        raiseId: raiseId.value
+      }
     })
   }else  {
     // 如果不是银行卡支付直接重新赋值form表单的_transType字段
     form.value._transType = newValue
-    console.log(form.value)
   }
-
-
 });
+
+
+function HandleDonation(){
+  form.value._raiseId = raiseId.value
+  form.value._transType = payType.value
+
+  console.log(form.value)
+
+  donationRaiseFund(form.value).then(res => {
+    if (res.code == 200) {
+      openNotification('success','捐款通知','捐款成功，感谢您奉献的爱心');
+
+      getRaiseFundTransactionTrace({raiseId: raiseId.value}).then(res => {
+        total.value = res.total
+        transactionList.value = res.rows
+      })
+    }
+  })
+}
+
+
+
+// 使用OnMounted生命周期管理初始化页面需要的操作
+onMounted(() => {
+  raiseId.value  = route.currentRoute.value.query.raiseId
+  getRaiseFundDataTotal({raiseId: raiseId.value}).then(res => {
+    raiseFundDataTotal.value = res.data
+  })
+
+  getRaiseFundDetail({raiseId: raiseId.value}).then(res => {
+    form.value._destAddress = res.data.promoterAddress
+  })
+
+  getUserAddress().then(res => {
+    form.value._donorAddress = res.userAddress;
+  })
+
+  getRaiseFundTransactionTrace({raiseId: raiseId.value}).then(res => {
+    total.value = res.total
+    transactionList.value = res.rows
+  })
+
+  const loadingInstance = VsLoadingFn()
+  setTimeout(() => {
+    loadingInstance.close()
+  }, 1000)
+
+})
+
+const openNotification = (color,title,msg) => {
+  VsNotification({
+    color,
+    position: 'top-left',
+    title: title,
+    content: msg,
+
+  })
+}
+
 </script>
 <style scoped>
 .online_container {
   display: flex;
-  flex: 1;
-  padding: 10px 20px;
+  justify-content: space-evenly;
+  padding: 20px 20px;
+  margin-right: 50px;
+
+
 }
 
 .modal {
-  margin-left: 50px;
   width: fit-content;
   height: fit-content;
   background: #FFFFFF;
@@ -273,7 +325,7 @@ watch(payType, (newValue, oldValue) => {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
   padding: 20px;
 }
 
@@ -388,7 +440,7 @@ watch(payType, (newValue, oldValue) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 150px;
+  width: 120px;
   min-height: 80px;
   border-radius: 0.5rem;
   border: 2px solid #b5bfd9;
@@ -446,5 +498,81 @@ watch(payType, (newValue, oldValue) => {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+
+.data-card {
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-width: 300px;
+  border-radius: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title span {
+  position: relative;
+  padding: 0.5rem;
+  background-color: #10B981;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+}
+
+.title span svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  height: 1rem;
+}
+
+.title-text {
+  margin-left: 0.5rem;
+  color: #374151;
+  font-size: 18px;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.data p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #1F2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.data .range {
+  position: relative;
+  background-color: #E5E7EB;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.data .range .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #10B981;
+  width: 76%;
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+.vs-row > .vs-col {
+  margin: 10px 10px;
 }
 </style>

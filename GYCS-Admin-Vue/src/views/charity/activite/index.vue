@@ -59,24 +59,30 @@
 
     <el-table v-loading="loading" :data="activiteList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公益活动ID" align="center" prop="charityId" />
+      <el-table-column label="溯源ID" align="center" prop="charityId" />
       <el-table-column label="种类" align="center" prop="materialType" />
-      <el-table-column label="物资的名称" align="center" prop="materialName" />
+      <el-table-column label="物资的名称" align="center" prop="materialName" width="150px"/>
       <el-table-column label="物资的数量" align="center" prop="materialCount" />
-      <el-table-column label="源地址" align="center" prop="sourceAddress" />
-      <el-table-column label="物流商地址" align="center" prop="logisticAddress" />
-      <el-table-column label="目标地址" align="center" prop="destAddress" />
+      <el-table-column label="源地址" align="center" prop="sourceAddress" width="350px"/>
+      <el-table-column label="物流商地址" align="center" prop="logisticAddress" width="350px"/>
+      <el-table-column label="目标地址" align="center" prop="destAddress" width="350px"/>
       <el-table-column label="交易时间" align="center" prop="transTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.transTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否签收" align="center" prop="isSign" />
-      <el-table-column label="公益活动ID" align="center" prop="activitId" />
+      <el-table-column label="是否签收" align="center" prop="isSign">
+        <template #default="scope">
+          <el-tag :type="scope.row.isSign == false ? 'danger' : 'success'">
+            {{scope.row.isSign == false ? "未签收" : "已签收"}}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="公益ID" align="center" prop="activitId" />
       <el-table-column label="溯源状态" align="center" prop="status" />
-      <el-table-column label="溯源的地址" align="center" prop="traceAddress" />
-      <el-table-column label="溯源的时间" align="center" prop="traceTime" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+<!--      <el-table-column label="溯源的地址" align="center" prop="traceAddress" />
+      <el-table-column label="溯源的时间" align="center" prop="traceTime" />-->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['charity:activite:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['charity:activite:remove']">删除</el-button>
@@ -137,6 +143,7 @@
 
 <script setup name="Activite">
 import { listActivite, getActivite, delActivite, addActivite, updateActivite } from "@/api/charity/activite";
+import {parseTime} from "../../../utils/ruoyi.js";
 
 const { proxy } = getCurrentInstance();
 

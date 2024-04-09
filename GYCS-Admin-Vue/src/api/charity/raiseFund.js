@@ -20,3 +20,24 @@ export function getRaiseFundDetail(query) {
         params: query
     })
 }
+
+
+
+
+export function initRaiseFund(data) {
+    return request({
+        url: '/raise_fund/initiate',
+        method: 'post',
+        data: data
+    })
+}
+
+
+export function uploadCertificate(data) {
+    return request({
+        url: '/raise_fund/uploadCertificate',
+        method: 'post',
+        data: data
+    })
+}
+

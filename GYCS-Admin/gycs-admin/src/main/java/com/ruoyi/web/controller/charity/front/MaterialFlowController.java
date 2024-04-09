@@ -1,8 +1,8 @@
 package com.ruoyi.web.controller.charity.front;
 
 import com.ruoyi.charity.domain.vo.MaterialInfoVo;
-import com.ruoyi.charity.service.ActivityTraceService;
-import com.ruoyi.charity.service.LogisticService;
+import com.ruoyi.charity.service.trace.ActivityTraceService;
+import com.ruoyi.charity.service.account.LogisticService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;

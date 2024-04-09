@@ -72,6 +72,9 @@ spring:
     port: 5672
     virtual-host: /
     host: 106.52.203.212
+    publisher-returns: true
+    template:
+      mandatory: true
   # redis 配置
   redis:
     # 地址
@@ -83,17 +86,40 @@ spring:
     # 密码
     password: Wsczkmucdis251
     # 连接超时时间
-    timeout: 20s
+    timeout: 60s
     lettuce:
       pool:
         # 连接池中的最小空闲连接
-        min-idle: 0
+        min-idle: 30
         # 连接池中的最大空闲连接
-        max-idle: 8
+        max-idle: 10
         # 连接池的最大数据库连接数
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-wait: -1ms
+        max-wait: 10000
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com # 网站发送邮件邮箱服务 host    port: 465
+    username: givtech@163.com # 邮箱
+    password: EWUTXBAJXYTNNYHB # 授权码
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: 'true'
+          socketFactory:
+            class: com.ruoyi.charity.utils.MailSSLSocketFactory
+            #            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+          stattls:
+            required: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
 
 # token配置
 token:
@@ -185,18 +211,20 @@ system:
   hexPrivateKey: 4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f
   ### Optional. Please fill this address if you want to use related service
   contract:
-    charityControllerAddress: "0x4e672b566d4ca881c66f9d97991ab15588a32de5"
+    charityControllerAddress: "0xc1d4d719ac6114f8cf50c4b1b606a33ddcc0cdd6"
 
 cos:
   # 密钥id
-  secretId: ""
+  secretId: "AKIDk6z64pcAk9JCH8p4GJ9k5yeBZCKFCiGY"
   # 密钥key
-  secretKey: ""
+  secretKey: "CXdZIYfYKuEIZJf9U26vVorgHh8PSGn9"
   # 所属区域
-  bucket: ""
+  bucket: "ap-nanjing"
   # 存储桶名称
-  bucketName: ""
+  bucketName: "blog-1304715799"
   # COS存储文件夹
-  folder: ""
+  folder: "/imgs/"
   # 访问地址
-  webUrl: ""
+  webUrl: "https://blog-1304715799.cos.ap-nanjing.myqcloud.com"
+
+

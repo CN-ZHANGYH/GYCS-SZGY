@@ -85,8 +85,36 @@
         </template>
       </el-table-column>
       <el-table-column label="物流方式" align="center" prop="logisticType" />
-      <el-table-column label="物流商地址" align="center" prop="logisticAddress" />
-      <el-table-column label="代理人地址" align="center" prop="lncomeAddress" />
+      <el-table-column label="物流商地址" align="center" prop="logisticAddress">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="物流商地址"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.logisticAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看物流商</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="代理人地址" align="center" prop="lncomeAddress">
+        <template #default="scope">
+          <el-popover
+              placement="top-start"
+              title="代理人地址"
+              :width="350"
+              trigger="hover"
+              :content="scope.row.lncomeAddress"
+          >
+            <template #reference>
+              <el-button class="m-2">查看代理机构</el-button>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" align="center" prop="status" />
       <el-table-column label="总参与人数" align="center" prop="totalPeople" />
       <el-table-column label="总物资数量" align="center" prop="totalMaterias" />
@@ -97,7 +125,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
