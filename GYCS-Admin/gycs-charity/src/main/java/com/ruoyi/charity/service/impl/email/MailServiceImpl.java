@@ -2,6 +2,9 @@ package com.ruoyi.charity.service.impl.email;
 
 import com.ruoyi.charity.domain.dto.EmailMessageDto;
 import com.ruoyi.charity.service.email.MailService;
+import com.ruoyi.common.constant.CacheConstants;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.redis.RedisCache;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +12,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.math.BigInteger;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -19,6 +25,10 @@ public class MailServiceImpl implements MailService {
      */
     @Autowired
     private JavaMailSender mailSender;
+
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Value("${spring.mail.username}")
     private String USERNAME;
@@ -270,5 +280,114 @@ public class MailServiceImpl implements MailService {
         helper.setText(content, true);
         mailSender.send(message);
 
+    }
+
+    @Override
+    public AjaxResult sendEmailCode(String email) throws MessagingException {
+        // 判断当前的邮箱不能为空
+        if (email.isEmpty()) {
+            return AjaxResult.error().put("msg","当前邮箱不能为空");
+        }
+
+        String code = getRegisterEmailCode();
+        redisCache.setCacheObject(CacheConstants.REGISTER_EMAIL_CODE + email,code,5, TimeUnit.MINUTES);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        //邮箱发送者
+        helper.setFrom(USERNAME);
+        //收件人，可以为多个收件人，收件人之间用逗号隔开
+        helper.setTo(email);
+        // 邮箱标题
+        helper.setSubject("GivTech注册用户验证码");
+        String content = "<!DOCTYPE html>\n" +
+                "<html lang=\"zh-CN\">\n" +
+                "<head>\n" +
+                "<meta charset=\"UTF-8\">\n" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "<title>验证码显示</title>\n" +
+                "<style>\n" +
+                "  body {\n" +
+                "    font-family: Arial, sans-serif;\n" +
+                "    background-color: #f7f9fc;\n" +
+                "    margin: 0;\n" +
+                "    padding: 0;\n" +
+                "    display: flex;\n" +
+                "    justify-content: center;\n" +
+                "    align-items: center;\n" +
+                "    height: 100vh;\n" +
+                "  }\n" +
+                "\n" +
+                "  .container {\n" +
+                "    background-color: #fff;\n" +
+                "    border-radius: 10px;\n" +
+                "    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n" +
+                "    padding: 20px;\n" +
+                "    width: 300px;\n" +
+                "    text-align: center;\n" +
+                "  }\n" +
+                "\n" +
+                "  h1 {\n" +
+                "    color: #333;\n" +
+                "    margin-bottom: 20px;\n" +
+                "  }\n" +
+                "\n" +
+                "  .verification-code {\n" +
+                "    font-size: 24px;\n" +
+                "    padding: 20px;\n" +
+                "    background-color: #f0f0f0;\n" +
+                "    border-radius: 5px;\n" +
+                "    margin-bottom: 20px;\n" +
+                "  }\n" +
+                "\n" +
+                "  .refresh-button {\n" +
+                "    background-color: #4CAF50;\n" +
+                "    color: white;\n" +
+                "    padding: 10px 20px;\n" +
+                "    border: none;\n" +
+                "    border-radius: 5px;\n" +
+                "    cursor: pointer;\n" +
+                "    width: 100%;\n" +
+                "  }\n" +
+                "\n" +
+                "  .refresh-button:hover {\n" +
+                "    background-color: #45a049;\n" +
+                "  }\n" +
+                "\n" +
+                "  .footer {\n" +
+                "    margin-top: 20px;\n" +
+                "    color: #888;\n" +
+                "  }\n" +
+                "</style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "  <div class=\"container\">\n" +
+                "    <h1>您的验证码</h1>\n" +
+                "    <div class=\"verification-code\">"+ code +"</div>\n" +
+                "    <button class=\"refresh-button\">确认</button>\n" +
+                "    <div class=\"footer\">\n" +
+                "      <p>验证码已发送到您的邮箱，请注意查收。</p>\n" +
+                "      <p>如果您没有收到验证码，请检查垃圾邮件文件夹。</p>\n" +
+                "    </div>\n" +
+                "  </div>\n" +
+                "</body>\n" +
+                "</html>\n";
+        helper.setText(content,true);
+        mailSender.send(message);
+
+        return AjaxResult.success().put("msg","验证码发送成功");
+    }
+
+    private static String getRegisterEmailCode() {
+        // 创建一个 Random 对象
+        Random random = new Random();
+
+        // 生成一个六位数的验证码
+        StringBuilder verificationCode = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10); // 生成 0 到 9 之间的随机数
+            verificationCode.append(digit); // 将随机数添加到验证码字符串中
+        }
+        return verificationCode.toString();
     }
 }

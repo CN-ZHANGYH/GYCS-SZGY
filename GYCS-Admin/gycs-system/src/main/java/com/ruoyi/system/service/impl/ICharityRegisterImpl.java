@@ -8,6 +8,7 @@ import com.ruoyi.charity.domain.vo.RegisterVo;
 import com.ruoyi.charity.domain.vo.UserKey;
 import com.ruoyi.charity.service.account.ICharityUserService;
 import com.ruoyi.charity.service.account.UserKeyService;
+import com.ruoyi.charity.service.email.MailService;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -48,6 +49,9 @@ public class ICharityRegisterImpl implements ICharityRegister {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     private ICharityUserService charityUserService;
 
     /**
@@ -67,16 +71,19 @@ public class ICharityRegisterImpl implements ICharityRegister {
         if (isRegisterUser != null) return AjaxResult.error().put("msg", "用户已经存在");
 
         //获取验证码
-//        boolean captchaEnabled = configService.selectCaptchaEnabled();
-//        if (captchaEnabled)
-//        {
-//            validateCaptcha(username, code, registerVo.getUuid());
-//        }
+        String emailCode = redisCache.getCacheObject(CacheConstants.REGISTER_EMAIL_CODE + registerVo.getEmail());
+        if (StringUtils.isEmpty(emailCode)) {
+            return AjaxResult.error().put("msg","验证码失效");
+        }
+        if (!registerVo.getCode().equals(emailCode)) {
+            return AjaxResult.error().put("msg","验证码错误");
+        }
 
         // 注册为系统用户
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
         sysUser.setNickName(registerVo.getNickName());
+        sysUser.setEmail(registerVo.getEmail());
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
 
         // 手动添加普通用户的权限

@@ -27,7 +27,7 @@ export default defineComponent({
           <div class="nav-inner">
             <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg">
-              <a class="navbar-brand" href="index.html">
+              <a class="navbar-brand" href="/">
                 <img src="../../../assets/product/images/logo/white-logo.png" alt="Logo">
               </a>
               <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
@@ -59,12 +59,12 @@ export default defineComponent({
                     <a href="#team" class="page-scroll" aria-label="Toggle navigation">团队</a>
                   </li>
                   <li class="nav-item">
-                    <a href="/about" class="active" aria-label="Toggle navigation">关于我们</a>
+                    <a href="/about"  aria-label="Toggle navigation">关于我们</a>
                   </li>
                 </ul>
               </div> <!-- navbar collapse -->
               <div class="button add-list-button">
-                <a href="contact.html" class="btn">登录</a>
+                <a href="/login" class="btn">登录</a>
               </div>
             </nav>
             <!-- End Navbar -->
@@ -586,7 +586,7 @@ export default defineComponent({
             <p class="wow fadeInUp" data-wow-delay=".4s">
               立即注册一个新账户，开始体验GivTech慈善公益平台！通过注册账户，您将获得访问我们广泛慈善项目的权限，参与到慈善活动中来，为需要帮助的人们贡献一份爱心。立即行动，加入我们的大家庭，共同为社会公益事业做出贡献！</p>
             <div class="button wow fadeInUp" data-wow-delay=".6s">
-              <a href="javascript:void(0)" class="btn">注册</a>
+              <a href="/register" class="btn">注册</a>
             </div>
           </div>
         </div>

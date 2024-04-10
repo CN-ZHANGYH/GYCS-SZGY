@@ -9,7 +9,7 @@ export function login(username, password, code, uuid) {
     uuid
   }
   return request({
-    url: '/login',
+    url: '/loginByUser',
     headers: {
       isToken: false,
       repeatSubmit: false
@@ -55,6 +55,19 @@ export function getCodeImg() {
       isToken: false
     },
     method: 'get',
+    timeout: 20000
+  })
+}
+
+// 获取验证码
+export function getEmailCode(query) {
+  return request({
+    url: '/email/sendCode',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    params: query,
     timeout: 20000
   })
 }

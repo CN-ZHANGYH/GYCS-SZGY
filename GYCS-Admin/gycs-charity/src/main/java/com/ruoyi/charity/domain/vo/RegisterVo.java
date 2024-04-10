@@ -32,6 +32,9 @@ public class RegisterVo {
     @NotNull(message = "用户昵称不能为空")
     public String nickName;
 
+    @NotNull(message = "邮箱不能为空")
+    public String email;
+
     @NotNull(message = "密码不能为空")
     public String password;
 

@@ -67,4 +67,5 @@ public class CacheConstants
     public static final String TRANSACTION_BY_WEEK = "transaction_by_week:";
     public static final String USER_DONATION_RAISE_FUND_RECORD = "user_donation_raise_fund_record:";
     public static final String USER_DONATION_MATERIAL_RECORD = "user_donation_material_record:";
+    public static final String REGISTER_EMAIL_CODE = "register_email_code:";
 }

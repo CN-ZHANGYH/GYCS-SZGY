@@ -23,7 +23,7 @@ import Footer from "@/components/Layout/Footer.vue";
           <div class="nav-inner">
             <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg">
-              <a class="navbar-brand" href="index.html">
+              <a class="navbar-brand" href="/">
                 <img src="../../../assets/product/images/logo/white-logo.png" alt="Logo">
               </a>
               <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
