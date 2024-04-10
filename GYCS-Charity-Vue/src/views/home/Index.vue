@@ -19,9 +19,6 @@
       <vs-navbar-item id="user" :active="active == 'user'">
         个人中心
       </vs-navbar-item>
-      <vs-navbar-item id="about" :active="active == 'about'">
-        关于
-      </vs-navbar-item>
       <template #right>
         <vs-button @click="handleLogout" >退出登录</vs-button>
       </template>
@@ -159,18 +156,6 @@
           转账记录
         </vs-sidebar-item>
       </vs-sidebar-group>
-      <template #footer>
-        <vs-row justify="space-between">
-          <vs-avatar>
-            <img src="" alt="" />
-          </vs-avatar>
-
-          <vs-avatar badge-color="danger" badge-position="top-right">
-            <i class="bx bx-bell" />
-            <template #badge> 28 </template>
-          </vs-avatar>
-        </vs-row>
-      </template>
     </vs-sidebar>
     <div id="padding-scroll-content" class="square">
       <div class="child">
@@ -179,10 +164,10 @@
           <router-view/>
         </div>
       </div>
-      <!--页脚内容-->
-      <Footer style="margin-top: 7%">
-      </Footer>
     </div>
+    <!--页脚内容-->
+    <Footer style="margin-top: 2%">
+    </Footer>
   </div>
 
 </template>
@@ -297,12 +282,10 @@ function handleLogout() {
 
 <style scoped lang="scss">
 .square {
-  height: 980px;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   width: 100%;
   .child {
-    height: 980px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -328,7 +311,7 @@ function handleLogout() {
 .main-card {
   width: 100%;
   height: 100%;
-  margin-top: 13%;
+  margin-top: 6%;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

@@ -355,7 +355,6 @@ public class RaiseFundServiceImpl implements RaiseFundService {
                     Integer oldVoteCount = charityUser.getVoteCount();
                     charityUser.setVoteCount(oldVoteCount + 1);
                     charityUserJMapper.updateById(charityUser);
-
                     return AjaxResult.success().put("msg","投票成功");
                 }
             }

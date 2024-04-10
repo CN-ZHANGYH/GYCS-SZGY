@@ -28,6 +28,15 @@ public interface ICharityActivitieInfoService
      */
     public List<CharityActivitieInfo> selectCharityActivitieInfoList(CharityActivitieInfo charityActivitieInfo,Long userId);
 
+
+    /**
+     * 查询公益灾区捐赠活动列表
+     *
+     * @param charityActivitieInfo 公益灾区捐赠活动
+     * @return 公益灾区捐赠活动集合
+     */
+    public List<CharityActivitieInfo> selectCharityActivitieInfoList(CharityActivitieInfo charityActivitieInfo);
+
     /**
      * 新增公益灾区捐赠活动
      *

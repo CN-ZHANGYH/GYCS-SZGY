@@ -57,7 +57,7 @@ export function initActivite(data) {
 // 查看所有公益活动接口
 export function getActivityList(query) {
   return request({
-    url: '/activity/list',
+    url: '/activity/list_by_user',
     method: 'get',
     params: query
   })

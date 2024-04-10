@@ -1,5 +1,5 @@
 <template>
-<div style="display: flex;flex-direction: column;padding: 20px 20px">
+<div style="display: flex;flex-direction: column;height: 900px">
   <div class="material__container">
     <div style="display: flex;flex-direction: column;justify-items: center">
       <div class="material__title">

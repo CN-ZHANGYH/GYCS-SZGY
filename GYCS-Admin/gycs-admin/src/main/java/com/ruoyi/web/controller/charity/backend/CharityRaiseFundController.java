@@ -50,6 +50,18 @@ public class CharityRaiseFundController extends BaseController
     }
 
     /**
+     * 查询公益募资活动列表
+     */
+    @PreAuthorize("@ss.hasPermi('charity:fund:list')")
+    @GetMapping("/list_by_user")
+    public TableDataInfo listByUser(CharityRaiseFund charityRaiseFund)
+    {
+        startPage();
+        List<CharityRaiseFund> list = charityRaiseFundService.selectCharityRaiseFundList(charityRaiseFund);
+        return getDataTable(list);
+    }
+
+    /**
      * 导出公益募资活动列表
      */
     @PreAuthorize("@ss.hasPermi('charity:fund:export')")

@@ -57,4 +57,13 @@ public class ActivityController extends BaseController {
         success.put("rows",activityInfoVos);
         return success;
     }
+
+    @GetMapping("/list_by_user")
+    public AjaxResult selectActivityListByUser() {
+        List<ActivityInfoVo> activityInfoVos = activityService.selectActivityList();
+        AjaxResult success = AjaxResult.success();
+        success.put("total",activityInfoVos.size());
+        success.put("rows",activityInfoVos);
+        return success;
+    }
 }

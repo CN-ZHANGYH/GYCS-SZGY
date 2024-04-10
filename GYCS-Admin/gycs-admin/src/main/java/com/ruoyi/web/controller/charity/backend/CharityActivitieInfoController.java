@@ -49,6 +49,14 @@ public class CharityActivitieInfoController extends BaseController
         return getDataTable(list);
     }
 
+
+    @GetMapping("/list_by_user")
+    public TableDataInfo listByUser(CharityActivitieInfo charityActivitieInfo)
+    {
+        startPage();
+        List<CharityActivitieInfo> list = charityActivitieInfoService.selectCharityActivitieInfoList(charityActivitieInfo);
+        return getDataTable(list);
+    }
     /**
      * 导出公益灾区捐赠活动列表
      */
