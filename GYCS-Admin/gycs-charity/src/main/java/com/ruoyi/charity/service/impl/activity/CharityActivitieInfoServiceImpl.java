@@ -60,6 +60,18 @@ public class CharityActivitieInfoServiceImpl implements ICharityActivitieInfoSer
     }
 
     /**
+     * 查询公益灾区捐赠活动列表
+     *
+     * @param charityActivitieInfo 公益灾区捐赠活动
+     * @return 公益灾区捐赠活动
+     */
+    @Override
+    public List<CharityActivitieInfo> selectCharityActivitieInfoList(CharityActivitieInfo charityActivitieInfo)
+    {
+        return charityActivitieInfoMapper.selectCharityActivitieInfoList(charityActivitieInfo);
+    }
+
+    /**
      * 新增公益灾区捐赠活动
      *
      * @param charityActivitieInfo 公益灾区捐赠活动

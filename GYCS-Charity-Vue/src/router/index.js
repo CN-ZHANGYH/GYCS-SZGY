@@ -4,14 +4,24 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: '/',
+      name: 'product',
+      component: () => import('../views/product/home/HomeIndex.vue')
+    },
+    {
       path: '/login',
       name: 'login',
-      component: () => import('../views/login/Index.vue')
+      component: () => import('../views/product/login/Login.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/product/register/Register.vue')
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/about/Index.vue')
+      component: () => import('../views/product/about/AboutIndex.vue')
     },
     {
       path: '/home',

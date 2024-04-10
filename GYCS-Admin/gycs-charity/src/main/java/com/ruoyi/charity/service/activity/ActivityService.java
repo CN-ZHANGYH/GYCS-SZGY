@@ -12,6 +12,8 @@ public interface ActivityService {
 
     List<ActivityInfoVo> selectActivityList(Long userId);
 
+    List<ActivityInfoVo> selectActivityList();
+
     AjaxResult feedBackActivity(BigInteger activityId, BigInteger score, String username);
 
     List<ActiviteTraceVo> getActivityTrace(BigInteger activityId);

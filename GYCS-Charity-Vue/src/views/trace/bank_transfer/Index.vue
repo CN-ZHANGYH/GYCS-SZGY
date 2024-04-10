@@ -341,7 +341,7 @@ function handleSearch(){
   background-position: center; /* 图片在容器中居中 */
   /* 其他样式 */
   width: 100%;
-  height: 100%; /* 使用视口高度，使背景铺满整个页面 */
+  height: 980px; /* 使用视口高度，使背景铺满整个页面 */
   display: flex;
   justify-content: center;
   padding: 20px 20px;

@@ -29,6 +29,14 @@ public interface ICharityRaiseFundService
     public List<CharityRaiseFund> selectCharityRaiseFundList(CharityRaiseFund charityRaiseFund,Long userId);
 
     /**
+     * 查询公益募资活动列表
+     *
+     * @param charityRaiseFund 公益募资活动
+     * @return 公益募资活动集合
+     */
+    public List<CharityRaiseFund> selectCharityRaiseFundList(CharityRaiseFund charityRaiseFund);
+
+    /**
      * 新增公益募资活动
      *
      * @param charityRaiseFund 公益募资活动

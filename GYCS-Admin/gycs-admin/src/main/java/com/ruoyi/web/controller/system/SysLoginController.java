@@ -52,6 +52,23 @@ public class SysLoginController
     }
 
     /**
+     * 登录方法
+     *
+     * @param loginBody 登录信息
+     * @return 结果
+     */
+    @PostMapping("/loginByUser")
+    public AjaxResult loginByUser(@RequestBody LoginBody loginBody)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        // 生成令牌
+        String token = loginService.loginByUser(loginBody.getUsername(), loginBody.getPassword());
+        ajax.put(Constants.TOKEN, token);
+        return ajax;
+    }
+
+
+    /**
      * 获取用户信息
      * 
      * @return 用户信息

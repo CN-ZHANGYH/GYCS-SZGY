@@ -132,6 +132,20 @@ public class ActivityServiceImpl implements ActivityService {
         return activityInfoVoList;
     }
 
+    public List<ActivityInfoVo> selectActivityList() {
+
+        MPJLambdaWrapper<CharityActivitieInfo> lambdaWrapper = new MPJLambdaWrapper<CharityActivitieInfo>()
+                .selectAll(CharityActivitieInfo.class)
+                .selectAll(ActivityArticle.class)
+                .leftJoin(ActivityArticle.class, ActivityArticle::getActivityId, CharityActivitieInfo::getId);
+
+        List<ActivityInfoVo> activityInfoVoList = activityJMapper.selectJoinList(ActivityInfoVo.class, lambdaWrapper);
+
+        // 直接存储Redis
+        return activityInfoVoList;
+    }
+
+
     @Override
     public AjaxResult feedBackActivity(BigInteger activityId, BigInteger score, String username) {
         // 查询当前的用户是否已经反馈过
