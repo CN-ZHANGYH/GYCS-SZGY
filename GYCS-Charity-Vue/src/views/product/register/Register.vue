@@ -86,27 +86,27 @@ const openNotification = (color,title,msg) => {
     <div class="container">
       <div class="row">
         <div class="col-lg-8 offset-lg-2 col-md-12 col-12 container_main" >
-          <div class="form_container">
+          <div class="form_container wow fadeInUp" data-wow-delay=".2s">
             <div class="title_container">
               <p class="title">注册一个新的账号</p>
               <span class="subtitle">注册一个新的账号开始您的应用，您需要填写如下的信息包括用户名密码以及身份号</span>
             </div>
             <br>
-            <div class="input_container">
+            <div class="input_container wow fadeInLeft" data-wow-delay=".2s">
               <label class="input_label" for="email_field">用户名</label>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="icon" viewBox="0 0 16 16">
                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
               </svg>
               <input placeholder="用户名" title="Inpit title" name="input-name" type="text" class="input_field" id="email_field" v-model="registerForm.username">
             </div>
-            <div class="input_container">
-              <label class="input_label" for="email_field">邮箱</label>
+            <div class="input_container wow fadeInLeft" data-wow-delay=".2s">
+              <label class="input_label" for="email_field" >邮箱</label>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="icon" viewBox="0 0 16 16">
                 <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
               </svg>
               <input placeholder="邮箱" title="Inpit title" name="input-name" type="text" class="input_field" id="email_field" v-model="registerForm.email">
             </div>
-            <div class="input_container">
+            <div class="input_container wow fadeInLeft" data-wow-delay=".2s">
               <label class="input_label" for="email_field">昵称</label>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="icon" viewBox="0 0 16 16">
                 <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
@@ -114,7 +114,7 @@ const openNotification = (color,title,msg) => {
               </svg>
               <input placeholder="用户昵称" title="Inpit title" name="input-name" type="text" class="input_field" id="email_field" v-model="registerForm.nickName">
             </div>
-            <div class="input_container">
+            <div class="input_container wow fadeInLeft"  data-wow-delay=".2s">
               <label class="input_label" for="email_field">身份证</label>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="icon" viewBox="0 0 16 16">
                 <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8Zm1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z"/>
@@ -122,8 +122,8 @@ const openNotification = (color,title,msg) => {
               </svg>
               <input placeholder="18位数身份证号" title="Inpit title" name="input-name" type="text" class="input_field" id="email_field" v-model="registerForm.cardId">
             </div>
-            <div class="input_container">
-              <label class="input_label" for="password_field">密码</label>
+            <div class="input_container wow fadeInLeft"  data-wow-delay=".2s">
+              <label class="input_label" for="password_field" >密码</label>
               <svg fill="none" viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg" class="icon">
                 <path stroke-linecap="round" stroke-width="1.5" stroke="#141B34" d="M18 11.0041C17.4166 9.91704 16.273 9.15775 14.9519 9.0993C13.477 9.03404 11.9788 9 10.329 9C8.67911 9 7.18091 9.03404 5.70604 9.0993C3.95328 9.17685 2.51295 10.4881 2.27882 12.1618C2.12602 13.2541 2 14.3734 2 15.5134C2 16.6534 2.12602 17.7727 2.27882 18.865C2.51295 20.5387 3.95328 21.8499 5.70604 21.9275C6.42013 21.9591 7.26041 21.9834 8 22"></path>
                 <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="#141B34" d="M6 9V6.5C6 4.01472 8.01472 2 10.5 2C12.9853 2 15 4.01472 15 6.5V9"></path>
@@ -132,7 +132,7 @@ const openNotification = (color,title,msg) => {
               <input placeholder="密码" title="Inpit title" name="input-name" type="password" class="input_field" id="password_field" v-model="registerForm.password">
             </div>
             <div style="display: flex;justify-content: space-between;">
-              <div class="input_container">
+              <div class="input_container wow fadeInLeft" data-wow-delay=".2s">
                 <label class="input_label" for="password_field">验证码</label>
                 <svg fill="none" viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg" class="icon">
                   <path stroke-linecap="round" stroke-width="1.5" stroke="#141B34" d="M18 11.0041C17.4166 9.91704 16.273 9.15775 14.9519 9.0993C13.477 9.03404 11.9788 9 10.329 9C8.67911 9 7.18091 9.03404 5.70604 9.0993C3.95328 9.17685 2.51295 10.4881 2.27882 12.1618C2.12602 13.2541 2 14.3734 2 15.5134C2 16.6534 2.12602 17.7727 2.27882 18.865C2.51295 20.5387 3.95328 21.8499 5.70604 21.9275C6.42013 21.9591 7.26041 21.9834 8 22"></path>
@@ -141,7 +141,7 @@ const openNotification = (color,title,msg) => {
                 </svg>
                 <input placeholder="验证码" title="Inpit title" name="input-name" type="password" class="input_field" id="password_field" style="width: 350px" v-model="registerForm.code">
               </div>
-              <div style="margin-top: 22px;">
+              <div style="margin-top: 22px;" data-wow-delay=".2s" class="ow fadeInLeft">
                 <vs-button type="relief" color="dark" animation-type="vertical" style="border-radius: 10px;width: 80px;height: 40px;margin-left: 5px" @click="sendEmailCode">
                   验证码
                 </vs-button>

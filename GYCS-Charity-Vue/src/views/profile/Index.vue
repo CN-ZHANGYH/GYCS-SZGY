@@ -1,7 +1,7 @@
 <script setup>
 import {VsLoadingFn, VsNotification} from 'vuesax-alpha'
 import {
-  bindBankCard,
+  bindBankCard, bindGithubAccount,
   getUserBindBankInfo,
   getUserDonationCount,
   getUserProfileInfo
@@ -17,6 +17,7 @@ import {updateUserProfileInfo} from "@/api/charity/charityuser.js";
 import {selectUserDonationLatestTransactionList} from "@/api/charity/record.js";
 import ProfileDataView from "@/components/ProfileDataView/ProfileDataView.vue";
 import {selectUserOrderStatusByMonth} from "@/api/charity/data.js";
+import router from "@/router/index.js";
 const active = ref(false)
 const imageUrl = ref('');
 const bindBank = ref({})
@@ -130,6 +131,12 @@ const openNotification = (color,title,msg) => {
   })
 }
 
+function handleBindingGithub(){
+  bindGithubAccount().then(res => {
+    const url = res.msg
+    top.location.href = url
+  })
+}
 
 // const counter = document.querySelector(".counter");
 // let count = 0;
@@ -472,7 +479,21 @@ const users = [
         <div class="card transection" style="--delay: 1.2s">
           <div class="transection-header">
             <div class="head">详细信息</div>
-            <div class="head is-wait">😶‍🌫️</div>
+            <div class="head is-wait"></div>
+          </div>
+          <div class="credit-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="40" height="40" viewBox="0 0 40 40"><defs><clipPath id="master_svg0_0_2349"><rect x="0" y="0" width="40" height="40" rx="0"/></clipPath></defs><g clip-path="url(#master_svg0_0_2349)"><g><g style="opacity:0.30000001192092896;"><path d="M20,7C12.8203,7,7,12.8203,7,20C7,24.375,9.16213,28.245,12.47171,30.5995C14.59624,32.111000000000004,17.1958,33,20,33C22.8037,33,25.4029,32.1113,27.5272,30.6003C30.8374,28.2458,33,24.3755,33,20C33,12.8203,27.1797,7,20,7C20,7,20,7,20,7Z" fill-rule="evenodd" fill="#00B9FF" fill-opacity="1"/></g><g><path d="M25.131500000000003,19.225C25.131500000000003,22.14244,22.80394,24.45,20.00375,24.45C17.20356,24.45,14.87596,22.14244,14.87596,19.225C14.87596,16.30755,17.20356,14,20.00375,14C22.80394,14,25.131500000000003,16.30755,25.131500000000003,19.225C25.131500000000003,19.225,25.131500000000003,19.225,25.131500000000003,19.225ZM25.8536,28.2806C26.4199,28.7649,26.7668,29.3915,26.971600000000002,30.2228C27.082700000000003,30.6735,26.8595,31.1344,26.4478,31.3599C24.5402,32.4049,22.343780000000002,33,20.00375,33C17.660800000000002,33,15.46182,32.403400000000005,13.552556,31.356C13.142882,31.1313,12.9206555,30.6734,13.0260405,30.2236C13.230004,29.353,13.579481,28.6978,14.15365,28.200699999999998C15.03511,27.4375,16.69931,26.826700000000002,19.99027,26.825C23.284100000000002,26.8991,24.9615,27.517699999999998,25.8536,28.2806C25.8536,28.2806,25.8536,28.2806,25.8536,28.2806Z" fill="#00B9FF" fill-opacity="1"/></g></g></g></svg>
+            <div class="credit-name" style="display: flex;justify-content: space-between">
+              <div>
+                <div class="credit-type">Github账号</div>
+                <div class="credit-status">{{user.nickName}}</div>
+              </div>
+              <div style="margin-top: 5px;margin-left: 60px">
+                <vs-button icon color="messenger" @click="handleBindingGithub">
+                  绑定 >
+                </vs-button>
+              </div>
+            </div>
           </div>
           <div class="credit-wrapper">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="40" height="40" viewBox="0 0 40 40"><defs><clipPath id="master_svg0_0_2349"><rect x="0" y="0" width="40" height="40" rx="0"/></clipPath></defs><g clip-path="url(#master_svg0_0_2349)"><g><g style="opacity:0.30000001192092896;"><path d="M20,7C12.8203,7,7,12.8203,7,20C7,24.375,9.16213,28.245,12.47171,30.5995C14.59624,32.111000000000004,17.1958,33,20,33C22.8037,33,25.4029,32.1113,27.5272,30.6003C30.8374,28.2458,33,24.3755,33,20C33,12.8203,27.1797,7,20,7C20,7,20,7,20,7Z" fill-rule="evenodd" fill="#00B9FF" fill-opacity="1"/></g><g><path d="M25.131500000000003,19.225C25.131500000000003,22.14244,22.80394,24.45,20.00375,24.45C17.20356,24.45,14.87596,22.14244,14.87596,19.225C14.87596,16.30755,17.20356,14,20.00375,14C22.80394,14,25.131500000000003,16.30755,25.131500000000003,19.225C25.131500000000003,19.225,25.131500000000003,19.225,25.131500000000003,19.225ZM25.8536,28.2806C26.4199,28.7649,26.7668,29.3915,26.971600000000002,30.2228C27.082700000000003,30.6735,26.8595,31.1344,26.4478,31.3599C24.5402,32.4049,22.343780000000002,33,20.00375,33C17.660800000000002,33,15.46182,32.403400000000005,13.552556,31.356C13.142882,31.1313,12.9206555,30.6734,13.0260405,30.2236C13.230004,29.353,13.579481,28.6978,14.15365,28.200699999999998C15.03511,27.4375,16.69931,26.826700000000002,19.99027,26.825C23.284100000000002,26.8991,24.9615,27.517699999999998,25.8536,28.2806C25.8536,28.2806,25.8536,28.2806,25.8536,28.2806Z" fill="#00B9FF" fill-opacity="1"/></g></g></g></svg>

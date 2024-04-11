@@ -7,6 +7,7 @@ import javax.validation.Validator;
 
 import com.ruoyi.charity.domain.dto.Logistic;
 import com.ruoyi.charity.domain.dto.Org;
+import com.ruoyi.charity.domain.dto.SysAuthUser;
 import com.ruoyi.charity.domain.vo.UserKey;
 import com.ruoyi.charity.service.account.ILogisticService;
 import com.ruoyi.charity.service.account.IOrgService;
@@ -422,6 +423,7 @@ public class SysUserServiceImpl implements ISysUserService
                 list.add(up);
             }
             userPostMapper.batchUserPost(list);
+
         }
     }
 
@@ -608,5 +610,17 @@ public class SysUserServiceImpl implements ISysUserService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+
+    /**
+     * 根据用户编号查询授权列表
+     *
+     * @param userId 用户编号
+     * @return 授权列表
+     */
+    public List<SysAuthUser> selectAuthUserListByUserId(Long userId)
+    {
+        return userMapper.selectAuthUserListByUserId(userId);
     }
 }

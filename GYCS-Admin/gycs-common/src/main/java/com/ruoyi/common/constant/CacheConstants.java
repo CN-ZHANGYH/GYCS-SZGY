@@ -68,4 +68,5 @@ public class CacheConstants
     public static final String USER_DONATION_RAISE_FUND_RECORD = "user_donation_raise_fund_record:";
     public static final String USER_DONATION_MATERIAL_RECORD = "user_donation_material_record:";
     public static final String REGISTER_EMAIL_CODE = "register_email_code:";
+    public static final String GITHUB_AUTH_USERINFO_KEY = "github_auth_userinfo:";
 }

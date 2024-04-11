@@ -82,8 +82,6 @@ import userAvatar from "./userAvatar";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
 import { getUserProfile } from "@/api/system/user";
-import {Stamp} from "@element-plus/icons-vue";
-
 const activeTab = ref("userinfo");
 const state = reactive({
   user: {},
@@ -105,7 +103,7 @@ getUser();
 
 <style scoped>
 .e-card {
-  //margin: 100px auto;
+
   background: transparent;
   box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
   position: relative;

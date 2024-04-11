@@ -175,6 +175,11 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!--Just Auth-->
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>

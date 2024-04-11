@@ -95,3 +95,11 @@ export function getUserDonationCount() {
     method: 'get'
   })
 }
+
+// 绑定Github
+export function bindGithubAccount() {
+  return request({
+    url: '/oauth/github/render',
+    method: 'get'
+  })
+}
