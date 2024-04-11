@@ -17,6 +17,8 @@ public class LoginBody
      */
     private String password;
 
+
+    private String address;
     /**
      * 验证码
      */
@@ -26,6 +28,17 @@ public class LoginBody
      * 唯一标识
      */
     private String uuid;
+
+    public LoginBody() {
+    }
+
+    public LoginBody(String username, String password, String address, String code, String uuid) {
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.code = code;
+        this.uuid = uuid;
+    }
 
     public String getUsername()
     {
@@ -65,5 +78,25 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    /**
+     * 获取
+     * @return address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * 设置
+     * @param address
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String toString() {
+        return "LoginBody{username = " + username + ", password = " + password + ", address = " + address + ", code = " + code + ", uuid = " + uuid + "}";
     }
 }

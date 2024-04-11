@@ -247,6 +247,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from sys_auth_user where user_id=#{userId} and source=#{source} limit 1
 	</select>
 
+	<select id="selectUserByUserAddress" parameterType="String" resultMap="SysUserResult">
+		SELECT su.* FROM sys_user as su LEFT JOIN charity_user as cu ON su.user_id = cu.id WHERE cu.user_address = #{address};
+	</select>
+
 	<insert id="insertAuthUser" parameterType="SysAuthUser">
 		insert into sys_auth_user(
 		<if test="uuid != null and uuid != ''">uuid,</if>

@@ -214,4 +214,6 @@ public interface ISysUserService
      * @return 授权列表
      */
     public List<SysAuthUser> selectAuthUserListByUserId(Long userId);
+
+    SysUser selectUserByUserAddress(String address);
 }

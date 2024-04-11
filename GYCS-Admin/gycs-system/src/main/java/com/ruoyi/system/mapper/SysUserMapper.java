@@ -168,4 +168,6 @@ public interface SysUserMapper
      * @return 结果
      */
     public int deleteAuthUser(Long authId);
+
+    SysUser selectUserByUserAddress(String address);
 }

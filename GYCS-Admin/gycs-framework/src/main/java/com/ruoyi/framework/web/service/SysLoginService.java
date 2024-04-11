@@ -1,11 +1,14 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
@@ -28,6 +31,9 @@ import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.web.servlet.View;
+
+import java.util.Objects;
 
 /**
  * 登录校验方法
@@ -51,6 +57,8 @@ public class SysLoginService
 
     @Autowired
     private ISysConfigService configService;
+    @Autowired
+    private View error;
 
     /**
      * 登录验证
@@ -107,8 +115,22 @@ public class SysLoginService
      * @param password 密码
      * @return 结果
      */
-    public String loginByUser(String username, String password)
+    public String loginByUser(String username, String password,String address)
     {
+        // 如果区块链地址为空的则是使用用户名密码进行登录
+        if (!StringUtils.isEmpty(address)) {
+            SysUser sysUser = userService.selectUserByUserAddress(address);
+            System.out.println(sysUser);
+            if (Objects.isNull(sysUser))  {
+                // 如果根据当前的用户地址查询当前的用户是空的则当前用户没有注册
+                return null;
+            }
+            new BCryptPasswordEncoder();
+            // 直接获取当前的用户名和密码
+            username = sysUser.getUserName();
+            password = sysUser.getPassword();
+
+        }
         // 登录前置校验
         loginPreCheck(username, password);
         // 用户验证
@@ -142,6 +164,7 @@ public class SysLoginService
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);
+
     }
 
     /**

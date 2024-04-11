@@ -62,7 +62,10 @@ public class SysLoginController
     {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = loginService.loginByUser(loginBody.getUsername(), loginBody.getPassword());
+        String token = loginService.loginByUser(loginBody.getUsername(), loginBody.getPassword(),loginBody.getAddress());
+        if (token == null) {
+            return AjaxResult.error().put("msg","当前用户未注册");
+        }
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

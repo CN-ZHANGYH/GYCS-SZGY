@@ -623,4 +623,9 @@ public class SysUserServiceImpl implements ISysUserService
     {
         return userMapper.selectAuthUserListByUserId(userId);
     }
+
+    @Override
+    public SysUser selectUserByUserAddress(String address) {
+        return userMapper.selectUserByUserAddress(address);
+    }
 }
