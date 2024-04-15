@@ -29,6 +29,11 @@ const router = createRouter({
       component: () => import('../views/home/Index.vue'),
       children: [
         {
+          path: 'index',
+          name: 'index',
+          component: () => import('../views/main/Index.vue')
+        },
+        {
           path: 'user',
           name: 'user',
           component: () => import('../views/profile/Index.vue')
