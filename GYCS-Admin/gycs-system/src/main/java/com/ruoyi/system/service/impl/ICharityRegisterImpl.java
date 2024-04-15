@@ -2,10 +2,12 @@ package com.ruoyi.system.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.charity.domain.dto.CharityUser;
+import com.ruoyi.charity.domain.dto.PasswordDto;
 import com.ruoyi.charity.domain.vo.MessageResult;
 import com.ruoyi.charity.domain.vo.RegisterVo;
 
 import com.ruoyi.charity.domain.vo.UserKey;
+import com.ruoyi.charity.mapper.mp.MPUserPasswordMapper;
 import com.ruoyi.charity.service.account.ICharityUserService;
 import com.ruoyi.charity.service.account.UserKeyService;
 import com.ruoyi.charity.service.email.MailService;
@@ -16,6 +18,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
+import com.ruoyi.common.utils.AESUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ICharityRegister;
@@ -53,6 +56,10 @@ public class ICharityRegisterImpl implements ICharityRegister {
 
     @Autowired
     private ICharityUserService charityUserService;
+
+
+    @Autowired
+    private MPUserPasswordMapper mpUserPasswordMapper;
 
     /**
      * 用户注册功能
@@ -113,6 +120,14 @@ public class ICharityRegisterImpl implements ICharityRegister {
             charityUser.setPublicKey(blockChainUser.getPublicKey());
             charityUser.setDesignation(sysUser.getUserName());
             charityUserService.insertCharityUser(charityUser);
+
+
+            PasswordDto passwordDto = new PasswordDto();
+            String encryptPassword = AESUtils.encryptPassword(password);
+            passwordDto.setUserAddress(blockChainUser.getUserAddress());
+            passwordDto.setPassword(encryptPassword);
+            passwordDto.setUserName(username);
+            mpUserPasswordMapper.insert(passwordDto);
 
             // 封装rabbitmq的消息 通过rabbitmq实现消费者收到消息进行消费实现当前的用户是异步注册用户上链
             MessageResult messageResult = new MessageResult();

@@ -65,11 +65,13 @@ const handleUploadFile = async (value) => {
   formData.append('file', files[0])
   //TODO调用后端接口，传入文件参数
   uploadImage(formData).then(res => {
+    console.log(res)
     imageUrl.value = res.imgUrl
     form.value.avatar = imageUrl.value
   })
 }
 function handleUpdateProfile(){
+  console.log(form.value)
   updateUserProfileInfo(form.value).then(res => {
     if (res.code == 200) {
       openNotification('success','操作通知','更新用户信息成功')
@@ -80,7 +82,13 @@ function handleUpdateProfile(){
 onMounted(() => {
   getUserBindBankInfo().then(res => {
     if (res.code == 200) {
-      bindInfo.value = res.data
+      bindInfo.value = res.data || {
+        bankAccount: "暂无绑定",
+        bankName: "暂无绑定",
+        username: "暂无绑定",
+        cardId: "暂无绑定",
+        address: "暂无绑定"
+      }
     }
   })
   getUserProfileInfo().then(res => {
@@ -97,10 +105,7 @@ onMounted(() => {
 
   selectUserDonationLatestTransactionList().then(res => {
     transactionList.value = res.data
-    console.log(res)
   })
-
-
 
   const loadingInstance = VsLoadingFn()
   setTimeout(() => {
@@ -110,15 +115,26 @@ onMounted(() => {
 
 // 用户绑定银行卡
 function handleBindBankCard(){
-  bindBankCard(form.value).then(res => {
+  bindBankCard(bindBank.value).then(res => {
     if (res.code == 200){
-      openNotification('succes','绑定通知',res.msg)
+      openNotification('succes','绑定通知',"绑定成功")
     }else  {
-      openNotification('danger','绑定通知',res.msg)
+      openNotification('danger','绑定通知',"绑定失败")
     }
   })
   form.value =  {}
   bindBankDialog.value = false
+}
+
+function handleOpenUpdateProfileDialog(){
+  active.value = true
+  form.value.userName = user.value.userName
+  form.value.nickName = user.value.nickName
+  form.value.email = user.value.email
+  form.value.phonenumber = user.value.phonenumber
+  form.value.cardId = user.value.cardId
+  form.value.sex = user.value.sex
+  form.value.userId = user.value.userId
 }
 
 const openNotification = (color,title,msg) => {
@@ -131,24 +147,6 @@ const openNotification = (color,title,msg) => {
   })
 }
 
-function handleBindingGithub(){
-  bindGithubAccount().then(res => {
-    const url = res.msg
-    top.location.href = url
-  })
-}
-
-// const counter = document.querySelector(".counter");
-// let count = 0;
-// setInterval(() => {
-//   if (count == 92) {
-//     clearInterval(count);
-//   } else {
-//     count += 1;
-//     counter.textContent = count + "%";
-//   }
-// }, 42);
-
 
 const statistics = [
   { label: '积分', value: points },
@@ -156,80 +154,6 @@ const statistics = [
   { label: '投票次数', value: votes },
   { label: '提现次数', value: withdrawals }
 ];
-
-
-const users = [
-  {
-    id: 1,
-    name: 'Leanne Graham',
-    username: 'Bret',
-    email: 'Sincere@april.biz',
-    website: 'hildegard.org',
-  },
-  {
-    id: 2,
-    name: 'Ervin Howell',
-    username: 'Antonette',
-    email: 'Shanna@melissa.tv',
-    website: 'anastasia.net',
-  },
-  {
-    id: 3,
-    name: 'Clementine Bauch',
-    username: 'Samantha',
-    email: 'Nathan@yesenia.net',
-    website: 'ramiro.info',
-  },
-  {
-    id: 4,
-    name: 'Patricia Lebsack',
-    username: 'Karianne',
-    email: 'Julianne.OConner@kory.org',
-    website: 'kale.biz',
-  },
-  {
-    id: 5,
-    name: 'Chelsey Dietrich',
-    username: 'Kamren',
-    email: 'Lucio_Hettinger@annie.ca',
-    website: 'demarco.info',
-  },
-  {
-    id: 6,
-    name: 'Mrs. Dennis Schulist',
-    username: 'Leopoldo_Corkery',
-    email: 'Karley_Dach@jasper.info',
-    website: 'ola.org',
-  },
-  {
-    id: 7,
-    name: 'Kurtis Weissnat',
-    username: 'Elwyn.Skiles',
-    email: 'Telly.Hoeger@billy.biz',
-    website: 'elvis.io',
-  },
-  {
-    id: 8,
-    name: 'Nicholas Runolfsdottir V',
-    username: 'Maxime_Nienow',
-    email: 'Sherwood@rosamond.me',
-    website: 'jacynthe.com',
-  },
-  {
-    id: 9,
-    name: 'Glenna Reichert',
-    username: 'Delphine',
-    email: 'Chaim_McDermott@dana.io',
-    website: 'conrad.com',
-  },
-  {
-    id: 10,
-    name: 'Clementina DuBuque',
-    username: 'Moriah.Stanton',
-    email: 'Rey.Padberg@karina.biz',
-    website: 'ambrose.net',
-  },
-]
 </script>
 
 <template>
@@ -255,7 +179,6 @@ const users = [
           </div>
           <div class="activity-links">
             <div class="activity-link active">订单数据</div>
-            <div class="activity-link notify">User Request</div>
           </div>
           <div class="destination">
             <ProfileDataView/>
@@ -355,7 +278,7 @@ const users = [
               <div class="blob"></div>
             </div>
             <div class="account-name">{{user.userName}}</div>
-            <div class="account-title"><vs-button @click="active = true">更新资料</vs-button></div>
+            <div class="account-title"><vs-button @click="handleOpenUpdateProfileDialog">更新资料</vs-button></div>
           </div>
           <div class="flip-card">
             <div class="flip-card-inner">
@@ -483,20 +406,6 @@ const users = [
           </div>
           <div class="credit-wrapper">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="40" height="40" viewBox="0 0 40 40"><defs><clipPath id="master_svg0_0_2349"><rect x="0" y="0" width="40" height="40" rx="0"/></clipPath></defs><g clip-path="url(#master_svg0_0_2349)"><g><g style="opacity:0.30000001192092896;"><path d="M20,7C12.8203,7,7,12.8203,7,20C7,24.375,9.16213,28.245,12.47171,30.5995C14.59624,32.111000000000004,17.1958,33,20,33C22.8037,33,25.4029,32.1113,27.5272,30.6003C30.8374,28.2458,33,24.3755,33,20C33,12.8203,27.1797,7,20,7C20,7,20,7,20,7Z" fill-rule="evenodd" fill="#00B9FF" fill-opacity="1"/></g><g><path d="M25.131500000000003,19.225C25.131500000000003,22.14244,22.80394,24.45,20.00375,24.45C17.20356,24.45,14.87596,22.14244,14.87596,19.225C14.87596,16.30755,17.20356,14,20.00375,14C22.80394,14,25.131500000000003,16.30755,25.131500000000003,19.225C25.131500000000003,19.225,25.131500000000003,19.225,25.131500000000003,19.225ZM25.8536,28.2806C26.4199,28.7649,26.7668,29.3915,26.971600000000002,30.2228C27.082700000000003,30.6735,26.8595,31.1344,26.4478,31.3599C24.5402,32.4049,22.343780000000002,33,20.00375,33C17.660800000000002,33,15.46182,32.403400000000005,13.552556,31.356C13.142882,31.1313,12.9206555,30.6734,13.0260405,30.2236C13.230004,29.353,13.579481,28.6978,14.15365,28.200699999999998C15.03511,27.4375,16.69931,26.826700000000002,19.99027,26.825C23.284100000000002,26.8991,24.9615,27.517699999999998,25.8536,28.2806C25.8536,28.2806,25.8536,28.2806,25.8536,28.2806Z" fill="#00B9FF" fill-opacity="1"/></g></g></g></svg>
-            <div class="credit-name" style="display: flex;justify-content: space-between">
-              <div>
-                <div class="credit-type">Github账号</div>
-                <div class="credit-status">{{user.nickName}}</div>
-              </div>
-              <div style="margin-top: 5px;margin-left: 60px">
-                <vs-button icon color="messenger" @click="handleBindingGithub">
-                  绑定 >
-                </vs-button>
-              </div>
-            </div>
-          </div>
-          <div class="credit-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="40" height="40" viewBox="0 0 40 40"><defs><clipPath id="master_svg0_0_2349"><rect x="0" y="0" width="40" height="40" rx="0"/></clipPath></defs><g clip-path="url(#master_svg0_0_2349)"><g><g style="opacity:0.30000001192092896;"><path d="M20,7C12.8203,7,7,12.8203,7,20C7,24.375,9.16213,28.245,12.47171,30.5995C14.59624,32.111000000000004,17.1958,33,20,33C22.8037,33,25.4029,32.1113,27.5272,30.6003C30.8374,28.2458,33,24.3755,33,20C33,12.8203,27.1797,7,20,7C20,7,20,7,20,7Z" fill-rule="evenodd" fill="#00B9FF" fill-opacity="1"/></g><g><path d="M25.131500000000003,19.225C25.131500000000003,22.14244,22.80394,24.45,20.00375,24.45C17.20356,24.45,14.87596,22.14244,14.87596,19.225C14.87596,16.30755,17.20356,14,20.00375,14C22.80394,14,25.131500000000003,16.30755,25.131500000000003,19.225C25.131500000000003,19.225,25.131500000000003,19.225,25.131500000000003,19.225ZM25.8536,28.2806C26.4199,28.7649,26.7668,29.3915,26.971600000000002,30.2228C27.082700000000003,30.6735,26.8595,31.1344,26.4478,31.3599C24.5402,32.4049,22.343780000000002,33,20.00375,33C17.660800000000002,33,15.46182,32.403400000000005,13.552556,31.356C13.142882,31.1313,12.9206555,30.6734,13.0260405,30.2236C13.230004,29.353,13.579481,28.6978,14.15365,28.200699999999998C15.03511,27.4375,16.69931,26.826700000000002,19.99027,26.825C23.284100000000002,26.8991,24.9615,27.517699999999998,25.8536,28.2806C25.8536,28.2806,25.8536,28.2806,25.8536,28.2806Z" fill="#00B9FF" fill-opacity="1"/></g></g></g></svg>
             <div class="credit-name">
               <div class="credit-type">昵称</div>
               <div class="credit-status">{{user.nickName}}</div>
@@ -521,6 +430,13 @@ const users = [
             <div class="credit-name">
               <div class="credit-type">性别</div>
               <div class="credit-status">{{user.sex == '0' ? '男' : '女'}}</div>
+            </div>
+          </div>
+          <div class="credit-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="40" height="40" viewBox="0 0 40 40"><defs><clipPath id="master_svg0_0_2283"><rect x="0" y="0" width="40" height="40" rx="0"/></clipPath></defs><g clip-path="url(#master_svg0_0_2283)"><g><g style="opacity:0.30000001192092896;"><path d="M15,17.679560000000002C15,17.679560000000002,23.23059,12,23.23059,12C23.23059,12,24.366500000000002,13.64612,24.366500000000002,13.64612C24.366500000000002,13.64612,16.13591,19.32568,16.13591,19.32568C16.13591,19.32568,15,17.679560000000002,15,17.679560000000002C15,17.679560000000002,15,17.679560000000002,15,17.679560000000002ZM15,22.6461C15,22.6461,23.23059,28.3257,23.23059,28.3257C23.23059,28.3257,24.366500000000002,26.6796,24.366500000000002,26.6796C24.366500000000002,26.6796,16.13591,21,16.13591,21C16.13591,21,15,22.6461,15,22.6461C15,22.6461,15,22.6461,15,22.6461Z" fill="#00B9FF" fill-opacity="1"/></g><g><path d="M31,28.7273C31,28.6901,30.9995,28.6531,30.9986,28.6162C30.9681,27.4339,30.4531,26.3778,29.6467,25.6253C28.8674,24.8982,27.816,24.4545,26.6667,24.4545C25.5174,24.4545,24.465899999999998,24.8982,23.686700000000002,25.6253C22.881,26.3771,22.3662,27.432,22.334899999999998,28.6129C22.3338,28.6509,22.3333,28.689,22.3333,28.7273C22.3333,31.1043,24.2908,33,26.6667,33C29.0425,33,31,31.1043,31,28.7273C31,28.7273,31,28.7273,31,28.7273ZM9,20C9,22.377000000000002,10.95748,24.2727,13.33333,24.2727C14.48265,24.2727,15.53406,23.8291,16.31333,23.102C17.14497,22.326,17.66667,21.2271,17.66667,20C17.66667,18.7729,17.14497,17.674,16.31333,16.89803C15.53406,16.1709,14.48265,15.72727,13.33333,15.72727C12.18402,15.72727,11.13261,16.1709,10.35334,16.89803C9.5217,17.674,9,18.7729,9,20C9,20,9,20,9,20ZM26.6667,7C24.2908,7,22.3333,8.89575,22.3333,11.27273C22.3333,12.49985,22.855,13.59871,23.686700000000002,14.3747C24.465899999999998,15.10183,25.5174,15.54545,26.6667,15.54545C27.816,15.54545,28.8674,15.10183,29.6467,14.3747C30.4518,13.62345,30.9664,12.56958,30.9984,11.38968C30.9995,11.35083,31,11.31184,31,11.27273C31,8.89575,29.0425,7,26.6667,7C26.6667,7,26.6667,7,26.6667,7Z" fill="#00B9FF" fill-opacity="1"/></g></g></g></svg>
+            <div class="credit-name">
+              <div class="credit-type">身份证</div>
+              <div class="credit-status">{{user.cardId}}</div>
             </div>
           </div>
         </div>

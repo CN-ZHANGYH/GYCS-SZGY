@@ -2,7 +2,12 @@ package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
 
-import com.ruoyi.common.utils.SecurityUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.charity.domain.dto.CharityUser;
+import com.ruoyi.charity.domain.dto.PasswordDto;
+import com.ruoyi.charity.mapper.mp.MPUserMapper;
+import com.ruoyi.charity.mapper.mp.MPUserPasswordMapper;
+import com.ruoyi.common.utils.AESUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,7 +38,7 @@ import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.web.servlet.View;
 
-import java.util.Objects;
+import java.util.Stack;
 
 /**
  * 登录校验方法
@@ -43,6 +48,14 @@ import java.util.Objects;
 @Component
 public class SysLoginService
 {
+
+
+    @Autowired
+    private MPUserMapper mpUserMapper;
+
+    @Autowired
+    private MPUserPasswordMapper mpUserPasswordMapper;
+
     @Autowired
     private TokenService tokenService;
 
@@ -117,27 +130,25 @@ public class SysLoginService
      */
     public String loginByUser(String username, String password,String address)
     {
-        // 如果区块链地址为空的则是使用用户名密码进行登录
-        if (!StringUtils.isEmpty(address)) {
-            SysUser sysUser = userService.selectUserByUserAddress(address);
-            System.out.println(sysUser);
-            if (Objects.isNull(sysUser))  {
-                // 如果根据当前的用户地址查询当前的用户是空的则当前用户没有注册
-                return null;
-            }
-            new BCryptPasswordEncoder();
-            // 直接获取当前的用户名和密码
-            username = sysUser.getUserName();
-            password = sysUser.getPassword();
-
+        String userName = "";
+        String passWord = "";
+        Authentication authentication = null;
+        UsernamePasswordAuthenticationToken authenticationToken =  null;
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            PasswordDto passwordDto = mpUserPasswordMapper.selectOne(Wrappers.lambdaQuery(PasswordDto.class).eq(PasswordDto::getUserAddress, address));
+            String decryptPassword = AESUtils.decryptPassword(passwordDto.getPassword());
+            userName = passwordDto.getUserName();
+            passWord = decryptPassword;
+        }else {
+            // 用户验证
+            userName = username;
+            passWord = password;
         }
         // 登录前置校验
-        loginPreCheck(username, password);
-        // 用户验证
-        Authentication authentication = null;
+        loginPreCheck(userName, passWord);
         try
         {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+            authenticationToken = new UsernamePasswordAuthenticationToken(userName, passWord);
             AuthenticationContextHolder.setContext(authenticationToken);
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager.authenticate(authenticationToken);
@@ -146,12 +157,12 @@ public class SysLoginService
         {
             if (e instanceof BadCredentialsException)
             {
-                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.password.not.match")));
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, MessageUtils.message("user.password.not.match")));
                 throw new UserPasswordNotMatchException();
             }
             else
             {
-                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, e.getMessage()));
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_FAIL, e.getMessage()));
                 throw new ServiceException(e.getMessage());
             }
         }
@@ -159,12 +170,11 @@ public class SysLoginService
         {
             AuthenticationContextHolder.clearContext();
         }
-        AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+        AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);
-
     }
 
     /**

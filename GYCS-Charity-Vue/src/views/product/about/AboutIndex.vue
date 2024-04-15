@@ -1,5 +1,5 @@
 <script setup>
-
+import whiteLogo from "@/assets/product/images/logo/white-logo.png"
 import Footer from "@/components/Layout/Footer.vue";
 </script>
 
@@ -24,7 +24,7 @@ import Footer from "@/components/Layout/Footer.vue";
             <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg">
               <a class="navbar-brand" href="/">
-                <img src="../../../assets/product/images/logo/white-logo.png" alt="Logo">
+                <img :src="whiteLogo" alt="Logo">
               </a>
               <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                       data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

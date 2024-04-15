@@ -60,12 +60,10 @@ public class SysLoginController
     @PostMapping("/loginByUser")
     public AjaxResult loginByUser(@RequestBody LoginBody loginBody)
     {
+        System.out.println(loginBody);
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = loginService.loginByUser(loginBody.getUsername(), loginBody.getPassword(),loginBody.getAddress());
-        if (token == null) {
-            return AjaxResult.error().put("msg","当前用户未注册");
-        }
+        String token = loginService.loginByUser(loginBody.getUsername(), loginBody.getPassword(),loginBody.getUserAddress());
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

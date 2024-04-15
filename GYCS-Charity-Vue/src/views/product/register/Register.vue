@@ -63,7 +63,7 @@ const openNotification = (color,title,msg) => {
             <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg">
               <a class="navbar-brand" href="/">
-                <img src="../../../assets/product/images/logo/white-logo.png" alt="Logo">
+                <img src="/src/assets/product/images/logo/white-logo.png" alt="Logo">
               </a>
               <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                       data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

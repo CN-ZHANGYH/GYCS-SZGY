@@ -2,7 +2,6 @@
 Template Name: SaaSGrids - Creative Landing Page HTML Template.
 Author: GrayGrids
 */
-
 (function () {
     //===== Prealoder
 

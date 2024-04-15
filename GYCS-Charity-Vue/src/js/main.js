@@ -2,6 +2,7 @@
 Template Name: SaaSGrids - Creative Landing Page HTML Template.
 Author: GrayGrids
 */
+import whiteLogo from "@/assets/product/images/logo/white-logo.png"
 
 (function () {
     //===== Prealoder
@@ -26,10 +27,10 @@ Author: GrayGrids
         var logo = document.querySelector('.navbar-brand img')
         if (window.pageYOffset > sticky) {
           header_navbar.classList.add("sticky");
-          logo.src = 'https://blog-1304715799.cos.ap-nanjing.myqcloud.com/imgs/logo.png';
+          logo.src = '';
         } else {
           header_navbar.classList.remove("sticky");
-          logo.src = 'https://blog-1304715799.cos.ap-nanjing.myqcloud.com/imgs/white-logo.png';
+          logo.src = '';
         }
 
         // show or hide the back-top-top button

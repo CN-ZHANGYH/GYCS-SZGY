@@ -22,7 +22,7 @@ export function getRaiseFundDetail(query) {
 // 查询所有的公益募资活动
 export function getRaiseFundList(query) {
     return request({
-        url: '/charity/fund/list',
+        url: '/charity/fund/list_by_user',
         method: 'get',
         params: query
     })

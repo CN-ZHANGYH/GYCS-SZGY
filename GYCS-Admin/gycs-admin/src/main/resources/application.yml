@@ -16,7 +16,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8080
+  port: 18080
   servlet:
     # 应用的访问路径
     context-path: /
@@ -67,24 +67,24 @@ spring:
       enabled: false
   # rabbitmq 配置
   rabbitmq:
-    username: root
-    password: Wsczkmucdis251
-    port: 5672
+    username: ${RABBITMQ_USERNAME:root}
+    password: ${RABBITMQ_PASSWORD:Wsczkmucdis251}
+    port: ${RABBITMQ_PORT:5672}
     virtual-host: /
-    host: 106.52.203.212
+    host: ${RABBITMQ_HOST:106.52.203.212}
     publisher-returns: true
     template:
       mandatory: true
   # redis 配置
   redis:
     # 地址
-    host: 106.52.203.212
+    host: ${REDIS_HOST:106.52.203.212}
     # 端口，默认为6379
-    port: 6379
+    port: ${REDIS_PORT:6379}
     # 数据库索引
     database: 0
     # 密码
-    password: Wsczkmucdis251
+    password: ${REDIS_PWD:Wsczkmucdis251}
     # 连接超时时间
     timeout: 60s
     lettuce:
@@ -100,8 +100,8 @@ spring:
   mail:
     default-encoding: UTF-8
     host: smtp.163.com # 网站发送邮件邮箱服务 host    port: 465
-    username: givtech@163.com # 邮箱
-    password: EWUTXBAJXYTNNYHB # 授权码
+    username: ${EMAIL_USERNAME:givtech@163.com} # 邮箱
+    password: ${EMAIL_PASSWORD:EWUTXBAJXYTNNYHB} # 授权码
     protocol: smtp
     properties:
       mail:
@@ -129,21 +129,6 @@ token:
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
   expireTime: 30
-
-# MyBatis配置
-#mybatis:
-#  # 搜索指定包别名
-#  typeAliasesPackage: com.ruoyi.**.domain
-#  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-#  mapperLocations: classpath*:mapper/**/*Mapper.xml
-#  # 加载全局的配置文件
-#  configLocation: classpath:mybatis/mybatis-config.xml
-
-# PageHelper分页插件
-#pagehelper:
-#  helperDialect: mysql
-#  supportMethodsArguments: true
-#  params: count=countSql
 
 # Swagger配置
 swagger:
@@ -202,29 +187,29 @@ mybatis-plus:
       enabled: true
       db-type: MYSQL
 system:
-  peers: 106.52.203.212:20200
+  peers: ${CHAIN_PEERS:106.52.203.212:20200}
   ### Required
   groupId: 1
   ### Optional. Default will search conf,config,src/main/conf/src/main/config
   certPath: conf,config,src/main/resources/conf,src/main/resources/config
   ### Optional. If don't specify a random private key will be used
-  hexPrivateKey: 4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f
+  hexPrivateKey: ${CONTRACT_PRIVATE_KEY:4f2475eeb2ffa3e2084ef1240ae33abb26cc300bb1b42b2f888f8ffbe69ec96f}
   ### Optional. Please fill this address if you want to use related service
   contract:
-    charityControllerAddress: "0xc1d4d719ac6114f8cf50c4b1b606a33ddcc0cdd6"
+    charityControllerAddress: ${CONTRACT_ADDRESS:0xc1d4d719ac6114f8cf50c4b1b606a33ddcc0cdd6}
 
 cos:
   # 密钥id
-  secretId: "AKIDk6z64pcAk9JCH8p4GJ9k5yeBZCKFCiGY"
+  secretId: ${COS_SECRET:AKIDk6z64pcAk9JCH8p4GJ9k5yeBZCKFCiGY}
   # 密钥key
-  secretKey: "CXdZIYfYKuEIZJf9U26vVorgHh8PSGn9"
+  secretKey: ${COS_SECRET_KEY:CXdZIYfYKuEIZJf9U26vVorgHh8PSGn9}
   # 所属区域
-  bucket: "ap-nanjing"
+  bucket: ${COS_BUCKET:ap-nanjing}
   # 存储桶名称
-  bucketName: "blog-1304715799"
+  bucketName: ${COS_BUCKET_NAME:blog-1304715799}
   # COS存储文件夹
-  folder: "/imgs/"
+  folder: ${COS_FOLDER:/imgs/}
   # 访问地址
-  webUrl: "https://blog-1304715799.cos.ap-nanjing.myqcloud.com"
+  webUrl: ${COS_WEB_URL:https://blog-1304715799.cos.ap-nanjing.myqcloud.com}
 
 

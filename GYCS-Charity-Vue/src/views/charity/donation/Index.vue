@@ -225,6 +225,7 @@ function donationHandle(item){
 
 function selectRaiseFundList() {
   getRaiseFundList().then(res => {
+    console.log(res)
     raiseFundList.value = res.rows
     total.value = res.total
   })

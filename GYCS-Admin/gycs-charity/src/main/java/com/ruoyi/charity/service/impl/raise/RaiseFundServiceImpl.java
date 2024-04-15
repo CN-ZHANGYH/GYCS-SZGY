@@ -601,11 +601,11 @@ public class RaiseFundServiceImpl implements RaiseFundService {
             callResponse = charityControllerService.getVoteInfo(inputBO);
 
             JSONArray result = JSONArray.parseArray(callResponse.getValues());
+            System.out.println(result);
             totalVoteIsYes = result.getBigInteger(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
 
         CharityRaiseFund raiseFund = MPRaiseFundMapper.selectById(raiseId);
         List<String> nameList = Arrays.asList("参与人数", "总需金额", "完成金额", "提现金额", "投票数量");

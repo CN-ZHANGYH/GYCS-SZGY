@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
         if (result != null) {
             return AjaxResult.success().put("data",result);
         }
-        return AjaxResult.error();
+        return AjaxResult.success("data",null);
     }
 
     @Override
@@ -289,6 +289,9 @@ public class UserServiceImpl implements UserService {
     public AjaxResult selectUserDonationCount(String username) {
         CharityUser charityUser = MPUserMapper.selectOne(Wrappers.lambdaQuery(CharityUser.class).eq(CharityUser::getUsername, username));
         List<Integer> count = mpDonationTraceMapper.selectDonationCount(charityUser.getUserAddress());
+        if (count.get(0) == 0) {
+            return AjaxResult.success().put("count",0);
+        }
         return AjaxResult.success().put("count",count.get(0) + count.get(1));
     }
 

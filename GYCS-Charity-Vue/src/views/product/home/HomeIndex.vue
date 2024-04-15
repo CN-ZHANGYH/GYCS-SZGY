@@ -1,11 +1,10 @@
-<script>
-
-import {defineComponent} from "vue";
+<script setup>
 import Footer from "@/components/Layout/Footer.vue";
-
-export default defineComponent({
-  components: {Footer}
+import {onMounted} from "vue";
+import whiteLogo from "@/assets/product/images/logo/white-logo.png"
+onMounted(() => {
 })
+
 </script>
 
 <template>
@@ -28,7 +27,7 @@ export default defineComponent({
             <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg">
               <a class="navbar-brand" href="/">
-                <img src="../../../assets/product/images/logo/white-logo.png" alt="Logo">
+                <img :src="whiteLogo" alt="Logo">
               </a>
               <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                       data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -93,7 +92,7 @@ export default defineComponent({
         </div>
         <div class="col-lg-7 col-md-12 col-12">
           <div class="hero-image wow fadeInRight" data-wow-delay=".4s">
-            <img src="../../../assets/product/images/hero/laptop.png" alt="#" style="border-radius: 10px">
+            <img src="/src/assets/product/images/hero/laptop.png" alt="#" style="border-radius: 10px">
           </div>
         </div>
       </div>
@@ -512,8 +511,8 @@ export default defineComponent({
 
   <!-- Start Testimonials Area -->
   <section class="testimonials section">
-    <img class="testi-patern1" src="../../../assets/product/images/testimonial/testi-patern.svg" alt="#">
-    <img class="testi-patern2" src="../../../assets/product/images/testimonial/testi-patern.svg" alt="#">
+<!--    <img class="testi-patern1" src="../../../assets/product/images/testimonial/testi-patern.svg" alt="#">
+    <img class="testi-patern2" src="../../../assets/product/images/testimonial/testi-patern.svg" alt="#">-->
     <div class="container">
       <div class="row">
         <div class="col-lg-8 offset-lg-2 col-md-12 col-12">

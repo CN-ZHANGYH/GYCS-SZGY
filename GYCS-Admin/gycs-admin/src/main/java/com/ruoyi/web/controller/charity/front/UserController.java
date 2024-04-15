@@ -41,6 +41,7 @@ public class UserController {
 
     @PostMapping("/update_profile")
     public AjaxResult updateUserProfile(@RequestBody UserVo userVo){
+        System.out.println(userVo);
         SysUser sysUser = new SysUser();
         BeanUtils.copyProperties(userVo,sysUser);
         sysUserService.updateUserProfile(sysUser);
