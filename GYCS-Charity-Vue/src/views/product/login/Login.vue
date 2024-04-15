@@ -6,7 +6,7 @@ import {useRouter} from "vue-router";
 import {ref} from "vue";
 const userStore = useUserStore()
 const router = useRouter()
-const active = ref(2)
+const active = ref(1)
 
 // 登录表单数据
 const loginForm = ref({

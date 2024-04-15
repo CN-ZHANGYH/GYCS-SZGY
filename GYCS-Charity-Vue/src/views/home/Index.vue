@@ -13,7 +13,7 @@
       <vs-navbar-item id="index" :active="active == 'index'">
         首页
       </vs-navbar-item>
-      <vs-navbar-item id="activity" :active="active == 'activity'">
+      <vs-navbar-item id="disaster_area" :active="active == 'disaster_area'">
         活动中心
       </vs-navbar-item>
       <vs-navbar-item id="user" :active="active == 'user'">
